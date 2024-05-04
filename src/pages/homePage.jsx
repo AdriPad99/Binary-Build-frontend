@@ -1,9 +1,10 @@
+import RecommendWorkouts from "../components/RecommendWorkouts"
 
 export default function HomePage() {
 
   return (
     <>
-        <h1>HomePage</h1>
+    <RecommendWorkouts/>
     </>
   )
 }
