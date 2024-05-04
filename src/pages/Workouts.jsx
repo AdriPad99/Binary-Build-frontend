@@ -1,5 +1,7 @@
-
-import WorkoutsComponent from '../components/WorkoutsComponent'
+import GetWorkouts from "../components/GetWorkouts"
+import CreateWorkout from "../components/CreateWorkout"
+import UpdateWorkout from "../components/UpdateWorkout"
+import DeleteWorkout from "../components/DeleteWorkout"
 
 export default function Workouts() {
 
@@ -7,7 +9,10 @@ export default function Workouts() {
 
   return (
     <>
-      <WorkoutsComponent/>
+      <GetWorkouts/>
+      <CreateWorkout/>
+      <UpdateWorkout/>
+      <DeleteWorkout/>
     </>
   )
 }

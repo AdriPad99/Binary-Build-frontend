@@ -13,7 +13,7 @@ function Navbare() {
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container>
         <Container>
-          <Navbar.Brand className='brand' href="/">React-Bootstrap</Navbar.Brand>
+          <Navbar.Brand className='brand' href="/">Home</Navbar.Brand>
           <Nav.Link id='nav' href="/signup">Sign-Up</Nav.Link>
           <Nav.Link id='nav' href="/signin">Sign-In</Nav.Link>
           <Nav.Link id='nav' href={isLoggedIn ? '/signin' : '/signout'}>{isLoggedIn ? 'Sign-in' : 'Sign-out'}</Nav.Link>
