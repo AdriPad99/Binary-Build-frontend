@@ -11,16 +11,22 @@ export default function WorkoutsComponent() {
     const [userInputs, setUserInputs] = useState({
         "muscle_group": "",
         "equipment": "",
-        "rep_range": 0,
-        "weight_range": 0,
+        "rep_range": '',
+        "weight_range": '',
         "workout_variation": ""
     })
 
-    // state for creating workout
-    const [newWorkout, setNewWorkout] = useState([])
-
     // set state for controlling when a form is on screen
     const [needsForm, setNeedsForm] = useState(false)
+
+    // set state for update form when on screen
+    const [updateForm, setUpdateForm] = useState(false)
+
+    // set state to hold which workout to delete by the state ID
+    const [deleteEnd, setDeleteEnd] = useState()
+
+    // set the state to hold the endpoint to update
+    const [updateEnd, setUpdateEnd] = useState()
 
     ////////////////////////////////////////////////////////
     // state for workout data from api call
@@ -64,8 +70,10 @@ export default function WorkoutsComponent() {
     const [equipmentCounter, setEqipmentCounter] = useState(0)
     /////////////////////////////////////////////////////////
 
-
+    // calls the functions on initial page render
     useEffect(() => {
+        // calls the api that has translations 
+        //(or so I thought. I thought it was all english but it wasn't)
         const renderVariations = async () => {
             const res = await fetch('https://wger.de/api/v2/exercise-translation/?limit=50&offset=0')
             if (res.ok) {
@@ -78,6 +86,7 @@ export default function WorkoutsComponent() {
             }
         }
 
+        // calls the api that has the muscle groups
         const renderMuscles = async () => {
             const res = await fetch('https://wger.de/api/v2/muscle/')
             if (res.ok) {
@@ -90,6 +99,7 @@ export default function WorkoutsComponent() {
             }
         }
 
+        // calls the api that has the workout equipment
         const renderEquipment = async () => {
             const res = await fetch('https://wger.de/api/v2/equipment/')
             if (res.ok) {
@@ -109,7 +119,10 @@ export default function WorkoutsComponent() {
 
     //const [userToken, setUserToken] = useContext(tokenContext);
 
+    // fetches the workout endpoint to grab all the workouts
     const getDBData = async () => {
+
+        // fetches the server api that has all the workouts
         const res = await fetch('http://127.0.0.1:5000/workouts')
         if (res.ok) {
             const data = await res.json();
@@ -122,10 +135,9 @@ export default function WorkoutsComponent() {
         }
     }
 
-    
-    
+    // transforms api request data into arrays to look through
     const createWorkoutBox = () => {
-        
+
         //////////WORKOUT VARIATION//////////
         let filter = new Set();
         for (let i = 0; i < workoutData.results.length; i++) {
@@ -133,23 +145,28 @@ export default function WorkoutsComponent() {
                 filter.add(workoutData.results[i].name)
             }
         }
-        
+
         // Convert Set to array before setting state
         const workoutNamesArray = [...filter];
         setvariationName(workoutNamesArray);
         //////////////////////////////////////
-        
+
         //////////MUSCLE GROUP//////////
         let filter2 = new Set();
         for (let j = 0; j < muscleData.results.length; j++) {
-            filter2.add(`${muscleData.results[j].name}(${muscleData.results[j].name_en})`)
+            if (muscleData.results[j].name_en.length === 0){
+                filter2.add(`${muscleData.results[j].name}`)    
+            }
+            else {
+                filter2.add(`${muscleData.results[j].name}(${muscleData.results[j].name_en})`)
+            }
         }
-        
+
         // Convert Set to array before setting state
         const workoutNamesArray2 = [...filter2];
         setMuscleName(workoutNamesArray2);
         ////////////////////////////////
-        
+
 
         //////////WORKOUT EQUIPMENT//////////
         let filter3 = new Set();
@@ -162,22 +179,31 @@ export default function WorkoutsComponent() {
         /////////////////////////////////////
     }
 
+    // calls the function to set arrays and swaps boolean state when called
+    // this one is for creating a workout
     const toggleNewWorkoutBox = () => {
         createWorkoutBox();
         setNeedsForm(!needsForm)
-        console.log(needsForm)
     }
-    
-    // Handle changes in form inputs
+
+    // calls the function to set arrays and swaps boolean state when called
+    // this one is for updating a workout
+    const toggleUpdateBox = () => {
+        createWorkoutBox();
+        setUpdateForm(!updateForm);
+        console.log(updateForm)
+    }
+
+    // Handle changes in form inputs and displays them on screen as they happen
     const handleChange = (event) => {
         const { name, value } = event.target;
-        setUserInfo(prevState => ({
+        setUserInputs(prevState => ({
             ...prevState,
             [name]: value
         }));
     };
 
-    // Handle form submission
+    // Handle form submission for adding a workout
     const handleSubmit = async (event) => {
         event.preventDefault(); // Prevent the default form submit behavior
         const response = await fetch('http://127.0.0.1:5000/workouts', {
@@ -185,13 +211,62 @@ export default function WorkoutsComponent() {
             headers: {
                 'Content-Type': 'application/json' // Indicates the content 
             },
-            body: JSON.stringify({
-                "muscle_group": userInputs.muscle_group,
-                "equipment": userInputs.equipment,
+            body: JSON.stringify({  // uses these values in the body
+                "muscle_group": muscleChoice,
+                "equipment": equipmentChoice,
                 "rep_range": userInputs.rep_range,
                 "weight_range": userInputs.weight_range,
-                "workout_variation": userInputs.weight_range
+                "workout_variation": variationChoice
             }) //send data in JSON format
+        });
+        // if successful
+        if (response.ok) {
+            setUserInputs({
+                "muscle_group": "",
+                "equipment": "",
+                "rep_range": '',
+                "weight_range": '',
+                "workout_variation": ""
+            })
+        } else {
+            // handles the errors
+            console.error('Failed to create workout:', response.statusText);
+        }
+    };
+
+    // Handle form submission for deleting a workout
+    const handleDelete = async (event) => {
+        event.preventDefault(); // Prevent the default form submit behavior
+        const response = await fetch(`http://127.0.0.1:5000/workouts/${deleteEnd}`, {
+            method: 'DELETE', // sets method
+            headers: {
+                'Content-Type': 'application/json' // Indicates the content 
+            }
+        });
+        // if successful
+        if (response.ok) {
+            console.log('successfully deleted')
+        } else {
+            // handles the errors
+            console.error('Failed to delete workout:', response.statusText);
+        }
+    }
+
+    
+    const handleUpdate = async (event) => {
+        event.preventDefault(); // Prevent the default form submit behavior
+        const response = await fetch(`http://127.0.0.1:5000/workouts/${updateEnd}`, {
+            method: 'PUT', // sets method
+            headers: {
+                'Content-Type': 'application/json' // Indicates the content 
+            },
+            body: JSON.stringify({
+                "muscle_group": muscleChoice,
+                "equipment": equipmentChoice,
+                "rep_range": userInputs.rep_range,
+                "weight_range": userInputs.weight_range,
+                "workout_variation": variationChoice
+            }), // Add the comma here
         });
         // if successful
         if (response.ok) {
@@ -200,15 +275,17 @@ export default function WorkoutsComponent() {
             setUserInputs({
                 "muscle_group": "",
                 "equipment": "",
-                "rep_range": 0,
-                "weight_range": 0,
+                "rep_range": '',
+                "weight_range": '',
                 "workout_variation": ""
             })
+            setUpdateEnd(null);
+            return data;
         } else {
             // handles the errors
             console.error('Failed to create workout:', response.statusText);
         }
-    };
+    }
 
     const previousWorkoutVariation = () => {
         let copy = variationName;
@@ -267,6 +344,15 @@ export default function WorkoutsComponent() {
         setMuscleChoice(copy[muscleCounter]);
     }
 
+    const handleDeleteValue = (event) => {
+        setDeleteEnd(event.target.value);
+
+    }
+
+    const handleUpdateValue = (event) => {
+        setUpdateEnd(event.target.value);
+    }
+
     return (
         <>
             <br />
@@ -274,9 +360,10 @@ export default function WorkoutsComponent() {
                 {/* Maps through the data and displays it on screen */}
                 {userData.length > 0 ? userData.map((user, i) =>
                     <h1 key={i}>
-                        Equipment?: {user.equipment}<br />
+                        Workout Id: {user.workout_id} <br />
+                        Equipment: {user.equipment}<br />
                         Muscle group: {user.muscle_group}<br />
-                        Rep Range: {user.rep_range} <br />
+                        Rep Range: {user.rep_range} reps <br />
                         Weight range: {user.weight_range} lbs<br />
                         Workout variation: {user.workout_variation}
                     </h1>,
@@ -287,106 +374,226 @@ export default function WorkoutsComponent() {
 
 
             <h1>Create Workout</h1>
-            
-            <button onClick={toggleNewWorkoutBox}>{needsForm ?  'Hide New Workout' : 'Show New Workout'}</button>
+
+            <button onClick={toggleNewWorkoutBox}>{needsForm ? 'Hide New Workout' : 'Show New Workout'}</button>
             {needsForm ? (
-            <div>
-                {(variationName, muscleName, equipmentName) ?
-                    (<Form onSubmit={handleSubmit}>
+                <div>
+                    {(variationName, muscleName, equipmentName) ?
+                        (<Form onSubmit={handleSubmit}>
 
-                        <Form.Group>
+                            <Form.Group>
+                                <br />
+                                <Form.Label htmlFor="inputMuscle_Group">Muscle Group</Form.Label>
+                                <br />
+                                <Form.Label value={muscleChoice}>
+                                    <button onClick={previousMuscle}>Previous</button>
+                                    {muscleChoice ? (
+                                        <>
+                                            {muscleChoice}
+                                        </>
+                                    ) : (
+                                        'Please choose a button'
+                                    )}
+
+                                    <button onClick={nextMuscle}>Next</button>
+                                </Form.Label>
+
+                            </Form.Group>
                             <br />
-                            <Form.Label htmlFor="inputMuscle_Group">Muscle Group</Form.Label>
+                            <Form.Group>
+                                <Form.Label htmlFor="inputEquipment">Equipment</Form.Label>
+                                <br />
+                                <Form.Label value={equipmentChoice} >
+                                    <button onClick={previousEquipment}>Previous</button>
+                                    {equipmentChoice ? (
+                                        <>
+                                            {equipmentChoice}
+                                        </>
+                                    ) : (
+                                        'Please choose a button'
+                                    )}
+
+                                    <button onClick={nextEquipment}>Next</button>
+                                </Form.Label>
+
+                            </Form.Group>
                             <br />
-                            <Form.Label value={userInputs.muscle_group} onChange={handleChange}>
-                                <button onClick={previousMuscle}>Previous</button>
-                                {muscleChoice ? (
-                                    <>
-                                        {muscleChoice}
-                                    </>
-                                ) : (
-                                    'Please choose a button'
-                                )}
+                            <Form.Group>
 
-                                <button onClick={nextMuscle}>Next</button>
-                            </Form.Label>
 
-                        </Form.Group>
-                        <br />
-                        <Form.Group>
-                            <Form.Label htmlFor="inputEquipment">Equipment</Form.Label>
+                                <Form.Label htmlFor="inputWorkout_Variation">Workout Variation</Form.Label>
+                                <br />
+                                <Form.Label value={variationChoice}>
+                                    <button onClick={previousWorkoutVariation}>Previous</button>
+                                    {variationChoice ? (
+                                        <>
+                                            {variationChoice}
+                                        </>
+                                    ) : (
+                                        'Please choose a button'
+                                    )}
+
+                                    <button onClick={nextWorkoutVariation}>Next</button>
+                                </Form.Label>
+                            </Form.Group>
                             <br />
-                            <Form.Label value={userInputs.equipment} onChange={handleChange}>
-                                <button onClick={previousEquipment}>Previous</button>
-                                {equipmentChoice ? (
-                                    <>
-                                        {equipmentChoice}
-                                    </>
-                                ) : (
-                                    'Please choose a button'
-                                )}
-
-                                <button onClick={nextEquipment}>Next</button>
-                            </Form.Label>
-
-                        </Form.Group>
-                        <br />
-                        <Form.Group>
-                            
-                        
-                            <Form.Label htmlFor="inputWorkout_Variation">Workout Variation</Form.Label>
+                            <Form.Group>
+                                <Form.Label htmlFor="inputWeight_Range">Weight Range</Form.Label>
+                                <br />
+                                <Form.Control
+                                    type="text"
+                                    name="weight_range"
+                                    value={userInputs.weight_range}
+                                    onChange={handleChange}
+                                    placeholder="Weight Range"
+                                />
+                            </Form.Group>
                             <br />
-                            <Form.Label value={userInputs.workout_variation} onChange={handleChange}>
-                                <button onClick={previousWorkoutVariation}>Previous</button>
-                                {variationChoice ? (
-                                    <>
-                                        {variationChoice}
-                                    </>
-                                ) : (
-                                    'Please choose a button'
-                                )}
+                            <Form.Group>
+                                <Form.Label htmlFor="inputRep_Range">Rep Range</Form.Label>
+                                <br />
+                                <Form.Control
+                                    type="text"
+                                    name="rep_range"
+                                    value={userInputs.rep_range}
+                                    onChange={handleChange}
+                                    placeholder="Rep Range"
+                                />
+                                <br />
 
-                                <button onClick={nextWorkoutVariation}>Next</button>
-                            </Form.Label>
-                        </Form.Group>
-                        <br />
-                        <Form.Group>
-                            <Form.Label htmlFor="inputWeight_Range">Weight Range</Form.Label>
+                            </Form.Group>
                             <br />
-                            <Form.Control
-                                type="text"
-                                name="weight_range"
-                                value={userInputs.weight_range}
-                                onChange={handleChange}
-                                placeholder="Weight Range"
-                            />
-                        </Form.Group>
-                        <br />
-                        <Form.Group>
-                        <Form.Label htmlFor="inputRep_Range">Rep Range</Form.Label>
                             <br />
-                            <Form.Control
-                                type="password"
-                                name="rep_range"
-                                value={userInputs.rep_range}
-                                onChange={handleChange}
-                                placeholder="Rep Range"
-                            />
-                            <br />   
-
-                        </Form.Group>
-                        <br />
-                        <br />
-                        <Button variant="primary" type="submit">
-                            Submit
-                        </Button>
-                    </Form>
-                    ) : (
-                        'test2'
-                    )}
-            </div>): (
+                            <Button variant="primary" type="submit">
+                                Submit
+                            </Button>
+                        </Form>
+                        ) : (
+                            'test2'
+                        )}
+                </div>) : (
                 ''
+            )}
+
+            <div>
+                <h1>Delete A Workout</h1>
+                <div>
+                    What workout will you be deleting?
+                    <form>
+                        <label htmlFor="name">Workout ID:</label>
+                        <input type="text" id="name" name="name" value={deleteEnd} onChange={handleDeleteValue} />
+                        <button onClick={handleDelete}>Delete Workout</button>
+                    </form>
+
+                </div>
+            </div>
+
+            <div>
+                <h1>Update A Workout</h1>
+                <button onClick={toggleUpdateBox}>{updateForm ? 'Hide Update Workout' : 'Show Update Workout'}</button>
+                {updateForm ? (
+                    <div>
+                        {(variationName, muscleName, equipmentName) ?
+                            (<Form onSubmit={handleUpdate}>
+
+                                <Form.Group>
+                                    <br />
+                                    <Form.Label htmlFor="inputMuscle_Group">Muscle Group</Form.Label>
+                                    <br />
+                                    <Form.Label value={muscleChoice}>
+                                        <button onClick={previousMuscle}>Previous</button>
+                                        {muscleChoice ? (
+                                            <>
+                                                {muscleChoice}
+                                            </>
+                                        ) : (
+                                            'Please choose a button'
+                                        )}
+
+                                        <button onClick={nextMuscle}>Next</button>
+                                    </Form.Label>
+
+                                </Form.Group>
+                                <br />
+                                <Form.Group>
+                                    <Form.Label htmlFor="inputEquipment">Equipment</Form.Label>
+                                    <br />
+                                    <Form.Label value={equipmentChoice} >
+                                        <button onClick={previousEquipment}>Previous</button>
+                                        {equipmentChoice ? (
+                                            <>
+                                                {equipmentChoice}
+                                            </>
+                                        ) : (
+                                            'Please choose a button'
+                                        )}
+
+                                        <button onClick={nextEquipment}>Next</button>
+                                    </Form.Label>
+
+                                </Form.Group>
+                                <br />
+                                <Form.Group>
+
+
+                                    <Form.Label htmlFor="inputWorkout_Variation">Workout Variation</Form.Label>
+                                    <br />
+                                    <Form.Label value={variationChoice}>
+                                        <button onClick={previousWorkoutVariation}>Previous</button>
+                                        {variationChoice ? (
+                                            <>
+                                                {variationChoice}
+                                            </>
+                                        ) : (
+                                            'Please choose a button'
+                                        )}
+
+                                        <button onClick={nextWorkoutVariation}>Next</button>
+                                    </Form.Label>
+                                </Form.Group>
+                                <br />
+                                <Form.Group>
+                                    <Form.Label htmlFor="inputWeight_Range">Weight Range</Form.Label>
+                                    <br />
+                                    <Form.Control
+                                        type="text"
+                                        name="weight_range"
+                                        value={userInputs.weight_range}
+                                        onChange={handleChange}
+                                        placeholder="Weight Range"
+                                    />
+                                </Form.Group>
+                                <br />
+                                <Form.Group>
+                                    <Form.Label htmlFor="inputRep_Range">Rep Range</Form.Label>
+                                    <br />
+                                    <Form.Control
+                                        type="text"
+                                        name="rep_range"
+                                        value={userInputs.rep_range}
+                                        onChange={handleChange}
+                                        placeholder="Rep Range"
+                                    />
+                                    <br />
+
+                                </Form.Group>
+                                <br />
+                                <Form.Label htmlFor="name">Workout ID:</Form.Label>
+                                <input type="text" id="name" name="name" value={updateEnd} onChange={handleUpdateValue} />
+                                <br />
+                                <br/>
+                                <Button variant="primary" type="submit">
+                                    Update Workout
+                                </Button>
+                            </Form>
+                            ) : (
+                                'test2'
+                            )}
+                    </div>) : (
+                    ''
                 )}
+            </div>
+
         </>
 
     )
