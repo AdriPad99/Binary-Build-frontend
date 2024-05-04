@@ -252,7 +252,7 @@ export default function WorkoutsComponent() {
         }
     }
 
-    
+    // Handle form submission for updating a workout
     const handleUpdate = async (event) => {
         event.preventDefault(); // Prevent the default form submit behavior
         const response = await fetch(`http://127.0.0.1:5000/workouts/${updateEnd}`, {
@@ -266,12 +266,10 @@ export default function WorkoutsComponent() {
                 "rep_range": userInputs.rep_range,
                 "weight_range": userInputs.weight_range,
                 "workout_variation": variationChoice
-            }), // Add the comma here
+            }),
         });
         // if successful
         if (response.ok) {
-            const data = await response.json(); // Parse JSON response
-            console.log(data)
             setUserInputs({
                 "muscle_group": "",
                 "equipment": "",
@@ -280,60 +278,105 @@ export default function WorkoutsComponent() {
                 "workout_variation": ""
             })
             setUpdateEnd(null);
-            return data;
         } else {
             // handles the errors
-            console.error('Failed to create workout:', response.statusText);
+            console.error('Failed to update the workout:', response.statusText);
         }
     }
 
+    // has the controls for moving left through the workouts
     const previousWorkoutVariation = () => {
+
+        // make a copy of the array from the api
         let copy = variationName;
+
+        // if the associated counter is 0 return
         if (variationCounter === 0) {
             return;
         }
+
+        // increment the state of the counter by 1
         setVariationCounter(variationCounter - 1);
+
+        // set the choice of the user as the index at the current
+        // value of the counter
         setVariationChoice(copy[variationCounter]);
     }
 
+    // has the controls for moving left through the workouts
     const nextWorkoutVariation = () => {
+
+        // make a copy of the array from the api
         let copy = variationName;
 
+        // if the associated counter is at the end of the array return
         if (variationCounter === copy.length - 1) {
             return;
         }
+
+        // decrement the state of the counter by 1
         setVariationCounter(variationCounter + 1);
+
+        // set the choice of the user as the index at the current
+        // value of the counter
         setVariationChoice(copy[variationCounter]);
     }
 
+    // controls moving left for equiment
     const previousEquipment = () => {
+
+        // create copy of equipment array contents
         let copy = equipmentName;
+
+        // if start of array return
         if (equipmentCounter === 0) {
             return;
         }
+
+        // decrement counter by 1
         setEqipmentCounter(equipmentCounter - 1);
+
+        // set user choice to index location in copy at counter
         setEquipmentChoice(copy[equipmentCounter]);
     }
 
+    // controls moving right for equipment
     const nextEquipment = () => {
+
+        // create copy of eqipment array
         let copy = equipmentName;
 
+        // if end of array return
         if (equipmentCounter === copy.length - 1) {
             return;
         }
+
+        // increment equipment counter by 1
         setEqipmentCounter(equipmentCounter + 1);
+
+        // set user item to location in copy by equipment ounter
         setEquipmentChoice(copy[equipmentCounter]);
     }
 
+    // controls moving left for muscles
     const previousMuscle = () => {
+
+        // create copy of muscle array
         let copy = muscleName;
+
+        // if start of array return
         if (muscleCounter === 0) {
             return;
         }
+
+        // decrement muscle counter by one
         setMuscleCounter(muscleCounter - 1);
+
+        // set user muscle choice to location of counter in the copy
         setMuscleChoice(copy[muscleCounter]);
     }
 
+    // controls moving right for muscles
     const nextMuscle = () => {
         let copy = muscleName;
 
@@ -344,11 +387,12 @@ export default function WorkoutsComponent() {
         setMuscleChoice(copy[muscleCounter]);
     }
 
+    // grabs user input to be placed into endpoint to delete user
     const handleDeleteValue = (event) => {
         setDeleteEnd(event.target.value);
-
     }
 
+    // grabs user input to be placed into endpoint to update user
     const handleUpdateValue = (event) => {
         setUpdateEnd(event.target.value);
     }
@@ -356,31 +400,41 @@ export default function WorkoutsComponent() {
     return (
         <>
             <br />
-            <div>
+            <div> 
+                {/* Ternary operator that either: */}
                 {/* Maps through the data and displays it on screen */}
                 {userData.length > 0 ? userData.map((user, i) =>
-                    <h1 key={i}>
+                    <h3 key={i}>
                         Workout Id: {user.workout_id} <br />
                         Equipment: {user.equipment}<br />
                         Muscle group: {user.muscle_group}<br />
                         Rep Range: {user.rep_range} reps <br />
                         Weight range: {user.weight_range} lbs<br />
                         Workout variation: {user.workout_variation}
-                    </h1>,
-                ) : <h1>Click button to get workouts</h1>}
+                    </h3>,
+                ) : (
+                    // or displays instructions
+                <h1>Click button to get workouts</h1>
+                )}
+                {/* On click loads all the workouts in the div */}
                 <button onClick={getDBData}>Get workouts</button>
             </div>
             <br />
 
 
             <h1>Create Workout</h1>
-
+            {/* On click will show hide or show button depeding on the boolean of the needsForm */}
             <button onClick={toggleNewWorkoutBox}>{needsForm ? 'Hide New Workout' : 'Show New Workout'}</button>
+
+            {/* ternary operator that will either: */}
             {needsForm ? (
+                // Display the form if the boolean of the form is true
                 <div>
+                    {/* Nested ternary operator  that will load the form if true */}
                     {(variationName, muscleName, equipmentName) ?
                         (<Form onSubmit={handleSubmit}>
 
+                            {/* Muscle Group Segment */}
                             <Form.Group>
                                 <br />
                                 <Form.Label htmlFor="inputMuscle_Group">Muscle Group</Form.Label>
@@ -400,6 +454,8 @@ export default function WorkoutsComponent() {
 
                             </Form.Group>
                             <br />
+
+                            {/* Equipment Segment */}
                             <Form.Group>
                                 <Form.Label htmlFor="inputEquipment">Equipment</Form.Label>
                                 <br />
@@ -418,6 +474,8 @@ export default function WorkoutsComponent() {
 
                             </Form.Group>
                             <br />
+
+                            {/* Workout Variation Segment */}
                             <Form.Group>
 
 
@@ -437,6 +495,8 @@ export default function WorkoutsComponent() {
                                 </Form.Label>
                             </Form.Group>
                             <br />
+
+                            {/* Weight Range Segment */}
                             <Form.Group>
                                 <Form.Label htmlFor="inputWeight_Range">Weight Range</Form.Label>
                                 <br />
@@ -449,6 +509,8 @@ export default function WorkoutsComponent() {
                                 />
                             </Form.Group>
                             <br />
+
+                            {/* Rep Range Segment */}
                             <Form.Group>
                                 <Form.Label htmlFor="inputRep_Range">Rep Range</Form.Label>
                                 <br />
@@ -460,21 +522,24 @@ export default function WorkoutsComponent() {
                                     placeholder="Rep Range"
                                 />
                                 <br />
-
                             </Form.Group>
                             <br />
                             <br />
+
                             <Button variant="primary" type="submit">
                                 Submit
                             </Button>
                         </Form>
                         ) : (
-                            'test2'
+                            // or output a lack of a form
+                            'No Form :('
                         )}
                 </div>) : (
+                    // or display nothing if false
                 ''
             )}
 
+            {/* Delete a workout Segment */}
             <div>
                 <h1>Delete A Workout</h1>
                 <div>
@@ -488,14 +553,20 @@ export default function WorkoutsComponent() {
                 </div>
             </div>
 
+            {/* Update a Workout Segment */}
             <div>
                 <h1>Update A Workout</h1>
+                {/* Changes button text based on boolean state of updateForm */}
                 <button onClick={toggleUpdateBox}>{updateForm ? 'Hide Update Workout' : 'Show Update Workout'}</button>
+
+                {/* Ternary Operator that will show the div of the form if true */}
                 {updateForm ? (
+                    // Sub ternary operator that will show the form on page if the arrays have content
                     <div>
                         {(variationName, muscleName, equipmentName) ?
                             (<Form onSubmit={handleUpdate}>
 
+                                {/* muscle Group segment */}
                                 <Form.Group>
                                     <br />
                                     <Form.Label htmlFor="inputMuscle_Group">Muscle Group</Form.Label>
@@ -515,6 +586,8 @@ export default function WorkoutsComponent() {
 
                                 </Form.Group>
                                 <br />
+
+                                {/* Equipment Segment */}
                                 <Form.Group>
                                     <Form.Label htmlFor="inputEquipment">Equipment</Form.Label>
                                     <br />
@@ -533,6 +606,8 @@ export default function WorkoutsComponent() {
 
                                 </Form.Group>
                                 <br />
+
+                                {/* Workout Variation segment */}
                                 <Form.Group>
 
 
@@ -552,6 +627,8 @@ export default function WorkoutsComponent() {
                                     </Form.Label>
                                 </Form.Group>
                                 <br />
+
+                                {/* Weight Range Segment */}
                                 <Form.Group>
                                     <Form.Label htmlFor="inputWeight_Range">Weight Range</Form.Label>
                                     <br />
@@ -564,6 +641,8 @@ export default function WorkoutsComponent() {
                                     />
                                 </Form.Group>
                                 <br />
+
+                                {/* Rep Range Segment */}
                                 <Form.Group>
                                     <Form.Label htmlFor="inputRep_Range">Rep Range</Form.Label>
                                     <br />
@@ -578,6 +657,8 @@ export default function WorkoutsComponent() {
 
                                 </Form.Group>
                                 <br />
+
+                                {/* input box segment */}
                                 <Form.Label htmlFor="name">Workout ID:</Form.Label>
                                 <input type="text" id="name" name="name" value={updateEnd} onChange={handleUpdateValue} />
                                 <br />
@@ -587,9 +668,11 @@ export default function WorkoutsComponent() {
                                 </Button>
                             </Form>
                             ) : (
-                                'test2'
+                                // or output a notice of missing form
+                                'Form not Found :('
                             )}
                     </div>) : (
+                    // or output an empty string on page
                     ''
                 )}
             </div>
