@@ -8,18 +8,13 @@ import Signin from './pages/signin'
 import Workouts from './pages/Workouts'
 import TestComponent from './components/TestComponent'
 
-export const tokenContext = createContext();
-
 function App() {
 
-  const [userToken, setUserToken] = useState('');
-
-  const [isLoggedIn, setIsLoggedIn ] = useState(false)
+ 
 
 
   return (
     <>
-      <tokenContext.Provider value={[userToken, setUserToken]}>
         <Navbare />
 
 
@@ -31,7 +26,6 @@ function App() {
           <Route path='/workouts' element={<Workouts />} />
           <Route path='/test' element={<TestComponent />} />
         </Routes>
-      </tokenContext.Provider>
     </>
   )
 }

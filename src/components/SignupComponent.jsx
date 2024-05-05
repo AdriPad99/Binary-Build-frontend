@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { tokenContext } from '../App';
+//import { tokenContext } from '../App';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
@@ -13,7 +13,7 @@ export default function SignupComponent() {
     "last_name": ""
   });
 
-  const [isLoggedIn, setIsLoggedIn] = useContext(tokenContext);
+  //const [isLoggedIn, setIsLoggedIn] = useContext(tokenContext);
 
   // Handle changes in form inputs
   const handleChange = (event) => {

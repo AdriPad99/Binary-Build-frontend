@@ -1,6 +1,16 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
+//import ThemeContext from './ContextComponent';
+//import {tokenContext} from '../App'
+import { TokenContext } from "../contexts/ContextComponent";
+import ContextComponent from "../contexts/ContextComponent";
 
 export default function RecommendWorkouts() {
+
+    const { userToken, setUserToken } = useContext(TokenContext);
+
+    const test1 = () => {
+        console.log(userToken)
+    }
 
     // state for fetched data
     const [userData, setUserData] = useState([])
@@ -66,44 +76,50 @@ export default function RecommendWorkouts() {
 
     return (
         <>
-            <h1>Recommended Workouts</h1>
-            {/* Ternary operator that either: */}
-            {/* Maps through the data and displays it in a sliding div on screen */}
-            {isOpen ?
-                (<div className="parent-container">
-                    {userData.map((user, i) =>
-                        <h3 key={i}>
-                            <div id="test">
-                                Workout Id: {user.workout_id} <br />
-                                Equipment: {user.equipment}<br />
-                                Muscle group: {user.muscle_group}<br />
-                                Rep Range: {user.rep_range} reps <br />
-                                Weight range: {user.weight_range} lbs<br />
-                                Workout variation: {user.workout_variation}
-                                <br />
-                                {/* event in onClick to prevent react from re-rendering it every time the button is clicked. */}
-                                <button onClick={() => test(user.workout_id, user.equipment, user.muscle_group, user.rep_range, user.weight_range, user.workout_variation)}>Add workout {user.workout_id}<br />to your workouts</button>
-                            </div>
-                        </h3>
-                    )}
-                </div>
-                ) : (
-                    // or instructs the user
-                    <h1>Click button to get workouts</h1>
-                )
-            }
+            <ContextComponent>
 
-            {/* Changes the text of the button depending on the boolean value */}
-            {isOpen ?
-                (
-                    <p>
-                        <button onClick={toggleWorkoutBox}>Close recommended workouts</button>
-                    </p>
-                ) : (
-                    <p>
-                        <button onClick={toggleWorkoutBox}>Open recommended workouts</button>
-                    </p>
-                )}
+
+                <h1>Recommended Workouts</h1>
+                {/* Ternary operator that either: */}
+                {/* Maps through the data and displays it in a sliding div on screen */}
+                {isOpen ?
+                    (<div className="parent-container">
+                        {userData.map((user, i) =>
+                            <h3 key={i}>
+                                <div id="test">
+                                    Workout Id: {user.workout_id} <br />
+                                    Equipment: {user.equipment}<br />
+                                    Muscle group: {user.muscle_group}<br />
+                                    Rep Range: {user.rep_range} reps <br />
+                                    Weight range: {user.weight_range} lbs<br />
+                                    Workout variation: {user.workout_variation}
+                                    <br />
+                                    {/* event in onClick to prevent react from re-rendering it every time the button is clicked. */}
+                                    <button onClick={() => test(user.workout_id, user.equipment, user.muscle_group, user.rep_range, user.weight_range, user.workout_variation)}>Add workout {user.workout_id}<br />to your workouts</button>
+                                </div>
+                            </h3>
+                        )}
+                    </div>
+                    ) : (
+                        // or instructs the user
+                        <h1>Click button to get workouts</h1>
+                    )
+                }
+
+                {/* Changes the text of the button depending on the boolean value */}
+                {isOpen ?
+                    (
+                        <p>
+                            <button onClick={toggleWorkoutBox}>Close recommended workouts</button>
+                        </p>
+                    ) : (
+                        <p>
+                            <button onClick={toggleWorkoutBox}>Open recommended workouts</button>
+                        </p>
+                    )}
+
+                <button onClick={test1}>token</button>
+            </ContextComponent>
         </>
     )
 }
