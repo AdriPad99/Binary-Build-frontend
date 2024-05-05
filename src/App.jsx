@@ -6,6 +6,7 @@ import Signup from './pages/signup'
 import Signout from './pages/signout'
 import Signin from './pages/signin'
 import Workouts from './pages/Workouts'
+import TestComponent from './components/TestComponent'
 
 export const tokenContext = createContext();
 
@@ -28,7 +29,7 @@ function App() {
           <Route path="/signin" element={<Signin />} />
           <Route path="/signout" element={<Signout />} />
           <Route path='/workouts' element={<Workouts />} />
-          {/* <Route path='/test' element={<TestPage />} /> */}
+          <Route path='/test' element={<TestComponent />} />
         </Routes>
       </tokenContext.Provider>
     </>
