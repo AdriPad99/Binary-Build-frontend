@@ -1,8 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-//import ThemeContext from './ContextComponent';
-//import {tokenContext} from '../App'
-import { TokenContext } from "../contexts/ContextComponent";
-import ContextComponent from "../contexts/ContextComponent";
+import { TokenContext } from "./SigninComponent";
 
 export default function RecommendWorkouts() {
 
@@ -76,7 +73,6 @@ export default function RecommendWorkouts() {
 
     return (
         <>
-            <ContextComponent>
 
 
                 <h1>Recommended Workouts</h1>
@@ -118,8 +114,7 @@ export default function RecommendWorkouts() {
                         </p>
                     )}
 
-                <button onClick={test1}>token</button>
-            </ContextComponent>
+                <button onClick={() => {console.log(userToken)}}>token</button>
         </>
     )
 }

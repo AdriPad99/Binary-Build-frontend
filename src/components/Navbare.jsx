@@ -1,5 +1,3 @@
-import { useContext } from 'react';
-//import { tokenContext } from '../App';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -7,7 +5,6 @@ import Navbar from 'react-bootstrap/Navbar';
 
 function Navbare() {
 
-  //const [isLoggedIn, setIsLoggedIn] = useContext(tokenContext);
   return (
     <>
     <Navbar expand="lg" className="bg-body-tertiary">
