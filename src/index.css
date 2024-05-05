@@ -8,3 +8,36 @@
   padding-bottom: 20px;
   text-decoration: none;
 }
+
+.parent-container{
+  display: flex;
+  width: 500px;
+  height: 220px;
+  white-space: nowrap;
+  position: relative;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+
+  padding: 4px;
+  width: auto;
+  /* overflow: auto; */
+  /* white-space: nowrap; */
+
+  border: 1px solid black;
+}
+
+#test{
+  border: 2px solid black;
+  border-color: black;
+  background-color: aqua;
+  text-align: center;
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
+  margin: 10px;
+  display: inline-block;
+  zoom: 0;
+
+  
+}

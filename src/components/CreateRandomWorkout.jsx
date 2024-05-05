@@ -12,6 +12,16 @@ export default function CreateRandomWorkout() {
     })
 
     ////////////////////////////////////////////////////////
+    // controls all state for the ready status of the api
+
+    const [variationReady, setVariationReady] = useState(false)
+
+    const [muscleReady, setMuscleReady] = useState(false)
+
+    const [equipmentReady, setEquipmentReady] = useState(false)
+    ////////////////////////////////////////////////////////
+
+    ////////////////////////////////////////////////////////
     // state for workout data from api call
     const [workoutData, setWorkoutData] = useState()
 
@@ -49,10 +59,10 @@ export default function CreateRandomWorkout() {
 
     //////////////////////////////////////////////////////////
     // set state for rep range
-    const [repAmnt, setRepAmnt] = useState()
+    const [repAmnt, setRepAmnt] = useState(0)
 
     // set state for weight range
-    const [weightAmnt, setWeightAmnt] = useState()
+    const [weightAmnt, setWeightAmnt] = useState(0)
     //////////////////////////////////////////////////////////
 
     // calls the functions on initial page render
@@ -64,6 +74,7 @@ export default function CreateRandomWorkout() {
             if (res.ok) {
                 const data = await res.json();
                 setWorkoutData(data);
+                setVariationReady(true);
             }
             // if not error out
             else {
@@ -77,6 +88,7 @@ export default function CreateRandomWorkout() {
             if (res.ok) {
                 const data = await res.json();
                 setMuscleData(data);
+                setMuscleReady(true);
             }
             // if not error out
             else {
@@ -90,6 +102,7 @@ export default function CreateRandomWorkout() {
             if (res.ok) {
                 const data = await res.json();
                 setEquipmentData(data);
+                setEquipmentReady(true);
             }
             // if not error out
             else {
@@ -97,306 +110,184 @@ export default function CreateRandomWorkout() {
             }
         }
 
-        // transforms api request data into arrays to look through
-        const createWorkoutBox = () => {
-
-            //////////WORKOUT VARIATION//////////
-            let filter = new Set();
-            for (let i = 0; i < workoutData.results.length; i++) {
-                if (workoutData.results[i].language === 2) {
-                    filter.add(workoutData.results[i].name)
-                }
-            }
-
-            // Convert Set to array before setting state
-            const workoutNamesArray = [...filter];
-            setvariationName(workoutNamesArray);
-            //////////////////////////////////////
-
-            //////////MUSCLE GROUP//////////
-            let filter2 = new Set();
-            for (let j = 0; j < muscleData.results.length; j++) {
-                if (muscleData.results[j].name_en.length === 0) {
-                    filter2.add(`${muscleData.results[j].name}`)
-                }
-                else {
-                    filter2.add(`${muscleData.results[j].name}(${muscleData.results[j].name_en})`)
-                }
-            }
-
-            // Convert Set to array before setting state
-            const workoutNamesArray2 = [...filter2];
-            setMuscleName(workoutNamesArray2);
-            ////////////////////////////////
-
-
-            //////////WORKOUT EQUIPMENT//////////
-            let filter3 = new Set();
-            for (let k = 0; k < equipmentData.results.length; k++) {
-                filter3.add(equipmentData.results[k].name)
-            }
-            // Convert Set to array before setting state
-            const workoutNamesArray3 = [...filter3];
-            setEquipmentName(workoutNamesArray3);
-            /////////////////////////////////////
-        }
-
-        // has the controls for moving left through the workouts
-        const workoutVariation = () => {
-            // make a copy of the array from the api
-            let copy = variationName;
-
-            // sets the bounary of where the random number will be between
-            const min = 0;
-            const max = copy.length - 1
-
-            // picks random number
-            const randomNumber = Math.floor(Math.random() * (max - min)) + min;
-
-            console.log(randomNumber)
-
-            // set the choice of the user as the index at the current
-            // value of the counter
-            setVariationChoice(copy[randomNumber]);
-        }
-
-        // controls moving right for equipment
-        const equipment = () => {
-            // make a copy of the array from the api
-            let copy = equipmentName;
-
-            // sets the bounary of where the random number will be between
-            const min = 0;
-            const max = copy.length - 1
-
-            // picks random number
-            const randomNumber = Math.floor(Math.random() * (max - min)) + min;
-
-            console.log(randomNumber)
-
-            // set the choice of the user as the index at the current
-            // value of the counter
-            setEquipmentChoice(copy[randomNumber]);
-        }
-
-        // controls moving right for muscles
-        const muscle = () => {
-            // make a copy of the array from the api
-            let copy = muscleName;
-            // sets the bounary of where the random number will be between
-            const min = 0;
-            const max = copy.length - 1
-
-            // picks random number
-            const randomNumber = Math.floor(Math.random() * (max - min)) + min;
-
-            console.log(randomNumber)
-
-            // set the choice of the user as the index at the current
-            // value of the counter
-            setMuscleChoice(copy[randomNumber]);
-        }
-
-        // controls setting random number for reps
-        const randomRep = () => {
-            // sets the bounary of where the random number will be between
-            const min = 0;
-            const max = 16;
-
-            // picks random number
-            const randomNumber = Math.floor(Math.random() * (max - min)) + min;
-
-            console.log(randomNumber)
-            // make a copy of the array from the api
-
-            // set the choice of the user as the index at the current
-            // value of the counter
-            setRepAmnt(randomNumber);
-        }
-
-        // controls setting random number for weight range
-        const randomWeight = () => {
-            // sets the bounary of where the random number will be between
-            const min = 0;
-            const max = 16;
-
-            // picks random number
-            const randomNumber = Math.floor(Math.random() * (max - min)) + min;
-
-            console.log(randomNumber)
-            // make a copy of the array from the api
-
-            // set the choice of the user as the index at the current
-            // value of the counter
-            setWeightAmnt(randomNumber);
-        }
-
-        // Handle form submission for adding a workout
-        const handleSubmit = async (event) => {
-            event.preventDefault(); // Prevent the default form submit behavior
-            const response = await fetch('http://127.0.0.1:5000/workouts', {
-                method: 'POST', // sets method
-                headers: {
-                    'Content-Type': 'application/json' // Indicates the content 
-                },
-                body: JSON.stringify({  // uses these values in the body
-                    "muscle_group": muscleChoice,
-                    "equipment": equipmentChoice,
-                    "rep_range": repAmnt,
-                    "weight_range": weightAmnt,
-                    "workout_variation": variationChoice
-                }) //send data in JSON format
-            });
-            // if successful
-            if (response.ok) {
-                setUserInputs({
-                    "muscle_group": "",
-                    "equipment": "",
-                    "rep_range": '',
-                    "weight_range": '',
-                    "workout_variation": ""
-                })
-            } else {
-                // handles the errors
-                console.error('Failed to create workout:', response.statusText);
-            }
-        };
-
         renderVariations();
         renderMuscles();
         renderEquipment();
-        createWorkoutBox();
-        workoutVariation();
-        equipment();
-        muscle();
-        randomRep();
-        randomWeight();
-        handleSubmit();
     }, []);
 
-    // // Handle form submission for adding a workout
-    // const handleSubmit = async (event) => {
-    //     event.preventDefault(); // Prevent the default form submit behavior
-    //     const response = await fetch('http://127.0.0.1:5000/workouts', {
-    //         method: 'POST', // sets method
-    //         headers: {
-    //             'Content-Type': 'application/json' // Indicates the content 
-    //         },
-    //         body: JSON.stringify({  // uses these values in the body
-    //             "muscle_group": muscleChoice,
-    //             "equipment": equipmentChoice,
-    //             "rep_range": repAmnt,
-    //             "weight_range": weightAmnt,
-    //             "workout_variation": variationChoice
-    //         }) //send data in JSON format
-    //     });
-    //     // if successful
-    //     if (response.ok) {
-    //         setUserInputs({
-    //             "muscle_group": "",
-    //             "equipment": "",
-    //             "rep_range": '',
-    //             "weight_range": '',
-    //             "workout_variation": ""
-    //         })
-    //     } else {
-    //         // handles the errors
-    //         console.error('Failed to create workout:', response.statusText);
-    //     }
-    // };
+    // when all the states are set for the random choices submit to the server
+    useEffect(() => {
+        if (muscleChoice && variationChoice && equipmentChoice) {
+            handleSubmit();
+        }
+    }, [muscleChoice, variationChoice, equipmentChoice]);
+    
 
-    // // has the controls for moving left through the workouts
-    // const workoutVariation = () => {
+    // Handle form submission for adding a workout
+    const handleSubmit = async () => {
 
-    //     // sets the bounary of where the random number will be between
-    //     const min = 0;
-    //     const max = copy.length - 1
+        // uncomment to add to user workouts
+        // const response = await fetch('http://127.0.0.1:5000/workouts', {
 
-    //     // picks random number
-    //     const randomNumber = Math.floor(Math.random() * (max - min)) + min;
+        // uncomment to add to recommended workouts
+        const response = await fetch('http://127.0.0.1:5000/randomWorkouts', {
+            method: 'POST', // sets method
+            headers: {
+                'Content-Type': 'application/json' // Indicates the content 
+            },
+            body: JSON.stringify({  // uses these values in the body
+                "muscle_group": muscleChoice,
+                "equipment": equipmentChoice,
+                "rep_range": repAmnt,
+                "weight_range": weightAmnt,
+                "workout_variation": variationChoice
+            }) //send data in JSON format
+        });
+        // if successful
+        if (response.ok) {
+            setUserInputs({
+                "muscle_group": "",
+                "equipment": "",
+                "rep_range": '',
+                "weight_range": '',
+                "workout_variation": ""
+            })
+        } else {
+            // handles the errors
+            console.error('Failed to create workout:', response.statusText);
+        }
+    };
 
-    //     console.log(randomNumber)
-    //     // make a copy of the array from the api
-    //     let copy = variationName;
 
-    //     // set the choice of the user as the index at the current
-    //     // value of the counter
-    //     setVariationChoice(copy[randomNumber]);
-    // }
+    // controls picking a random variation from an array of workout variations
+    const randomWorkoutVariation = () => {
 
-    // // controls moving right for equipment
-    // const equipment = () => {
+        //////////WORKOUT VARIATION//////////
+        let filter = new Set();
+        for (let i = 0; i < workoutData.results.length; i++) {
+            if (workoutData.results[i].language === 2) {
+                filter.add(workoutData.results[i].name)
+            }
+        }
 
-    //   // sets the bounary of where the random number will be between
-    //   const min = 0;
-    //   const max = copy.length - 1
+        
+        // Convert Set to array before setting state
+        const copy = [...filter];
+        //////////////////////////////////////
 
-    //   // picks random number
-    //   const randomNumber = Math.floor(Math.random() * (max - min)) + min;
+        // sets the bounary of where the random number will be between
+        const min = 0;
+        const max = copy.length - 1
 
-    //   console.log(randomNumber)
-    //   // make a copy of the array from the api
-    //   let copy = equipmentName;
+        // picks random number
+        const randomNumber = Math.floor(Math.random() * (max - min) + min);
 
-    //   // set the choice of the user as the index at the current
-    //   // value of the counter
-    //   setEquipmentChoice(copy[randomNumber]);
-    // }
+        // sets the choice to the index made from the random number
+        setVariationChoice(copy[randomNumber]);
+    }
 
-    // // controls moving right for muscles
-    // const muscle = () => {
-    // // sets the bounary of where the random number will be between
-    //   const min = 0;
-    //   const max = copy.length - 1
+    //controls moving right for equipment
+    const randomEquipment = () => {
 
-    //   // picks random number
-    //   const randomNumber = Math.floor(Math.random() * (max - min)) + min;
+        //////////WORKOUT EQUIPMENT//////////
+        let copy = [];
+        for (let k = 0; k < equipmentData.results.length; k++) {
+            copy.push(equipmentData.results[k].name)
+        }
+        
+        // set equipment array names to copy array
+        setEquipmentName(copy);
 
-    //   console.log(randomNumber)
-    //   // make a copy of the array from the api
-    //   let copy = muscleName;
+        // sets the bounary of where the random number will be between
+        const min = 0;
+        const max = copy.length - 1
 
-    //   // set the choice of the user as the index at the current
-    //   // value of the counter
-    //   setMuscleChoice(copy[randomNumber]);
-    // }
+        // picks random number
+        const randomNumber = Math.floor(Math.random() * (max - min) + min);
 
-    // // controls setting random number for reps
-    // const randomRep = () => {
-    //     // sets the bounary of where the random number will be between
-    //   const min = 0;
-    //   const max = 16;
+        // set the choice of the user as the index at the current
+        // value of the counter
+        setEquipmentChoice(copy[randomNumber]);
+        console.log(equipmentChoice)
+    }
 
-    //   // picks random number
-    //   const randomNumber = Math.floor(Math.random() * (max - min)) + min;
+    // controls moving right for muscles
+    const randomMuscle = () => {
+        let test = [];
+        for (let j = 0; j < muscleData.results.length; j++) {
+            if (muscleData.results[j].name_en) {
+                test.push(`${muscleData.results[j].name}`)
+            }
+        }
+        //console.log(test)
 
-    //   console.log(randomNumber)
-    //   // make a copy of the array from the api
+        // set muscle name to test array
+        setMuscleName(test);
+        
+        // sets the bounary of where the random number will be between
+        const min = 0;
+        const max = test.length - 1
 
-    //   // set the choice of the user as the index at the current
-    //   // value of the counter
-    //   setRepAmnt(randomNumber);
-    // }
+        // picks random number
+        const randomNumber = Math.floor(Math.random() * (max - min) + min);
+
+        // set the choice of the user as the index at the current
+        // value of the counter
+        setMuscleChoice(test[randomNumber]);
+        //console.log('muscle choice: ', muscleChoice)
+    }
+
+    // controls setting random number for reps
+    const randomRepAmnt = () => {
+
+        // sets the bounary of where the random number will be between
+        const min = 7;
+        const max = 16;
+    
+        // picks random number
+        const randomNumber = Math.floor(Math.random() * (max - min) + min);
+    
+        // set the choice of the user as the index at the current
+        // value of the counter
+        setRepAmnt(randomNumber);
+    }
 
     // // controls setting random number for weight range
-    // const randomWeight = () => {
-    // // sets the bounary of where the random number will be between
-    //   const min = 0;
-    //   const max = 16;
+    const randomWeightAmnt = () => {
 
-    //   // picks random number
-    //   const randomNumber = Math.floor(Math.random() * (max - min)) + min;
+        // sets the bounary of where the random number will be between
+        const min = 5;
+        const max = 30;
 
-    //   console.log(randomNumber)
-    //   // make a copy of the array from the api
+        // picks random number
+        const randomNumber = Math.floor(Math.random() * (max - min) + min);
 
-    //   // set the choice of the user as the index at the current
-    //   // value of the counter
-    //   setWeightAmnt(randomNumber);
-    // }
+        //console.log(randomNumber)
+
+        // set the choice of the user as the index at the current
+        // value of the counter
+        setWeightAmnt(randomNumber);
+    }
+
+    const randomWorkout = () => {
+        console.log('muscle choice: ',muscleChoice);
+        console.log('workout choice: ',variationChoice);
+        console.log('equipment choice: ',equipmentChoice);
+        console.log('rep amount: ',repAmnt);
+        console.log('weight amount: ',weightAmnt);
+        randomMuscle();
+        randomWorkoutVariation();
+        randomEquipment();
+        randomRepAmnt();
+        randomWeightAmnt();
+        handleSubmit();
+    }
 
     return (
         <>
+            <h1>Create a random Workout</h1>
+            {muscleReady && <button onClick={randomWorkout}>Create Random Workout</button>}
+
         </>
     )
 }
