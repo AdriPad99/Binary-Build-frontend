@@ -4,355 +4,326 @@ import Form from 'react-bootstrap/Form';
 
 export default function TestComponent() {
 
-// state for user selections
-const [userInputs, setUserInputs] = useState({
-    "muscle_group": "",
-    "equipment": "",
-    "rep_range": '',
-    "weight_range": '',
-    "workout_variation": ""
-})
+    // state for user selections
+    const [userInputs, setUserInputs] = useState({
+        "muscle_group": "",
+        "equipment": "",
+        "rep_range": '',
+        "weight_range": '',
+        "workout_variation": ""
+    })
 
 
-// set state for controlling when a form is on screen
-const [needsForm, setNeedsForm] = useState(false)
+    // set state for controlling when a form is on screen
+    const [needsForm, setNeedsForm] = useState(false)
 
-// TEST set state for controlling when workouts are loaded
-const [workoutsReady, setWorkoutsReady] = useState(false)
+    // TEST set state for controlling when workouts are loaded
+    const [workoutsReady, setWorkoutsReady] = useState(false)
 
-////////////////////////////////////////////////////////
-// state for workout data from api call
-const [workoutData, setWorkoutData] = useState()
+    ////////////////////////////////////////////////////////
+    // state for workout data from api call
+    const [workoutData, setWorkoutData] = useState()
 
-// state for workout name
-const [variationName, setvariationName] = useState([])
+    // state for workout name
+    const [variationName, setvariationName] = useState({})
 
-// set state for the selected users choice
-const [variationChoice, setVariationChoice] = useState()
+    // set state for the selected users choice
+    const [variationChoice, setVariationChoice] = useState()
 
-//sets state for counter to go through the array choices
-const [variationCounter, setVariationCounter] = useState(0)
-/////////////////////////////////////////////////////////
+    //sets state for counter to go through the array choices
+    const [variationCounter, setVariationCounter] = useState(0)
+    /////////////////////////////////////////////////////////
 
-/////////////////////////////////////////////////////////
-// state for muscle data from api call
-const [muscleData, setMuscleData] = useState()
+    /////////////////////////////////////////////////////////
+    // state for muscle data from api call
+    const [muscleData, setMuscleData] = useState()
 
-// state for muscle group
-const [muscleName, setMuscleName] = useState([])
+    // state for muscle group
+    const [muscleName, setMuscleName] = useState([])
 
-// set state for muscle choice
-const [muscleChoice, setMuscleChoice] = useState()
+    // set state for muscle choice
+    const [muscleChoice, setMuscleChoice] = useState()
 
-//set state for muscle counter
-const [muscleCounter, setMuscleCounter] = useState(0)
-/////////////////////////////////////////////////////////
+    //set state for muscle counter
+    const [muscleCounter, setMuscleCounter] = useState(0)
+    /////////////////////////////////////////////////////////
 
-/////////////////////////////////////////////////////////
-// state for equipment data from api call
-const [equipmentData, setEquipmentData] = useState()
+    /////////////////////////////////////////////////////////
+    // state for equipment data from api call
+    const [equipmentData, setEquipmentData] = useState()
 
-// state for equipment Name
-const [equipmentName, setEquipmentName] = useState()
+    // state for equipment Name
+    const [equipmentName, setEquipmentName] = useState()
 
-// set state for equipment choice
-const [equipmentChoice, setEquipmentChoice] = useState()
+    // set state for equipment choice
+    const [equipmentChoice, setEquipmentChoice] = useState()
 
-// set state for equipment counter
-const [equipmentCounter, setEqipmentCounter] = useState(0)
-/////////////////////////////////////////////////////////
+    // set state for equipment counter
+    const [equipmentCounter, setEqipmentCounter] = useState(0)
+    /////////////////////////////////////////////////////////
 
-// calls the functions on initial page render
-useEffect(() => {
-    // calls the api that has translations 
-    //(or so I thought. I thought it was all english but it wasn't)
-    const renderVariations = async () => {
-        const res = await fetch('https://wger.de/api/v2/exercise/?limit=1369&offset=0')
-        if (res.ok) {
-            const data = await res.json();
-            setWorkoutData(data);
-            setWorkoutsReady(true);
+    // calls the functions on initial page render
+    useEffect(() => {
+        // calls the api that has translations 
+        //(or so I thought. I thought it was all english but it wasn't)
+        const renderVariations = async () => {
+            const res = await fetch('https://wger.de/api/v2/exercise/?limit=1369&offset=0')
+            if (res.ok) {
+                const data = await res.json();
+                setWorkoutData(data);
+                setWorkoutsReady(true);
+            }
+            // if not error out
+            else {
+                console.error("Couldn't get the products :(")
+            }
         }
-        // if not error out
-        else {
-            console.error("Couldn't get the products :(")
+
+        // calls the api that has the muscle groups
+        const renderMuscles = async () => {
+            const res = await fetch('https://wger.de/api/v2/muscle/')
+            if (res.ok) {
+                const data = await res.json();
+                setMuscleData(data);
+            }
+            // if not error out
+            else {
+                console.error("Couldn't get the products :(")
+            }
         }
+
+        // calls the api that has the workout equipment
+        const renderEquipment = async () => {
+            const res = await fetch('https://wger.de/api/v2/equipment/')
+            if (res.ok) {
+                const data = await res.json();
+                setEquipmentData(data);
+            }
+            // if not error out
+            else {
+                console.error("Couldn't get the products :(")
+            }
+        }
+
+        renderVariations();
+        renderMuscles();
+        renderEquipment();
+    }, []);
+
+    // calls the function to set arrays and swaps boolean state when called
+    // this one is for creating a workout
+    const toggleNewWorkoutBox = () => {
+        createWorkoutBox();
+        setNeedsForm(!needsForm)
     }
 
-    // calls the api that has the muscle groups
-    const renderMuscles = async () => {
-        const res = await fetch('https://wger.de/api/v2/muscle/')
-        if (res.ok) {
-            const data = await res.json();
-            setMuscleData(data);
+    // transforms api request data into arrays to look through
+    const createWorkoutBox = () => {
+
+        // holds the workouts
+        let copy = {};
+
+        // creates entries in the object for an exercise and associated equipment number
+        for (let i = 0; i < workoutData.results.length; i++) {
+            if (workoutData.results[i].language === 2) {
+                // copy.push(workoutData.results[i].name);
+                if (workoutData.results[i].equipment > 0) {
+                    copy[workoutData.results[i].name] = workoutData.results[i].equipment;
+                }
+                else {
+                    continue;
+                }
+            }
         }
-        // if not error out
-        else {
-            console.error("Couldn't get the products :(")
-        }
-    }
 
-    // calls the api that has the workout equipment
-    const renderEquipment = async () => {
-        const res = await fetch('https://wger.de/api/v2/equipment/')
-        if (res.ok) {
-            const data = await res.json();
-            setEquipmentData(data);
-        }
-        // if not error out
-        else {
-            console.error("Couldn't get the products :(")
-        }
-    }
+        // sets variation name to copied array
+        setvariationName(copy);
 
-    renderVariations();
-    renderMuscles();
-    renderEquipment();
-}, []);
+        // has all the equipment in their respective positions
+        const equipment = ["Default", "Barbell", "SZ-Bar", "Dumbbell", "Gym Mat", "Swiss Ball", "Pull-up bar", "none (bodyweight exercise)", "Bench", "Incline Bench", "Kettlebell"]
 
-// calls the function to set arrays and swaps boolean state when called
-// this one is for creating a workout
-const toggleNewWorkoutBox = () => {
-    createWorkoutBox();
-    setNeedsForm(!needsForm)
-}
+        // set the equipment name to the above
+        setEquipmentName(equipment);
 
-// transforms api request data into arrays to look through
-const createWorkoutBox = () => {
 
-    // all data
-    console.log(equipmentData)
+        // holds the names for the muscles
+        let muscle = [];
 
-    //all result
-    console.log(equipmentData.results)
-
-    // length of the data
-    console.log(equipmentData.results.length)
-
-    // individual result
-    console.log(equipmentData.results[0])
-
-    // associated individual id
-    console.log(equipmentData.results[0].id)
-
-    // associated name
-    console.log(equipmentData.results[0].name)
-
-    // holds the workouts
-    let copy = {};
-
-    // creates entries in the object for an exercise and associated equipment number
-    for (let i = 0; i < workoutData.results.length; i++){
-        if (workoutData.results[i].language === 2){
-            // copy.push(workoutData.results[i].name);
-            if (workoutData.results[i].equipment > 0){
-                copy[workoutData.results[i].name] = workoutData.results[i].equipment;
+        //  creates all the muscles names
+        for (let j = 0; j < muscleData.results.length; j++) {
+            if (muscleData.results[j].name_en){
+                muscle.push(`${muscleData.results[j].name}(${muscleData.results[j].name_en})`)
             }
             else {
-                continue;
+                muscle.push(`${muscleData.results[j].name}`)
             }
         }
+
+        // sets the array of muscle names
+        setMuscleName(muscle);
+
     }
 
-    let counter = 0;
-    let equipment =[];
-
-    while (equipment.length < 9){
-        for (let i = 0; i < equipmentData.results.length - 1; i++){
-            if (equipmentData.results[i].id === i + 1){
-                equipment.push(equipmentData.results[i].name);
-            }
-            else{
-                continue;
-            }
+    // Handle form submission for adding a workout
+    const handleSubmit = async (event) => {
+        event.preventDefault(); // Prevent the default form submit behavior
+        const response = await fetch('http://127.0.0.1:5000/workouts', {
+            method: 'POST', // sets method
+            headers: {
+                'Content-Type': 'application/json' // Indicates the content 
+            },
+            body: JSON.stringify({  // uses these values in the body
+                "muscle_group": muscleChoice,
+                "equipment": equipmentChoice,
+                "rep_range": userInputs.rep_range,
+                "weight_range": userInputs.weight_range,
+                "workout_variation": variationChoice
+            }) //send data in JSON format
+        });
+        // if successful
+        if (response.ok) {
+            setUserInputs({
+                "muscle_group": "",
+                "equipment": "",
+                "rep_range": '',
+                "weight_range": '',
+                "workout_variation": ""
+            })
+        } else {
+            // handles the errors
+            console.error('Failed to create workout:', response.statusText);
         }
-        counter += 1;
+    };
+
+    // has the controls for moving left through the workouts
+    const previousWorkoutVariation = () => {
+
+        // make a copy of the array from the api
+        let copy = variationName;
+
+        console.log(typeof(variationName))
+
+        
+        // if the associated counter is 0 return
+        if (variationCounter === 0) {
+            return;
+        }
+        
+        // increment the state of the counter by 1
+        setVariationCounter(variationCounter - 1);
+        
+        // set the choice of the user as the index at the current
+        // value of the counter
+        setVariationChoice(copy[variationCounter]);
+
+        let test = Object.entries(copy)
+
+        console.log(test)
+
+        // for (const [key, values] in copy){
+        //     console.log(key, values)
+        // }
     }
 
-    console.log(equipment);
+    // has the controls for moving left through the workouts
+    const nextWorkoutVariation = () => {
 
+        // make a copy of the array from the api
+        let copy = variationName;
 
+        // if the associated counter is at the end of the array return
+        if (variationCounter === copy.length - 1) {
+            return;
+        }
 
-    // setvariationName(workoutNamesArray);
-    // //////////////////////////////////////
+        // decrement the state of the counter by 1
+        setVariationCounter(variationCounter + 1);
 
-    // //////////MUSCLE GROUP//////////
-    // let filter2 = new Set();
-    // for (let j = 0; j < muscleData.results.length; j++) {
-    //     if (muscleData.results[j].name_en.length === 0) {
-    //         filter2.add(`${muscleData.results[j].name}`)
-    //     }
-    //     else {
-    //         filter2.add(`${muscleData.results[j].name}(${muscleData.results[j].name_en})`)
-    //     }
-    // }
-
-    // // Convert Set to array before setting state
-    // const workoutNamesArray2 = [...filter2];
-    // setMuscleName(workoutNamesArray2);
-    // ////////////////////////////////
-
-
-    // //////////WORKOUT EQUIPMENT//////////
-    // let filter3 = new Set();
-    // for (let k = 0; k < equipmentData.results.length; k++) {
-    //     filter3.add(equipmentData.results[k].name)
-    // }
-    // // Convert Set to array before setting state
-    // const workoutNamesArray3 = [...filter3];
-    // setEquipmentName(workoutNamesArray3);
-    /////////////////////////////////////
-}
-
-// Handle form submission for adding a workout
-const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent the default form submit behavior
-    const response = await fetch('http://127.0.0.1:5000/workouts', {
-        method: 'POST', // sets method
-        headers: {
-            'Content-Type': 'application/json' // Indicates the content 
-        },
-        body: JSON.stringify({  // uses these values in the body
-            "muscle_group": muscleChoice,
-            "equipment": equipmentChoice,
-            "rep_range": userInputs.rep_range,
-            "weight_range": userInputs.weight_range,
-            "workout_variation": variationChoice
-        }) //send data in JSON format
-    });
-    // if successful
-    if (response.ok) {
-        setUserInputs({
-            "muscle_group": "",
-            "equipment": "",
-            "rep_range": '',
-            "weight_range": '',
-            "workout_variation": ""
-        })
-    } else {
-        // handles the errors
-        console.error('Failed to create workout:', response.statusText);
-    }
-};
-
-// has the controls for moving left through the workouts
-const previousWorkoutVariation = () => {
-
-    // make a copy of the array from the api
-    let copy = variationName;
-
-    // if the associated counter is 0 return
-    if (variationCounter === 0) {
-        return;
+        // set the choice of the user as the index at the current
+        // value of the counter
+        setVariationChoice(copy[variationCounter]);
     }
 
-    // increment the state of the counter by 1
-    setVariationCounter(variationCounter - 1);
+    // controls moving left for equiment
+    const previousEquipment = () => {
 
-    // set the choice of the user as the index at the current
-    // value of the counter
-    setVariationChoice(copy[variationCounter]);
-}
+        // create copy of equipment array contents
+        let copy = equipmentName;
 
-// has the controls for moving left through the workouts
-const nextWorkoutVariation = () => {
+        // if start of array return
+        if (equipmentCounter === 0) {
+            return;
+        }
 
-    // make a copy of the array from the api
-    let copy = variationName;
+        // decrement counter by 1
+        setEqipmentCounter(equipmentCounter - 1);
 
-    // if the associated counter is at the end of the array return
-    if (variationCounter === copy.length - 1) {
-        return;
+        // set user choice to index location in copy at counter
+        setEquipmentChoice(copy[equipmentCounter]);
     }
 
-    // decrement the state of the counter by 1
-    setVariationCounter(variationCounter + 1);
+    // controls moving right for equipment
+    const nextEquipment = () => {
 
-    // set the choice of the user as the index at the current
-    // value of the counter
-    setVariationChoice(copy[variationCounter]);
-}
+        // create copy of eqipment array
+        let copy = equipmentName;
 
-// controls moving left for equiment
-const previousEquipment = () => {
+        // if end of array return
+        if (equipmentCounter === copy.length - 1) {
+            return;
+        }
 
-    // create copy of equipment array contents
-    let copy = equipmentName;
+        // increment equipment counter by 1
+        setEqipmentCounter(equipmentCounter + 1);
 
-    // if start of array return
-    if (equipmentCounter === 0) {
-        return;
+        // set user item to location in copy by equipment ounter
+        setEquipmentChoice(copy[equipmentCounter]);
     }
 
-    // decrement counter by 1
-    setEqipmentCounter(equipmentCounter - 1);
+    // controls moving left for muscles
+    const previousMuscle = () => {
 
-    // set user choice to index location in copy at counter
-    setEquipmentChoice(copy[equipmentCounter]);
-}
+        // create copy of muscle array
+        let copy = muscleName;
 
-// controls moving right for equipment
-const nextEquipment = () => {
+        // if start of array return
+        if (muscleCounter === 0) {
+            return;
+        }
 
-    // create copy of eqipment array
-    let copy = equipmentName;
+        // decrement muscle counter by one
+        setMuscleCounter(muscleCounter - 1);
 
-    // if end of array return
-    if (equipmentCounter === copy.length - 1) {
-        return;
+        // set user muscle choice to location of counter in the copy
+        setMuscleChoice(copy[muscleCounter]);
     }
 
-    // increment equipment counter by 1
-    setEqipmentCounter(equipmentCounter + 1);
+    // controls moving right for muscles
+    const nextMuscle = () => {
+        let copy = muscleName;
 
-    // set user item to location in copy by equipment ounter
-    setEquipmentChoice(copy[equipmentCounter]);
-}
-
-// controls moving left for muscles
-const previousMuscle = () => {
-
-    // create copy of muscle array
-    let copy = muscleName;
-
-    // if start of array return
-    if (muscleCounter === 0) {
-        return;
+        if (muscleCounter === copy.length - 1) {
+            return;
+        }
+        setMuscleCounter(muscleCounter + 1);
+        setMuscleChoice(copy[muscleCounter]);
     }
 
-    // decrement muscle counter by one
-    setMuscleCounter(muscleCounter - 1);
+    // Handle changes in form inputs and displays them on screen as they happen
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setUserInputs(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
 
-    // set user muscle choice to location of counter in the copy
-    setMuscleChoice(copy[muscleCounter]);
-}
-
-// controls moving right for muscles
-const nextMuscle = () => {
-    let copy = muscleName;
-
-    if (muscleCounter === copy.length - 1) {
-        return;
-    }
-    setMuscleCounter(muscleCounter + 1);
-    setMuscleChoice(copy[muscleCounter]);
-}
-
-// Handle changes in form inputs and displays them on screen as they happen
-const handleChange = (event) => {
-    const { name, value } = event.target;
-    setUserInputs(prevState => ({
-        ...prevState,
-        [name]: value
-    }));
-};
-
-  return (
-    <>
-    <h1>Create Workout</h1>
+    return (
+        <>
+            <h1>Create Workout</h1>
             {/* On click will show hide or show button depeding on the boolean of the needsForm */}
             {/* <button onClick={toggleNewWorkoutBox}>{needsForm ? 'Hide New Workout' : 'Show New Workout'}</button> */}
-            {workoutsReady? <button onClick={toggleNewWorkoutBox}>Ready</button> : <h1>wait</h1>}
+            {workoutsReady ? <button onClick={toggleNewWorkoutBox}>Ready</button> : <h1>wait</h1>}
 
             {/* ternary operator that will either: */}
             {needsForm ? (
@@ -466,6 +437,6 @@ const handleChange = (event) => {
                 // or display nothing if false
                 ''
             )}
-    </>
-  )
+        </>
+    )
 }
