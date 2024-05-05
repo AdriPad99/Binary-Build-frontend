@@ -1,7 +1,8 @@
 import { useState, useContext, useEffect } from 'react';
-import { tokenContext } from '../App';
+import ThemeContext from './ContextComponent';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import { response } from 'express';
 
 export default function TestLogin() {
 
@@ -10,7 +11,7 @@ export default function TestLogin() {
         "password": ""
     })
 
-    const [userToken, setUserToken] = useContext(tokenContext);
+    const { userToken, setUserToken , setToken} = useContext(ThemeContext)
 
     const [isLoggedIn, setIsLoggedIn] = useState(false)
 
@@ -24,32 +25,51 @@ export default function TestLogin() {
     };
 
     // Handle form submission
-    const handleSubmit = async (event) => {
-        event.preventDefault(); // Prevent the default form submit behavior
-        const response = await fetch('http://127.0.0.1:5000/login', {
-            method: 'POST', // Method itself
-            headers: {
-                'Content-Type': 'application/json' // Indicates the content 
-            },
-            body: JSON.stringify({
-                "username": userInfo.username,
-                "password": userInfo.password
-            }) // We send data in JSON format
-        });
+    const handleSubmit = async () => {
+        console.log('user token: ', userToken)
+        try{
+            const response = await fetch('http://127.0.0.1:5000/login', {
+                method: 'POST', // Method itself
+                headers: {
+                    'Content-Type': 'application/json' // Indicates the content 
+                },
+                body: JSON.stringify({
+                    "username": userInfo.username,
+                    "password": userInfo.password
+                }) // We send data in JSON format
+            });
+        }
+        catch (err){
+            //debugger;
+            //console.log('this is response', response)
+            console.log('hit catch block', err)
+        }
+        console.log('this is below the catch block')
+        // if(response === undefined) {
+        //     console.log('response is null')
+        // }
         // Check if the request was successful
         if (response.ok) {
             const data = await response.json(); // Parse JSON response
             setIsLoggedIn(true);
-            setUserToken(data['Access token'])
+            setToken(data['Access token'])
+            console.log('access token: ',data['Access token'])
             setUserInfo({
-              "username": "",
-              "password": ""
+                "username": "",
+                "password": ""
             })
         } else {
             // Handle errors, such as displaying a message to the user
             console.error('Failed to fetch:', response.statusText);
         }
     };
+
+    // when all the states are set for the random choices submit to the server
+    // useEffect(() => {
+    //     if (userToken) {
+    //         handleSubmit();
+    //     }
+    // }, [userToken]);
 
     return (
         <>

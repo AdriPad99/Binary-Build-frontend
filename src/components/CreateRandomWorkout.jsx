@@ -270,11 +270,6 @@ export default function CreateRandomWorkout() {
     }
 
     const randomWorkout = () => {
-        console.log('muscle choice: ',muscleChoice);
-        console.log('workout choice: ',variationChoice);
-        console.log('equipment choice: ',equipmentChoice);
-        console.log('rep amount: ',repAmnt);
-        console.log('weight amount: ',weightAmnt);
         randomMuscle();
         randomWorkoutVariation();
         randomEquipment();
