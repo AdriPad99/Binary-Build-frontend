@@ -29,6 +29,8 @@ export default function RecommendWorkouts() {
         }
     }
 
+    // takes in the arguments from the specified recommended workout 
+    // and passes in the body contents to be added to the users workouts 
     const test = async (id, equipment, muscle, rep, weight, workout) => {
 
         // add to user workouts
@@ -54,9 +56,11 @@ export default function RecommendWorkouts() {
         }
     }
 
-
+    // used to control whether the recommended tab or buttons change
     const toggleWorkoutBox = () => {
+        // inverses the boolean on call
         setIsOpen(!isOpen);
+        // calls the function
         getDBData();
     }
 
@@ -89,7 +93,7 @@ export default function RecommendWorkouts() {
                 )
             }
 
-            {/* On click loads all the workouts in the div */}
+            {/* Changes the text of the button depending on the boolean value */}
             {isOpen ?
                 (
                     <p>
