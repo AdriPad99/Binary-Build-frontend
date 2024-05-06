@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
+import AuthContext from "../context/AuthContext";
 
 export default function GetWorkouts() {
+
+    const {token} = useContext(AuthContext);
 
     // state for fetched data
     const [userData, setUserData] = useState([])
@@ -25,8 +28,8 @@ export default function GetWorkouts() {
 
   return (
   <>
-    <br />
-            <div> 
+        {token > 4 ? 
+        (<div> 
                 {/* Ternary operator that either: */}
                 {/* Maps through the data and displays it on screen */}
                 {userData.length > 0 ? userData.map((user, i) =>
@@ -45,7 +48,9 @@ export default function GetWorkouts() {
                 {/* On click loads all the workouts in the div */}
                 <button onClick={getDBData}>Get workouts</button>
             </div>
-            <br />
+            ):(
+                <h1>Please Login to show user workouts</h1>
+            )}
   </>
   )
 }

@@ -1,9 +1,14 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import { useNavigate } from 'react-router-dom';
 
 export default function SignupComponent() {
 
+  // assigns navigate function to variable
+  const navigate = useNavigate();
+
+  // holds empty state for each user input category
   const [userInfo, setUserInfo] = useState({
     "username": "",
     "email": "",
@@ -24,11 +29,14 @@ export default function SignupComponent() {
   // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent the default form submit behavior
+    // fetches from server
     const response = await fetch('http://127.0.0.1:5000/signup', {
-      method: 'POST', // Method itself
+      // sets the method
+      method: 'POST', 
       headers: {
         'Content-Type': 'application/json' // Indicates the content 
       },
+      // takes the inputed values from the form and assigns them to the appropriate body detail
       body: JSON.stringify({
         "username": userInfo.username,
         "email": userInfo.email,
@@ -36,19 +44,13 @@ export default function SignupComponent() {
         "first_name": userInfo.first_name,
         "last_name": userInfo.last_name
 
-      }) // We send data in JSON format
-    });
-    // Check if the request was successful
-    if (response.ok) {
-      const data = await response.json(); // Parse JSON response
-      setIsLoggedIn(true);
-      setUserInfo({
-        "username": "",
-        "email": "",
-        "password": "",
-        "first_name": "",
-        "last_name": ""
       })
+    });
+    // if successful request
+    if (response.ok) {
+      // log out it was successfully added
+      console.log('Sign up created successfully!')
+      navigate('/');
     } else {
       // Handle errors, such as displaying a message to the user
       console.error('Failed to fetch:', response.statusText);

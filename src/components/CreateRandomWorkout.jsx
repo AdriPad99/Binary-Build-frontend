@@ -1,6 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import AuthContext from "../context/AuthContext";
 
 export default function CreateRandomWorkout() {
+
+    // grabs token from context
+    const { token } = useContext(AuthContext);
 
     // state for user selections
     const [userInputs, setUserInputs] = useState({
@@ -121,7 +125,7 @@ export default function CreateRandomWorkout() {
             handleSubmit();
         }
     }, [muscleChoice, variationChoice, equipmentChoice]);
-    
+
 
     // Handle form submission for adding a workout
     const handleSubmit = async () => {
@@ -170,7 +174,7 @@ export default function CreateRandomWorkout() {
             }
         }
 
-        
+
         // Convert Set to array before setting state
         const copy = [...filter];
         //////////////////////////////////////
@@ -194,7 +198,7 @@ export default function CreateRandomWorkout() {
         for (let k = 0; k < equipmentData.results.length; k++) {
             copy.push(equipmentData.results[k].name)
         }
-        
+
         // set equipment array names to copy array
         setEquipmentName(copy);
 
@@ -223,7 +227,7 @@ export default function CreateRandomWorkout() {
 
         // set muscle name to test array
         setMuscleName(test);
-        
+
         // sets the bounary of where the random number will be between
         const min = 0;
         const max = test.length - 1
@@ -243,10 +247,10 @@ export default function CreateRandomWorkout() {
         // sets the bounary of where the random number will be between
         const min = 7;
         const max = 16;
-    
+
         // picks random number
         const randomNumber = Math.floor(Math.random() * (max - min) + min);
-    
+
         // set the choice of the user as the index at the current
         // value of the counter
         setRepAmnt(randomNumber);
@@ -269,6 +273,7 @@ export default function CreateRandomWorkout() {
         setWeightAmnt(randomNumber);
     }
 
+    // calls all the functions to get a random value and submits them
     const randomWorkout = () => {
         randomMuscle();
         randomWorkoutVariation();
@@ -280,8 +285,21 @@ export default function CreateRandomWorkout() {
 
     return (
         <>
-            <h1>Create a random Workout</h1>
-            {muscleReady && <button onClick={randomWorkout}>Create Random Workout</button>}
+            {
+                // if token is greater than 4 (logged in)
+                token > 4 ?
+                    (
+                        <>
+                            <h1>Create a random Workout</h1>
+                            {muscleReady && <button onClick={randomWorkout}>Create Random Workout</button>}
+                        </>
+                    ) : (
+                        // if token is less equal to or less than 4 (logged out)
+                        <h1>Log in to create random workout</h1>
+                    )
+            }
+
+
 
         </>
     )

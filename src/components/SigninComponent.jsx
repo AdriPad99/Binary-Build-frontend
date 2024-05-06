@@ -1,11 +1,17 @@
-import { useState, useContext, useEffect , createContext} from 'react';
+import { useContext, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import { useEffect } from 'react';
 
-export const TokenContext = createContext();
+//import { useAuth } from '../context/AuthContext.jsx';
+import AuthContext from '../context/AuthContext';
 
-export function TestLogin() {
+export default function TestLogin() {
 
+    // grabs login function and user token from context
+    const { login, token } = useContext(AuthContext)
+
+    // holds fields for needed information
     const [userInfo, setUserInfo] = useState({
         "username": "",
         "password": ""
@@ -37,25 +43,20 @@ export function TestLogin() {
         if (response.ok) {
             const data = await response.json(); // Parse JSON response
             console.log(data['Access token'])
-            setUserToken(data['Access token']);
+            login(data['Access token'])
             setUserInfo({
-              "username": "",
-              "password": ""
+                "username": "",
+                "password": ""
             })
         } else {
             // Handle errors, such as displaying a message to the user
             console.error('Failed to fetch:', response.statusText);
         }
-        console.log(userToken)
     };
-
-    // export default TestLogin;
-
-
 
     return (
         <>
-        
+
             <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" >
                     <div>
@@ -101,8 +102,7 @@ export function TestLogin() {
             </Form>
 
             <div>
-                ''
-                {/* Current Token : {userToken} */}
+                Current Token : {token}
                 <br />
             </div>
 
@@ -112,11 +112,8 @@ export function TestLogin() {
 
             </div>
 
-            <button onClick={() => {console.log(userToken)}}>test</button>
+            <button onClick={handleSubmit}>Login</button>
 
-            <TokenContext.Provider value={{userToken, setUserToken}}>
-                {children}
-            </TokenContext.Provider>
         </>
     )
 }

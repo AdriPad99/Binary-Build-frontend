@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import AuthContext from "../context/AuthContext";
 
 export default function DeleteWorkout() {
+
+    const {token} = useContext(AuthContext);
 
     // set state to hold which workout to delete by the state ID
     const [deleteEnd, setDeleteEnd] = useState()
@@ -31,6 +34,8 @@ export default function DeleteWorkout() {
     return (
         <>
         {/* Delete a workout Segment */}
+        {token > 4? 
+        (
         <div>
                 <h1>Delete A Workout</h1>
                 <div>
@@ -43,6 +48,10 @@ export default function DeleteWorkout() {
 
                 </div>
             </div>
+            ) : (
+                <h1>Please login to delete a workout</h1>
+            )}
+        
         </>
     )
 }

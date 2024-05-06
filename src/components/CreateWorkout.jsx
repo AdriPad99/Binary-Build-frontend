@@ -1,8 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import AuthContext from "../context/AuthContext";
 
 export default function CreateWorkout() {
+
+    // grabs token from context
+    const { token } = useContext(AuthContext);
 
     // state for user selections
     const [userInputs, setUserInputs] = useState({
@@ -302,121 +306,76 @@ export default function CreateWorkout() {
 
     return (
         <>
-            <h1>Create Workout</h1>
-            {/* On click will show hide or show button depeding on the boolean of the needsForm */}
-            <button onClick={toggleNewWorkoutBox}>{needsForm ? 'Hide New Workout' : 'Show New Workout'}</button>
+        {/* if token is greater than 4 (logged in) show create workout form
+            if token isn't greater than 4 (logged out) prompt user to log in */}
+            {token > 4 ? (
+                <>
+                    <h1>Create Workout</h1>
+                    <button onClick={toggleNewWorkoutBox}>
+                        {needsForm ? 'Hide New Workout' : 'Show New Workout'}
+                    </button>
 
-            {/* ternary operator that will either: */}
-            {needsForm ? (
-                // Display the form if the boolean of the form is true
-                <div>
-                    {/* Nested ternary operator  that will load the form if true */}
-                    {(variationName, muscleName, equipmentName) ?
-                        (<Form onSubmit={handleSubmit}>
+                    {needsForm ? (
+                        <div>
+                            {(variationName && muscleName && equipmentName) ? (
+                                <Form onSubmit={handleSubmit}>
+                                    <Form.Group>
+                                        <Form.Label htmlFor="inputMuscle_Group">Muscle Group</Form.Label>
+                                        <button onClick={previousMuscle}>Previous</button>
+                                        {muscleChoice || 'Please choose a button'}
+                                        <button onClick={nextMuscle}>Next</button>
+                                    </Form.Group>
 
-                            {/* Muscle Group Segment */}
-                            <Form.Group>
-                                <br />
-                                <Form.Label htmlFor="inputMuscle_Group">Muscle Group</Form.Label>
-                                <br />
-                                <Form.Label value={muscleChoice}>
-                                    <button onClick={previousMuscle}>Previous</button>
-                                    {muscleChoice ? (
-                                        <>
-                                            {muscleChoice}
-                                        </>
-                                    ) : (
-                                        'Please choose a button'
-                                    )}
+                                    <Form.Group>
+                                        <Form.Label htmlFor="inputEquipment">Equipment</Form.Label>
+                                        <button onClick={previousEquipment}>Previous</button>
+                                        {equipmentChoice || 'Please choose a button'}
+                                        <button onClick={nextEquipment}>Next</button>
+                                    </Form.Group>
 
-                                    <button onClick={nextMuscle}>Next</button>
-                                </Form.Label>
+                                    <Form.Group>
+                                        <Form.Label htmlFor="inputWorkout_Variation">Workout Variation</Form.Label>
+                                        <button onClick={previousWorkoutVariation}>Previous</button>
+                                        {variationChoice || 'Please choose a button'}
+                                        <button onClick={nextWorkoutVariation}>Next</button>
+                                    </Form.Group>
 
-                            </Form.Group>
-                            <br />
+                                    <Form.Group>
+                                        <Form.Label htmlFor="inputWeight_Range">Weight Range</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            name="weight_range"
+                                            value={userInputs.weight_range}
+                                            onChange={handleChange}
+                                            placeholder="Weight Range"
+                                        />
+                                    </Form.Group>
 
-                            {/* Equipment Segment */}
-                            <Form.Group>
-                                <Form.Label htmlFor="inputEquipment">Equipment</Form.Label>
-                                <br />
-                                <Form.Label value={equipmentChoice} >
-                                    <button onClick={previousEquipment}>Previous</button>
-                                    {equipmentChoice ? (
-                                        <>
-                                            {equipmentChoice}
-                                        </>
-                                    ) : (
-                                        'Please choose a button'
-                                    )}
+                                    <Form.Group>
+                                        <Form.Label htmlFor="inputRep_Range">Rep Range</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            name="rep_range"
+                                            value={userInputs.rep_range}
+                                            onChange={handleChange}
+                                            placeholder="Rep Range"
+                                        />
+                                    </Form.Group>
 
-                                    <button onClick={nextEquipment}>Next</button>
-                                </Form.Label>
-
-                            </Form.Group>
-                            <br />
-
-                            {/* Workout Variation Segment */}
-                            <Form.Group>
-
-
-                                <Form.Label htmlFor="inputWorkout_Variation">Workout Variation</Form.Label>
-                                <br />
-                                <Form.Label value={variationChoice}>
-                                    <button onClick={previousWorkoutVariation}>Previous</button>
-                                    {variationChoice ? (
-                                        <>
-                                            {variationChoice}
-                                        </>
-                                    ) : (
-                                        'Please choose a button'
-                                    )}
-
-                                    <button onClick={nextWorkoutVariation}>Next</button>
-                                </Form.Label>
-                            </Form.Group>
-                            <br />
-
-                            {/* Weight Range Segment */}
-                            <Form.Group>
-                                <Form.Label htmlFor="inputWeight_Range">Weight Range</Form.Label>
-                                <br />
-                                <Form.Control
-                                    type="text"
-                                    name="weight_range"
-                                    value={userInputs.weight_range}
-                                    onChange={handleChange}
-                                    placeholder="Weight Range"
-                                />
-                            </Form.Group>
-                            <br />
-
-                            {/* Rep Range Segment */}
-                            <Form.Group>
-                                <Form.Label htmlFor="inputRep_Range">Rep Range</Form.Label>
-                                <br />
-                                <Form.Control
-                                    type="text"
-                                    name="rep_range"
-                                    value={userInputs.rep_range}
-                                    onChange={handleChange}
-                                    placeholder="Rep Range"
-                                />
-                                <br />
-                            </Form.Group>
-                            <br />
-                            <br />
-
-                            <Button variant="primary" type="submit">
-                                Submit
-                            </Button>
-                        </Form>
-                        ) : (
-                            // or output a lack of a form
-                            'No Form :('
-                        )}
-                </div>) : (
-                // or display nothing if false
-                ''
+                                    <Button variant="primary" type="submit">Submit</Button>
+                                </Form>
+                            ) : (
+                                'No Form :('
+                            )}
+                        </div>
+                    ) : (
+                        <h1>
+                            Click "Show New Workout" to start
+                        </h1>
+                    )}
+                </>
+            ) : (
+                <h1>Please Login to create workouts</h1>
             )}
         </>
     )
