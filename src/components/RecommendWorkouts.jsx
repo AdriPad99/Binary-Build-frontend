@@ -1,13 +1,6 @@
 import { useState, useContext, useEffect } from "react";
-import { TokenContext } from "./SigninComponent";
 
 export default function RecommendWorkouts() {
-
-    const { userToken, setUserToken } = useContext(TokenContext);
-
-    const test1 = () => {
-        console.log(userToken)
-    }
 
     // state for fetched data
     const [userData, setUserData] = useState([])

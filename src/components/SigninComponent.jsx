@@ -4,14 +4,12 @@ import Form from 'react-bootstrap/Form';
 
 export const TokenContext = createContext();
 
-export function TestLogin({ children }) {
+export function TestLogin() {
 
     const [userInfo, setUserInfo] = useState({
         "username": "",
         "password": ""
     })
-
-    const [userToken, setUserToken] = useState(null);
 
     // Handle changes in form inputs
     const handleChange = (event) => {

@@ -201,8 +201,9 @@ export default function TestComponent() {
         // make a copy of the array from the api
         let copy = variationName;
 
-        console.log(typeof(variationName))
-
+        
+        console.log(copy.length)
+        
         
         // if the associated counter is 0 return
         if (variationCounter === 0) {
@@ -215,14 +216,11 @@ export default function TestComponent() {
         // set the choice of the user as the index at the current
         // value of the counter
         setVariationChoice(copy[variationCounter]);
+        
+        for (const [key, value] of Object.entries(copy)) {
+            console.log(key, value)
+        }
 
-        let test = Object.entries(copy)
-
-        console.log(test)
-
-        // for (const [key, values] in copy){
-        //     console.log(key, values)
-        // }
     }
 
     // has the controls for moving left through the workouts
@@ -246,15 +244,15 @@ export default function TestComponent() {
 
     // controls moving left for equiment
     const previousEquipment = () => {
-
+        
         // create copy of equipment array contents
         let copy = equipmentName;
-
+        
         // if start of array return
         if (equipmentCounter === 0) {
             return;
         }
-
+        
         // decrement counter by 1
         setEqipmentCounter(equipmentCounter - 1);
 
@@ -317,6 +315,11 @@ export default function TestComponent() {
             [name]: value
         }));
     };
+
+    const test = () => {
+        toggleNewWorkoutBox();
+
+    }
 
     return (
         <>

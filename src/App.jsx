@@ -6,7 +6,8 @@ import Signup from './pages/signup'
 import Signout from './pages/signout'
 import Signin from './pages/signin'
 import Workouts from './pages/Workouts'
-import TestComponent from './components/TestComponent'
+//import TestComponent from './components/TestComponent'
+//import AIComponent from './components/AIComponent'
 
 function App() {
 
@@ -24,7 +25,7 @@ function App() {
           <Route path="/signin" element={<Signin />} />
           <Route path="/signout" element={<Signout />} />
           <Route path='/workouts' element={<Workouts />} />
-          <Route path='/test' element={<TestComponent />} />
+          {/* <Route path='/test' element={<AIComponent />} /> */}
         </Routes>
     </>
   )
