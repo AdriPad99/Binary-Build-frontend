@@ -90,8 +90,9 @@ export default function RecommendWorkouts() {
                     )}
                 </div>
                 ) : (
-                    // or instructs the user
-                    <h1>Click button to get workouts</h1>
+                    // outputs nothing
+                    ''
+                    // <h1>Click button to get workouts</h1>
                 )
             }
 
@@ -106,8 +107,6 @@ export default function RecommendWorkouts() {
                         <button onClick={toggleWorkoutBox}>Open recommended workouts</button>
                     </p>
                 )}
-
-            <button onClick={() => { console.log(token) }}>token</button>
         </>
     )
 }

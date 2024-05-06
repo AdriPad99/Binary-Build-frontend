@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import { FormGroup, FormLabel, FormControl } from "react-bootstrap";
 import AuthContext from "../context/AuthContext";
 
 export default function UpdateWorkout() {
@@ -14,7 +15,8 @@ export default function UpdateWorkout() {
         "equipment": "",
         "rep_range": '',
         "weight_range": '',
-        "workout_variation": ""
+        "workout_variation": "",
+        "day": ""
     })
 
     // set the state to hold the endpoint to update
@@ -65,6 +67,20 @@ export default function UpdateWorkout() {
     const [equipmentCounter, setEqipmentCounter] = useState(0)
     /////////////////////////////////////////////////////////
 
+    /////////////////////////////////////////////////////////
+    // state for day data from api call
+    const [dayData, setDayData] = useState()
+
+    // state for day name
+    const [dayName, setDayName] = useState()
+
+    // set state for day choice
+    const [dayChoice, setDayChoice] = useState()
+
+    // set state for date counter
+    const [dayCounter, setDayCounter] = useState(0)
+    /////////////////////////////////////////////////////////
+
     // calls the functions on initial page render
     useEffect(() => {
         // calls the api that has translations 
@@ -107,9 +123,23 @@ export default function UpdateWorkout() {
             }
         }
 
+        // calls the api that has the day data
+        const renderDay = async () => {
+            const res = await fetch('https://wger.de/api/v2/daysofweek/')
+            if (res.ok) {
+                const data = await res.json();
+                setDayData(data);
+            }
+            // if not error out
+            else {
+                console.error("Couldn't get the products :(")
+            }
+        }
+
         renderVariations();
         renderMuscles();
         renderEquipment();
+        renderDay();
     }, []);
 
     // Handle form submission for updating a workout
@@ -125,18 +155,22 @@ export default function UpdateWorkout() {
                 "equipment": equipmentChoice,
                 "rep_range": userInputs.rep_range,
                 "weight_range": userInputs.weight_range,
-                "workout_variation": variationChoice
+                "workout_variation": variationChoice,
+                "day": dayChoice
             }),
         });
         // if successful
         if (response.ok) {
+            console.log(`successfully updated workout ${updateEnd}!`)
             setUserInputs({
                 "muscle_group": "",
                 "equipment": "",
                 "rep_range": '',
                 "weight_range": '',
-                "workout_variation": ""
+                "workout_variation": "",
+                "day": ""
             })
+            // resets the user chosen workout number to delete
             setUpdateEnd(null);
         } else {
             // handles the errors
@@ -193,6 +227,20 @@ export default function UpdateWorkout() {
         // Convert Set to array before setting state
         const workoutNamesArray3 = [...filter3];
         setEquipmentName(workoutNamesArray3);
+        /////////////////////////////////////
+
+
+        //////////DAYS OF THE WEEK////////////
+        // holds the data when going through the for loop
+        let copy = [];
+
+        // goes through the days of the week api and grabs the days
+        for (let i = 0; i < dayData.results.length; i++) {
+            copy.push(dayData.results[i].day_of_week)
+        }
+
+        // set the array of names to the day state
+        setDayName(copy);
         /////////////////////////////////////
     }
 
@@ -299,6 +347,40 @@ export default function UpdateWorkout() {
         setMuscleChoice(copy[muscleCounter]);
     }
 
+    // controls moving right through days
+    const previousDay = () => {
+
+        // create copy of day array
+        let copy = dayName;
+
+        //if start of array return
+        if (dayCounter === 0) {
+            return;
+        }
+
+        // decrement day counter by one
+        setDayCounter(dayCounter - 1)
+        console.log('prev day: ', dayCounter)
+
+        // set user day choice to location of counter in the copy
+        setDayChoice(copy[dayCounter])
+        console.log('prev day choice: ', dayChoice)
+    }
+
+    // controls moving left through days
+    const nextDay = () => {
+        let copy = dayName;
+
+        if (dayCounter === copy.length) {
+            return;
+        }
+
+        setDayCounter(dayCounter + 1);
+        console.log('next day: ', dayCounter)
+        setDayChoice(copy[dayCounter])
+        console.log('next day choice: ', dayChoice)
+    }
+
     // Handle changes in form inputs and displays them on screen as they happen
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -320,7 +402,7 @@ export default function UpdateWorkout() {
             {/* Update a Workout Segment */}
             {/* if user is logged in display the form
                 if not prompt them to log in */}
-            {token > 4 ? (
+            {String(token).length > 4 ? (
                 <div>
                     <h1>Update A Workout</h1>
                     {/* Changes button text based on boolean state of updateForm */}
@@ -395,8 +477,24 @@ export default function UpdateWorkout() {
                                     </Form.Group>
                                     <br />
 
+                                    {/* Day of the Week Segment */}
+                                    <FormGroup>
+                                        <FormLabel htmlFor="inputDay_Of_The_Week">Day Of The Week</FormLabel>
+                                        <br />
+                                        <button onClick={previousDay}>Previous</button>
+                                        {dayChoice ? (
+                                            <>
+                                                {dayChoice}
+                                            </>
+                                        ) : (
+                                            'Please choose a button'
+                                        )}
+                                        <button onClick={nextDay}>Next</button>
+                                    </FormGroup>
+
                                     {/* Weight Range Segment */}
                                     <Form.Group>
+                                        <br />
                                         <Form.Label htmlFor="inputWeight_Range">Weight Range</Form.Label>
                                         <br />
                                         <Form.Control

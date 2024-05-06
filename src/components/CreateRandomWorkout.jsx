@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import AuthContext from "../context/AuthContext";
+import { render } from "react-dom";
 
 export default function CreateRandomWorkout() {
 
@@ -23,6 +24,8 @@ export default function CreateRandomWorkout() {
     const [muscleReady, setMuscleReady] = useState(false)
 
     const [equipmentReady, setEquipmentReady] = useState(false)
+
+    const [dayReady, setDayReady] = useState(false)
     ////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////
@@ -59,6 +62,17 @@ export default function CreateRandomWorkout() {
     // set state for equipment choice
     const [equipmentChoice, setEquipmentChoice] = useState()
 
+    /////////////////////////////////////////////////////////
+
+    /////////////////////////////////////////////////////////
+    // state for day data from api call
+    const [dayData, setDayData] = useState()
+
+    // state for day name
+    const [dayName, setDayName] = useState()
+
+    // set state for day choice
+    const [dayChoice, setDayChoice] = useState()
     /////////////////////////////////////////////////////////
 
     //////////////////////////////////////////////////////////
@@ -114,17 +128,32 @@ export default function CreateRandomWorkout() {
             }
         }
 
+        // calls the api that has the day data
+        const renderDay = async () => {
+            const res = await fetch('https://wger.de/api/v2/daysofweek/')
+            if (res.ok) {
+                const data = await res.json();
+                setDayData(data);
+                setDayReady(true);
+            }
+            // if not error out
+            else {
+                console.error("Couldn't get the products :(")
+            }
+        }
+
         renderVariations();
         renderMuscles();
         renderEquipment();
+        renderDay();
     }, []);
 
     // when all the states are set for the random choices submit to the server
     useEffect(() => {
-        if (muscleChoice && variationChoice && equipmentChoice) {
+        if (muscleChoice && variationChoice && equipmentChoice && dayChoice) {
             handleSubmit();
         }
-    }, [muscleChoice, variationChoice, equipmentChoice]);
+    }, [muscleChoice, variationChoice, equipmentChoice, dayChoice]);
 
 
     // Handle form submission for adding a workout
@@ -144,7 +173,8 @@ export default function CreateRandomWorkout() {
                 "equipment": equipmentChoice,
                 "rep_range": repAmnt,
                 "weight_range": weightAmnt,
-                "workout_variation": variationChoice
+                "workout_variation": variationChoice,
+                "day": dayChoice
             }) //send data in JSON format
         });
         // if successful
@@ -154,7 +184,8 @@ export default function CreateRandomWorkout() {
                 "equipment": "",
                 "rep_range": '',
                 "weight_range": '',
-                "workout_variation": ""
+                "workout_variation": "",
+                "day": ""
             })
         } else {
             // handles the errors
@@ -238,7 +269,31 @@ export default function CreateRandomWorkout() {
         // set the choice of the user as the index at the current
         // value of the counter
         setMuscleChoice(test[randomNumber]);
-        //console.log('muscle choice: ', muscleChoice)
+    }
+
+    const randomDay = () => {
+
+        // holds the data when going through the for loop
+        let copy =[];
+
+        // goes through the days of the week api and grabs the days
+        for (let i = 0; i < dayData.results.length; i++){
+            copy.push(dayData.results[i].day_of_week)
+        }
+
+        // set the array of names to the day state
+        setDayName(copy);
+
+        // sets the bounary of where the random number will be between
+        const min = 0;
+        const max = copy.length - 1
+
+        // picks random number
+        const randomNumber = Math.floor(Math.random() * (max - min) + min);
+
+        // set the choice of the user as the index at the current
+        // value of the counter
+        setDayChoice(copy[randomNumber]);
     }
 
     // controls setting random number for reps
@@ -280,6 +335,7 @@ export default function CreateRandomWorkout() {
         randomEquipment();
         randomRepAmnt();
         randomWeightAmnt();
+        randomDay();
         handleSubmit();
     }
 
@@ -287,7 +343,7 @@ export default function CreateRandomWorkout() {
         <>
             {
                 // if token is greater than 4 (logged in)
-                token > 4 ?
+                String(token).length > 4 ?
                     (
                         <>
                             <h1>Create a random Workout</h1>

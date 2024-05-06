@@ -3,7 +3,7 @@ import AuthContext from "../context/AuthContext";
 
 export default function DeleteWorkout() {
 
-    const {token} = useContext(AuthContext);
+    const { token } = useContext(AuthContext);
 
     // set state to hold which workout to delete by the state ID
     const [deleteEnd, setDeleteEnd] = useState()
@@ -33,25 +33,25 @@ export default function DeleteWorkout() {
 
     return (
         <>
-        {/* Delete a workout Segment */}
-        {token > 4? 
-        (
-        <div>
-                <h1>Delete A Workout</h1>
-                <div>
-                    What workout will you be deleting?
-                    <form>
-                        <label htmlFor="name">Workout ID:</label>
-                        <input type="text" id="name" name="name" value={deleteEnd} onChange={handleDeleteValue} />
-                        <button onClick={handleDelete}>Delete Workout</button>
-                    </form>
+            {/* Delete a workout Segment */}
+            {String(token).length > 4 ?
+                (
+                    <div>
+                        <h1>Delete A Workout</h1>
+                        <div>
+                            What workout will you be deleting?
+                            <form>
+                                <label htmlFor="name">Workout ID:</label>
+                                <input type="text" id="name" name="name" value={deleteEnd} onChange={handleDeleteValue} />
+                                <button onClick={handleDelete}>Delete Workout</button>
+                            </form>
 
-                </div>
-            </div>
-            ) : (
-                <h1>Please login to delete a workout</h1>
-            )}
-        
+                        </div>
+                    </div>
+                ) : (
+                    <h1>Please login to delete a workout</h1>
+                )}
+
         </>
     )
 }

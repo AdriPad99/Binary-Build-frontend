@@ -3,7 +3,8 @@ import AuthContext from "../context/AuthContext";
 
 export default function GetWorkouts() {
 
-    const {token} = useContext(AuthContext);
+    // grabs token from context
+    const { token } = useContext(AuthContext);
 
     // state for fetched data
     const [userData, setUserData] = useState([])
@@ -26,31 +27,33 @@ export default function GetWorkouts() {
 
 
 
-  return (
-  <>
-        {token > 4 ? 
-        (<div> 
-                {/* Ternary operator that either: */}
-                {/* Maps through the data and displays it on screen */}
-                {userData.length > 0 ? userData.map((user, i) =>
-                    <h3 key={i}>
-                        Workout Id: {user.workout_id} <br />
-                        Equipment: {user.equipment}<br />
-                        Muscle group: {user.muscle_group}<br />
-                        Rep Range: {user.rep_range} reps <br />
-                        Weight range: {user.weight_range} lbs<br />
-                        Workout variation: {user.workout_variation}
-                    </h3>,
+    return (
+        <>
+            {/* if token is greater than 4 (logged in) show the workouts
+        if not greater then 4 (logged out) prompt the user to login */}
+            {String(token).length > 4 ?
+                (<div>
+                    {/* Ternary operator that either: */}
+                    {/* Maps through the data and displays it on screen */}
+                    {userData.length > 0 ? userData.map((user, i) =>
+                        <h3 key={i}>
+                            Workout Id: {user.workout_id} <br />
+                            Equipment: {user.equipment}<br />
+                            Muscle group: {user.muscle_group}<br />
+                            Rep Range: {user.rep_range} reps <br />
+                            Weight range: {user.weight_range} lbs<br />
+                            Workout variation: {user.workout_variation}
+                        </h3>,
+                    ) : (
+                        // or displays instructions
+                        <h1>Click button to get workouts</h1>
+                    )}
+                    {/* On click loads all the workouts in the div */}
+                    <button onClick={getDBData}>Get workouts</button>
+                </div>
                 ) : (
-                    // or displays instructions
-                <h1>Click button to get workouts</h1>
+                    <h1>Please Login to show user workouts</h1>
                 )}
-                {/* On click loads all the workouts in the div */}
-                <button onClick={getDBData}>Get workouts</button>
-            </div>
-            ):(
-                <h1>Please Login to show user workouts</h1>
-            )}
-  </>
-  )
+        </>
+    )
 }

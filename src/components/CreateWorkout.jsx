@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import { FormGroup, FormLabel, FormControl } from "react-bootstrap";
 import AuthContext from "../context/AuthContext";
 
 export default function CreateWorkout() {
@@ -14,7 +15,8 @@ export default function CreateWorkout() {
         "equipment": "",
         "rep_range": '',
         "weight_range": '',
-        "workout_variation": ""
+        "workout_variation": "",
+        "day": ""
     })
 
 
@@ -63,6 +65,20 @@ export default function CreateWorkout() {
     const [equipmentCounter, setEqipmentCounter] = useState(0)
     /////////////////////////////////////////////////////////
 
+    /////////////////////////////////////////////////////////
+    // state for day data from api call
+    const [dayData, setDayData] = useState()
+
+    // state for day name
+    const [dayName, setDayName] = useState()
+
+    // set state for day choice
+    const [dayChoice, setDayChoice] = useState()
+
+    // set state for date counter
+    const [dayCounter, setDayCounter] = useState(0)
+    /////////////////////////////////////////////////////////
+
     // calls the functions on initial page render
     useEffect(() => {
         // calls the api that has translations 
@@ -105,9 +121,23 @@ export default function CreateWorkout() {
             }
         }
 
+        // calls the api that has the day data
+        const renderDay = async () => {
+            const res = await fetch('https://wger.de/api/v2/daysofweek/')
+            if (res.ok) {
+                const data = await res.json();
+                setDayData(data);
+            }
+            // if not error out
+            else {
+                console.error("Couldn't get the products :(")
+            }
+        }
+
         renderVariations();
         renderMuscles();
         renderEquipment();
+        renderDay();
     }, []);
 
     // calls the function to set arrays and swaps boolean state when called
@@ -158,6 +188,18 @@ export default function CreateWorkout() {
         // Convert Set to array before setting state
         const workoutNamesArray3 = [...filter3];
         setEquipmentName(workoutNamesArray3);
+
+        //////////DAYS OF THE WEEK////////////
+        // holds the data when going through the for loop
+        let copy = [];
+
+        // goes through the days of the week api and grabs the days
+        for (let i = 0; i < dayData.results.length; i++) {
+            copy.push(dayData.results[i].day_of_week)
+        }
+
+        // set the array of names to the day state
+        setDayName(copy);
         /////////////////////////////////////
     }
 
@@ -174,17 +216,20 @@ export default function CreateWorkout() {
                 "equipment": equipmentChoice,
                 "rep_range": userInputs.rep_range,
                 "weight_range": userInputs.weight_range,
-                "workout_variation": variationChoice
+                "workout_variation": variationChoice,
+                "day": dayChoice
             }) //send data in JSON format
         });
         // if successful
         if (response.ok) {
+            console.log('successfully added workout to your existing workouts!')
             setUserInputs({
                 "muscle_group": "",
                 "equipment": "",
                 "rep_range": '',
                 "weight_range": '',
-                "workout_variation": ""
+                "workout_variation": "",
+                "day": ""
             })
         } else {
             // handles the errors
@@ -295,6 +340,40 @@ export default function CreateWorkout() {
         setMuscleChoice(copy[muscleCounter]);
     }
 
+    // controls moving right through days
+    const previousDay = () => {
+
+        // create copy of day array
+        let copy = dayName;
+
+        //if start of array return
+        if (dayCounter === 0) {
+            return;
+        }
+
+        // decrement day counter by one
+        setDayCounter(dayCounter - 1)
+        console.log('prev day: ', dayCounter)
+
+        // set user day choice to location of counter in the copy
+        setDayChoice(copy[dayCounter])
+        console.log('prev day choice: ', dayChoice)
+    }
+
+    // controls moving left through days
+    const nextDay = () => {
+        let copy = dayName;
+
+        if (dayCounter === copy.length) {
+            return;
+        }
+
+        setDayCounter(dayCounter + 1);
+        console.log('next day: ', dayCounter)
+        setDayChoice(copy[dayCounter])
+        console.log('next day choice: ', dayChoice)
+    }
+
     // Handle changes in form inputs and displays them on screen as they happen
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -306,9 +385,7 @@ export default function CreateWorkout() {
 
     return (
         <>
-        {/* if token is greater than 4 (logged in) show create workout form
-            if token isn't greater than 4 (logged out) prompt user to log in */}
-            {token > 4 ? (
+            {String(token).length > 4 ? (
                 <>
                     <h1>Create Workout</h1>
                     <button onClick={toggleNewWorkoutBox}>
@@ -317,51 +394,89 @@ export default function CreateWorkout() {
 
                     {needsForm ? (
                         <div>
-                            {(variationName && muscleName && equipmentName) ? (
+                            {(variationName && muscleName && equipmentName && dayName) ? (
                                 <Form onSubmit={handleSubmit}>
-                                    <Form.Group>
-                                        <Form.Label htmlFor="inputMuscle_Group">Muscle Group</Form.Label>
+                                    <FormGroup>
+                                        <br />
+                                        <FormLabel htmlFor="inputMuscle_Group">Muscle Group</FormLabel>
+                                        <br />
                                         <button onClick={previousMuscle}>Previous</button>
-                                        {muscleChoice || 'Please choose a button'}
+                                        {muscleChoice ? (
+                                            <>
+                                                {muscleChoice}
+                                            </>
+                                        ) : (
+                                            'Please choose a button'
+                                        )}
                                         <button onClick={nextMuscle}>Next</button>
-                                    </Form.Group>
+                                    </FormGroup>
+                                    <br />
 
-                                    <Form.Group>
-                                        <Form.Label htmlFor="inputEquipment">Equipment</Form.Label>
+                                    <FormGroup>
+                                        <FormLabel htmlFor="inputEquipment">Equipment</FormLabel>
+                                        <br />
                                         <button onClick={previousEquipment}>Previous</button>
-                                        {equipmentChoice || 'Please choose a button'}
+                                        {equipmentChoice ? (
+                                            <>
+                                                {equipmentChoice}
+                                            </>
+                                        ) : (
+                                            'Please choose a button'
+                                        )}
                                         <button onClick={nextEquipment}>Next</button>
-                                    </Form.Group>
-
-                                    <Form.Group>
-                                        <Form.Label htmlFor="inputWorkout_Variation">Workout Variation</Form.Label>
+                                    </FormGroup>
+                                    <br />
+                                    <FormGroup>
+                                        <FormLabel htmlFor="inputWorkout_Variation">Workout Variation</FormLabel>
+                                        <br />
                                         <button onClick={previousWorkoutVariation}>Previous</button>
-                                        {variationChoice || 'Please choose a button'}
+                                        {variationChoice ? (
+                                            <>
+                                                {variationChoice}
+                                            </>
+                                        ) : (
+                                            'Please choose a button'
+                                        )}
                                         <button onClick={nextWorkoutVariation}>Next</button>
-                                    </Form.Group>
+                                    </FormGroup>
+                                    <br />
+                                    <FormGroup>
+                                        <FormLabel htmlFor="inputDay_Of_The_Week">Day Of The Week</FormLabel>
+                                        <br />
+                                        <button onClick={previousDay}>Previous</button>
+                                        {dayChoice ? (
+                                            <>
+                                                {dayChoice}
+                                            </>
+                                        ) : (
+                                            'Please choose a button'
+                                        )}
+                                        <button onClick={nextDay}>Next</button>
+                                    </FormGroup>
 
-                                    <Form.Group>
-                                        <Form.Label htmlFor="inputWeight_Range">Weight Range</Form.Label>
-                                        <Form.Control
+                                    <FormGroup>
+                                        <br />
+                                        <FormLabel htmlFor="inputWeight_Range">Weight Range</FormLabel>
+                                        <FormControl
                                             type="text"
                                             name="weight_range"
                                             value={userInputs.weight_range}
                                             onChange={handleChange}
                                             placeholder="Weight Range"
                                         />
-                                    </Form.Group>
-
-                                    <Form.Group>
-                                        <Form.Label htmlFor="inputRep_Range">Rep Range</Form.Label>
-                                        <Form.Control
+                                    </FormGroup>
+                                    <br />
+                                    <FormGroup>
+                                        <FormLabel htmlFor="inputRep_Range">Rep Range</FormLabel>
+                                        <FormControl
                                             type="text"
                                             name="rep_range"
                                             value={userInputs.rep_range}
                                             onChange={handleChange}
                                             placeholder="Rep Range"
                                         />
-                                    </Form.Group>
-
+                                    </FormGroup>
+                                    <br />
                                     <Button variant="primary" type="submit">Submit</Button>
                                 </Form>
                             ) : (
@@ -369,14 +484,13 @@ export default function CreateWorkout() {
                             )}
                         </div>
                     ) : (
-                        <h1>
-                            Click "Show New Workout" to start
-                        </h1>
+                        ''
                     )}
                 </>
             ) : (
-                <h1>Please Login to create workouts</h1>
+
+                <h1>Please login to create workouts</h1>
             )}
         </>
-    )
+    );
 }

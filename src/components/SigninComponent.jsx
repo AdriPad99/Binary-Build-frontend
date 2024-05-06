@@ -1,15 +1,17 @@
 import { useContext, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 //import { useAuth } from '../context/AuthContext.jsx';
 import AuthContext from '../context/AuthContext';
 
 export default function TestLogin() {
 
+    const navigate = useNavigate();
+
     // grabs login function and user token from context
-    const { login, token } = useContext(AuthContext)
+    const { login } = useContext(AuthContext)
 
     // holds fields for needed information
     const [userInfo, setUserInfo] = useState({
@@ -42,12 +44,9 @@ export default function TestLogin() {
         // Check if the request was successful
         if (response.ok) {
             const data = await response.json(); // Parse JSON response
-            console.log(data['Access token'])
+            // sets the context token to the access token passed as the response
             login(data['Access token'])
-            setUserInfo({
-                "username": "",
-                "password": ""
-            })
+            navigate('/');
         } else {
             // Handle errors, such as displaying a message to the user
             console.error('Failed to fetch:', response.statusText);
@@ -100,19 +99,6 @@ export default function TestLogin() {
                 </Button>
 
             </Form>
-
-            <div>
-                Current Token : {token}
-                <br />
-            </div>
-
-            <div>
-                ''
-                {/* Logged In?: {isLoggedIn ? 'yes' : 'no'} */}
-
-            </div>
-
-            <button onClick={handleSubmit}>Login</button>
 
         </>
     )
