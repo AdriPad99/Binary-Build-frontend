@@ -8,6 +8,7 @@ import Workouts from './pages/Workouts'
 import TestLogin from './components/SigninComponent'
 import RecommendWorkouts from './components/RecommendWorkouts'
 import { AuthProvider } from './context/AuthProvider'
+import TestComponent from './components/TestComponent'
 
 function App() {
 
@@ -26,7 +27,7 @@ function App() {
           <Route path='/signup' element={<Signup />} />
           <Route path="/signin" element={<Signin />} />
           <Route path='/workouts' element={<Workouts />} />
-          {/* <Route path='/test' element={<AIComponent />} /> */}
+          <Route path='/test' element={<TestComponent />} />
         </Routes>
       </AuthProvider>
 

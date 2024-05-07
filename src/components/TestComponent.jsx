@@ -201,8 +201,9 @@ export default function TestComponent() {
         // make a copy of the array from the api
         let copy = variationName;
 
-        
-        console.log(copy.length)
+        let copy2 = equipmentName;
+
+        //console.log(equipmentName)
         
         
         // if the associated counter is 0 return
@@ -215,11 +216,10 @@ export default function TestComponent() {
         
         // set the choice of the user as the index at the current
         // value of the counter
-        setVariationChoice(copy[variationCounter]);
-        
-        for (const [key, value] of Object.entries(copy)) {
-            console.log(key, value)
-        }
+        setVariationChoice(Object.entries(copy)[variationCounter][0]);
+
+        // set the muscle in correspondance to the variation
+        setEquipmentChoice(copy2[Object.values(copy)[variationCounter][0]])
 
     }
 
@@ -228,6 +228,8 @@ export default function TestComponent() {
 
         // make a copy of the array from the api
         let copy = variationName;
+
+        let copy2 = equipmentName;
 
         // if the associated counter is at the end of the array return
         if (variationCounter === copy.length - 1) {
@@ -239,43 +241,10 @@ export default function TestComponent() {
 
         // set the choice of the user as the index at the current
         // value of the counter
-        setVariationChoice(copy[variationCounter]);
-    }
+        setVariationChoice(Object.entries(copy)[variationCounter][0]);
 
-    // controls moving left for equiment
-    const previousEquipment = () => {
-        
-        // create copy of equipment array contents
-        let copy = equipmentName;
-        
-        // if start of array return
-        if (equipmentCounter === 0) {
-            return;
-        }
-        
-        // decrement counter by 1
-        setEqipmentCounter(equipmentCounter - 1);
-
-        // set user choice to index location in copy at counter
-        setEquipmentChoice(copy[equipmentCounter]);
-    }
-
-    // controls moving right for equipment
-    const nextEquipment = () => {
-
-        // create copy of eqipment array
-        let copy = equipmentName;
-
-        // if end of array return
-        if (equipmentCounter === copy.length - 1) {
-            return;
-        }
-
-        // increment equipment counter by 1
-        setEqipmentCounter(equipmentCounter + 1);
-
-        // set user item to location in copy by equipment ounter
-        setEquipmentChoice(copy[equipmentCounter]);
+        // set the muscle in correspondance to the variation
+        setEquipmentChoice(copy2[Object.values(copy)[variationCounter][0]])
     }
 
     // controls moving left for muscles
@@ -316,13 +285,10 @@ export default function TestComponent() {
         }));
     };
 
-    const test = () => {
-        toggleNewWorkoutBox();
-
-    }
-
     return (
         <>
+        <br/>
+        <button onClick={previousWorkoutVariation}>Test</button>
             <h1>Create Workout</h1>
             {/* On click will show hide or show button depeding on the boolean of the needsForm */}
             {/* <button onClick={toggleNewWorkoutBox}>{needsForm ? 'Hide New Workout' : 'Show New Workout'}</button> */}
@@ -357,12 +323,32 @@ export default function TestComponent() {
                             </Form.Group>
                             <br />
 
+                                    {/* Workout Variation Segment */}
+                                    <Form.Group>
+        
+        
+                                        <Form.Label htmlFor="inputWorkout_Variation">Workout Variation</Form.Label>
+                                        <br />
+                                        <Form.Label value={variationChoice}>
+                                            <button onClick={previousWorkoutVariation}>Previous</button>
+                                            {variationChoice ? (
+                                                <>
+                                                    {variationChoice}
+                                                </>
+                                            ) : (
+                                                'Please choose a button'
+                                            )}
+        
+                                            <button onClick={nextWorkoutVariation}>Next</button>
+                                        </Form.Label>
+                                    </Form.Group>
+                                    <br />
+
                             {/* Equipment Segment */}
                             <Form.Group>
                                 <Form.Label htmlFor="inputEquipment">Equipment</Form.Label>
                                 <br />
                                 <Form.Label value={equipmentChoice} >
-                                    <button onClick={previousEquipment}>Previous</button>
                                     {equipmentChoice ? (
                                         <>
                                             {equipmentChoice}
@@ -371,32 +357,11 @@ export default function TestComponent() {
                                         'Please choose a button'
                                     )}
 
-                                    <button onClick={nextEquipment}>Next</button>
                                 </Form.Label>
 
                             </Form.Group>
                             <br />
 
-                            {/* Workout Variation Segment */}
-                            <Form.Group>
-
-
-                                <Form.Label htmlFor="inputWorkout_Variation">Workout Variation</Form.Label>
-                                <br />
-                                <Form.Label value={variationChoice}>
-                                    <button onClick={previousWorkoutVariation}>Previous</button>
-                                    {variationChoice ? (
-                                        <>
-                                            {variationChoice}
-                                        </>
-                                    ) : (
-                                        'Please choose a button'
-                                    )}
-
-                                    <button onClick={nextWorkoutVariation}>Next</button>
-                                </Form.Label>
-                            </Form.Group>
-                            <br />
 
                             {/* Weight Range Segment */}
                             <Form.Group>
