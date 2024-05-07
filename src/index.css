@@ -12,7 +12,7 @@
 .parent-container{
   display: flex;
   width: 500px;
-  height: 220px;
+  height: 245px;
   white-space: nowrap;
   position: relative;
   overflow-x: scroll;

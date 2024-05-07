@@ -1,8 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import AuthContext from "../context/AuthContext";
 
 export default function CreateNormalWorkout() {
+
+    const { token } = useContext(AuthContext);
 
     // state for user selections
     const [userInputs, setUserInputs] = useState({
@@ -339,18 +342,31 @@ export default function CreateNormalWorkout() {
 
     return (
         <>
-            <br />
-            <h1>Create Workout</h1>
+        {String(token).length > 4 ? (
+            <>
+                <br />
+            <h1>Create New Workout</h1>
             {/* On click will show hide or show button depeding on the boolean of the needsForm */}
             {/* <button onClick={toggleNewWorkoutBox}>{needsForm ? 'Hide New Workout' : 'Show New Workout'}</button> */}
-            {workoutsReady ? <button onClick={toggleNewWorkoutBox}>Ready</button> : <h1>wait</h1>}
+            {workoutsReady ? (
+                needsForm ?
+                (
+                    // if the menu is open close the menu
+                <button onClick={toggleNewWorkoutBox}>Hide New Workout Menu</button>
+                ) :(
+                    // if menu is closed open the menu
+                    <button onClick={toggleNewWorkoutBox}>Show New Workout Menu</button>
+                )
+            ) : (
+                <h1>wait</h1>
+            )}
 
             {/* ternary operator that will either: */}
             {needsForm ? (
                 // Display the form if the boolean of the form is true
                 <div>
                     {/* Nested ternary operator  that will load the form if true */}
-                    {(variationName, muscleName, equipmentName) ?
+                    {(variationName, muscleName, equipmentName, dayName) ?
                         (<Form onSubmit={handleSubmit}>
 
                             {/* Workout Variation Segment */}
@@ -475,6 +491,13 @@ export default function CreateNormalWorkout() {
                 // or display nothing if false
                 ''
             )}
+            </>
+        ) : (
+            <>
+            <h1>Please login to create a Normal Workout</h1>
+            </>
+        )}
+            
         </>
     )
 }

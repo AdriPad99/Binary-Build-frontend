@@ -542,7 +542,7 @@ export default function UpdateCustomWorkout() {
                     )}
                 </div>
             ) : (
-                <h1>Please login to update a workout</h1>
+                <h1>Please login to update a custom workout</h1>
             )
             }
 

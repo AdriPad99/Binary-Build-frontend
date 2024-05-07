@@ -31,7 +31,7 @@ export default function RecommendWorkouts() {
 
     // takes in the arguments from the specified recommended workout 
     // and passes in the body contents to be added to the users workouts 
-    const test = async (id, equipment, muscle, rep, weight, workout) => {
+    const test = async (id, equipment, muscle, rep, weight, workout,day) => {
 
         // add to user workouts
         const response = await fetch('http://127.0.0.1:5000/workouts', {
@@ -44,7 +44,8 @@ export default function RecommendWorkouts() {
                 "equipment": equipment,
                 "rep_range": rep,
                 "weight_range": weight,
-                "workout_variation": workout
+                "workout_variation": workout,
+                "day" : day
             }) //send data in JSON format
         });
         // if successful
@@ -77,6 +78,7 @@ export default function RecommendWorkouts() {
                         <h3 key={i}>
                             <div id="test">
                                 Workout Id: {user.workout_id} <br />
+                                Day: {user.day} <br/>
                                 Equipment: {user.equipment}<br />
                                 Muscle group: {user.muscle_group}<br />
                                 Rep Range: {user.rep_range} reps <br />
@@ -84,7 +86,7 @@ export default function RecommendWorkouts() {
                                 Workout variation: {user.workout_variation}
                                 <br />
                                 {/* event in onClick to prevent react from re-rendering it every time the button is clicked. */}
-                                <button onClick={() => test(user.workout_id, user.equipment, user.muscle_group, user.rep_range, user.weight_range, user.workout_variation)}>Add workout {user.workout_id}<br />to your workouts</button>
+                                <button onClick={() => test(user.workout_id, user.equipment, user.muscle_group, user.rep_range, user.weight_range, user.workout_variation, user.day)}>Add workout {user.workout_id}<br />to your workouts</button>
                             </div>
                         </h3>
                     )}

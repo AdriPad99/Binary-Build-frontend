@@ -1,6 +1,5 @@
 import { useState, useEffect, useContext } from "react";
 import AuthContext from "../context/AuthContext";
-import { render } from "react-dom";
 
 export default function CreateRandomWorkout() {
 
@@ -160,10 +159,10 @@ export default function CreateRandomWorkout() {
     const handleSubmit = async () => {
 
         // uncomment to add to user workouts
-        // const response = await fetch('http://127.0.0.1:5000/workouts', {
+        const response = await fetch('http://127.0.0.1:5000/workouts', {
 
         // uncomment to add to recommended workouts
-        const response = await fetch('http://127.0.0.1:5000/randomWorkouts', {
+        //const response = await fetch('http://127.0.0.1:5000/randomWorkouts', {
             method: 'POST', // sets method
             headers: {
                 'Content-Type': 'application/json' // Indicates the content 
@@ -351,7 +350,7 @@ export default function CreateRandomWorkout() {
                         </>
                     ) : (
                         // if token is less equal to or less than 4 (logged out)
-                        <h1>Log in to create random workout</h1>
+                        <h1>Please login to create a random workout</h1>
                     )
             }
 
