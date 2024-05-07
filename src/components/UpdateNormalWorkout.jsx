@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
-export default function TestComponent() {
+export default function UpdateNormalWorkout() {
 
     // state for user selections
     const [userInputs, setUserInputs] = useState({
@@ -14,11 +14,31 @@ export default function TestComponent() {
     })
 
 
+    // set the state to hold the endpoint to update
+    const [updateEnd, setUpdateEnd] = useState()
+
+    // set state for update form when on screen
+    const [updateForm, setUpdateForm] = useState(false)
+
     // set state for controlling when a form is on screen
     const [needsForm, setNeedsForm] = useState(false)
 
     // TEST set state for controlling when workouts are loaded
     const [workoutsReady, setWorkoutsReady] = useState(false)
+
+    /////////////////////////////////////////////////////////
+    // state for day data from api call
+    const [dayData, setDayData] = useState()
+
+    // state for day name
+    const [dayName, setDayName] = useState()
+
+    // set state for day choice
+    const [dayChoice, setDayChoice] = useState()
+
+    // set state for date counter
+    const [dayCounter, setDayCounter] = useState(0)
+    /////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////
     // state for workout data from api call
@@ -43,9 +63,6 @@ export default function TestComponent() {
 
     // set state for muscle choice
     const [muscleChoice, setMuscleChoice] = useState()
-
-    //set state for muscle counter
-    const [muscleCounter, setMuscleCounter] = useState(0)
     /////////////////////////////////////////////////////////
 
     /////////////////////////////////////////////////////////
@@ -57,9 +74,6 @@ export default function TestComponent() {
 
     // set state for equipment choice
     const [equipmentChoice, setEquipmentChoice] = useState()
-
-    // set state for equipment counter
-    const [equipmentCounter, setEqipmentCounter] = useState(0)
     /////////////////////////////////////////////////////////
 
     // calls the functions on initial page render
@@ -105,30 +119,44 @@ export default function TestComponent() {
             }
         }
 
+        // calls the api that has the day data
+        const renderDay = async () => {
+            const res = await fetch('https://wger.de/api/v2/daysofweek/')
+            if (res.ok) {
+                const data = await res.json();
+                setDayData(data);
+            }
+            // if not error out
+            else {
+                console.error("Couldn't get the products :(")
+            }
+        }
+
         renderVariations();
         renderMuscles();
         renderEquipment();
+        renderDay();
     }, []);
 
     // calls the function to set arrays and swaps boolean state when called
     // this one is for creating a workout
     const toggleNewWorkoutBox = () => {
-        createWorkoutBox();
+        CreateCustomWorkoutBox();
         setNeedsForm(!needsForm)
     }
 
     // transforms api request data into arrays to look through
-    const createWorkoutBox = () => {
+    const CreateCustomWorkoutBox = () => {
 
         // holds the workouts
         let copy = {};
 
         // creates entries in the object for an exercise and associated equipment number
         for (let i = 0; i < workoutData.results.length; i++) {
-            if (workoutData.results[i].language === 2) {
+            if (workoutData.results[i].language === 2 && workoutData.results[i].muscles[0]) {
                 // copy.push(workoutData.results[i].name);
                 if (workoutData.results[i].equipment > 0) {
-                    copy[workoutData.results[i].name] = workoutData.results[i].equipment;
+                    copy[workoutData.results[i].name] = [workoutData.results[i].muscles[0], workoutData.results[i].equipment[0]];
                 }
                 else {
                     continue;
@@ -136,39 +164,53 @@ export default function TestComponent() {
             }
         }
 
+
         // sets variation name to copied array
         setvariationName(copy);
 
         // has all the equipment in their respective positions
-        const equipment = ["Default", "Barbell", "SZ-Bar", "Dumbbell", "Gym Mat", "Swiss Ball", "Pull-up bar", "none (bodyweight exercise)", "Bench", "Incline Bench", "Kettlebell"]
+        const equipment = ["Barbell", "SZ-Bar", "Dumbbell", "Gym Mat", "Swiss Ball", "Pull-up bar", "none (bodyweight exercise)", "Bench", "Incline Bench", "Kettlebell"]
 
         // set the equipment name to the above
         setEquipmentName(equipment);
 
+        // Empty array to store results
+        let combinedMuscles = [];
 
-        // holds the names for the muscles
-        let muscle = [];
+        // Sort the results array by `id`
+        const sortedResults = muscleData.results.sort((a, b) => a.id - b.id);
 
-        //  creates all the muscles names
-        for (let j = 0; j < muscleData.results.length; j++) {
-            if (muscleData.results[j].name_en){
-                muscle.push(`${muscleData.results[j].name}(${muscleData.results[j].name_en})`)
-            }
-            else {
-                muscle.push(`${muscleData.results[j].name}`)
-            }
+        // Loop through the sorted results and append combined strings
+        sortedResults.forEach(muscle => {
+            // Combine `name` and `name_en` strings with a separator, e.g., " (Name_en)"
+            const combinedName = muscle.name + (muscle.name_en ? ` (${muscle.name_en})` : '');
+            // Append to the result array
+            combinedMuscles.push(combinedName);
+        });
+
+        // sets array of created muscles to the muscles array state
+        setMuscleName(combinedMuscles)
+
+        //////////DAYS OF THE WEEK////////////
+        // holds the data when going through the for loop
+        let day = [];
+
+        // goes through the days of the week api and grabs the days
+        for (let i = 0; i < dayData.results.length; i++) {
+            day.push(dayData.results[i].day_of_week)
         }
 
-        // sets the array of muscle names
-        setMuscleName(muscle);
+        // set the array of names to the day state
+        setDayName(day);
+        /////////////////////////////////////
 
     }
 
     // Handle form submission for adding a workout
     const handleSubmit = async (event) => {
         event.preventDefault(); // Prevent the default form submit behavior
-        const response = await fetch('http://127.0.0.1:5000/workouts', {
-            method: 'POST', // sets method
+        const response = await fetch(`http://127.0.0.1:5000/workouts/${updateEnd}`, {
+            method: 'PUT', // sets method
             headers: {
                 'Content-Type': 'application/json' // Indicates the content 
             },
@@ -177,18 +219,23 @@ export default function TestComponent() {
                 "equipment": equipmentChoice,
                 "rep_range": userInputs.rep_range,
                 "weight_range": userInputs.weight_range,
-                "workout_variation": variationChoice
+                "workout_variation": variationChoice,
+                "day": dayChoice
             }) //send data in JSON format
         });
         // if successful
         if (response.ok) {
+            console.log(`successfully updated workout ${updateEnd}`)
             setUserInputs({
                 "muscle_group": "",
                 "equipment": "",
                 "rep_range": '',
                 "weight_range": '',
-                "workout_variation": ""
+                "workout_variation": "",
+                "day": ''
             })
+            // resets the user chosen workout number to delete
+            setUpdateEnd('');
         } else {
             // handles the errors
             console.error('Failed to create workout:', response.statusText);
@@ -203,23 +250,27 @@ export default function TestComponent() {
 
         let copy2 = equipmentName;
 
-        //console.log(equipmentName)
-        
-        
+        let copy3 = muscleName;
+
         // if the associated counter is 0 return
         if (variationCounter === 0) {
             return;
         }
-        
+
         // increment the state of the counter by 1
         setVariationCounter(variationCounter - 1);
-        
+
+        console.log('variation counter next: ', variationCounter)
+
         // set the choice of the user as the index at the current
         // value of the counter
         setVariationChoice(Object.entries(copy)[variationCounter][0]);
 
-        // set the muscle in correspondance to the variation
+        // set the equipment in correspondance to the variation
         setEquipmentChoice(copy2[Object.values(copy)[variationCounter][0]])
+
+        // set the muscle in correspondance to the variation
+        setMuscleChoice(copy3[Object.values(copy)[variationCounter][1]])
 
     }
 
@@ -230,6 +281,8 @@ export default function TestComponent() {
         let copy = variationName;
 
         let copy2 = equipmentName;
+
+        let copy3 = muscleName;
 
         // if the associated counter is at the end of the array return
         if (variationCounter === copy.length - 1) {
@@ -243,37 +296,46 @@ export default function TestComponent() {
         // value of the counter
         setVariationChoice(Object.entries(copy)[variationCounter][0]);
 
+        // set the equipment in correspondance to the variation
+        setEquipmentChoice(copy2[((Object.values(copy)[variationCounter][1]) - 1)])
+
         // set the muscle in correspondance to the variation
-        setEquipmentChoice(copy2[Object.values(copy)[variationCounter][0]])
+        setMuscleChoice(copy3[((Object.values(copy)[variationCounter][0]) - 1)])
     }
 
-    // controls moving left for muscles
-    const previousMuscle = () => {
+    // controls moving right through days
+    const previousDay = () => {
 
-        // create copy of muscle array
-        let copy = muscleName;
+        // create copy of day array
+        let copy = dayName;
 
-        // if start of array return
-        if (muscleCounter === 0) {
+        // decrement day counter by one
+        setDayCounter(dayCounter - 1)
+
+        //if start of array return
+        if (dayCounter < 0) {
+            setDayCounter(0)
+        }
+
+        console.log('prev day: ', dayCounter)
+
+        // set user day choice to location of counter in the copy
+        setDayChoice(copy[dayCounter])
+        console.log('prev day choice: ', dayChoice)
+    }
+
+    // controls moving left through days
+    const nextDay = () => {
+        let copy = dayName;
+
+        if (dayCounter === copy.length) {
             return;
         }
 
-        // decrement muscle counter by one
-        setMuscleCounter(muscleCounter - 1);
-
-        // set user muscle choice to location of counter in the copy
-        setMuscleChoice(copy[muscleCounter]);
-    }
-
-    // controls moving right for muscles
-    const nextMuscle = () => {
-        let copy = muscleName;
-
-        if (muscleCounter === copy.length - 1) {
-            return;
-        }
-        setMuscleCounter(muscleCounter + 1);
-        setMuscleChoice(copy[muscleCounter]);
+        setDayCounter(dayCounter + 1);
+        console.log('next day: ', dayCounter)
+        setDayChoice(copy[dayCounter])
+        console.log('next day choice: ', dayChoice)
     }
 
     // Handle changes in form inputs and displays them on screen as they happen
@@ -285,15 +347,19 @@ export default function TestComponent() {
         }));
     };
 
-    return (
-        <>
-        <br/>
-        <button onClick={previousWorkoutVariation}>Test</button>
-            <h1>Create Workout</h1>
+    // grabs user input to be placed into endpoint to update user
+    const handleUpdateValue = (event) => {
+    setUpdateEnd(event.target.value);
+    }
+
+  return (
+    <>
+    <br />
+            <h1>Update a Normal Workout</h1>
             {/* On click will show hide or show button depeding on the boolean of the needsForm */}
             {/* <button onClick={toggleNewWorkoutBox}>{needsForm ? 'Hide New Workout' : 'Show New Workout'}</button> */}
             {workoutsReady ? <button onClick={toggleNewWorkoutBox}>Ready</button> : <h1>wait</h1>}
-
+            
             {/* ternary operator that will either: */}
             {needsForm ? (
                 // Display the form if the boolean of the form is true
@@ -302,13 +368,53 @@ export default function TestComponent() {
                     {(variationName, muscleName, equipmentName) ?
                         (<Form onSubmit={handleSubmit}>
 
+                            {/* Workout Variation Segment */}
+                            <Form.Group>
+
+                                <br />
+                                <Form.Label htmlFor="inputDay_of_The_Week">Day Of The Week:</Form.Label>
+                                <br />
+                                <Form.Label value={dayChoice}>
+                                    <button onClick={previousDay}>Previous</button>
+                                    {dayChoice ? (
+                                        <>
+                                            {dayChoice}
+                                        </>
+                                    ) : (
+                                        'Please choose a button'
+                                    )}
+
+                                    <button onClick={nextDay}>Next</button>
+                                </Form.Label>
+                            </Form.Group>
+
+
+                            {/* Workout Variation Segment */}
+                            <Form.Group>
+
+                                <br />
+                                <Form.Label htmlFor="inputWorkout_Variation">Workout Variation:</Form.Label>
+                                <br />
+                                <Form.Label value={variationChoice}>
+                                    <button onClick={previousWorkoutVariation}>Previous</button>
+                                    {variationChoice ? (
+                                        <>
+                                            {variationChoice}
+                                        </>
+                                    ) : (
+                                        'Please choose a button'
+                                    )}
+
+                                    <button onClick={nextWorkoutVariation}>Next</button>
+                                </Form.Label>
+                            </Form.Group>
+
                             {/* Muscle Group Segment */}
                             <Form.Group>
                                 <br />
-                                <Form.Label htmlFor="inputMuscle_Group">Muscle Group</Form.Label>
+                                <Form.Label htmlFor="inputMuscle_Group">Muscle Group:</Form.Label>
                                 <br />
                                 <Form.Label value={muscleChoice}>
-                                    <button onClick={previousMuscle}>Previous</button>
                                     {muscleChoice ? (
                                         <>
                                             {muscleChoice}
@@ -317,36 +423,15 @@ export default function TestComponent() {
                                         'Please choose a button'
                                     )}
 
-                                    <button onClick={nextMuscle}>Next</button>
                                 </Form.Label>
 
                             </Form.Group>
                             <br />
 
-                                    {/* Workout Variation Segment */}
-                                    <Form.Group>
-        
-        
-                                        <Form.Label htmlFor="inputWorkout_Variation">Workout Variation</Form.Label>
-                                        <br />
-                                        <Form.Label value={variationChoice}>
-                                            <button onClick={previousWorkoutVariation}>Previous</button>
-                                            {variationChoice ? (
-                                                <>
-                                                    {variationChoice}
-                                                </>
-                                            ) : (
-                                                'Please choose a button'
-                                            )}
-        
-                                            <button onClick={nextWorkoutVariation}>Next</button>
-                                        </Form.Label>
-                                    </Form.Group>
-                                    <br />
 
                             {/* Equipment Segment */}
                             <Form.Group>
-                                <Form.Label htmlFor="inputEquipment">Equipment</Form.Label>
+                                <Form.Label htmlFor="inputEquipment">Equipment:</Form.Label>
                                 <br />
                                 <Form.Label value={equipmentChoice} >
                                     {equipmentChoice ? (
@@ -365,7 +450,7 @@ export default function TestComponent() {
 
                             {/* Weight Range Segment */}
                             <Form.Group>
-                                <Form.Label htmlFor="inputWeight_Range">Weight Range</Form.Label>
+                                <Form.Label htmlFor="inputWeight_Range">Weight Range:</Form.Label>
                                 <br />
                                 <Form.Control
                                     type="text"
@@ -379,7 +464,7 @@ export default function TestComponent() {
 
                             {/* Rep Range Segment */}
                             <Form.Group>
-                                <Form.Label htmlFor="inputRep_Range">Rep Range</Form.Label>
+                                <Form.Label htmlFor="inputRep_Range">Rep Range:</Form.Label>
                                 <br />
                                 <Form.Control
                                     type="text"
@@ -390,6 +475,12 @@ export default function TestComponent() {
                                 />
                                 <br />
                             </Form.Group>
+                            <br />
+                            <br />
+
+                            {/* input box segment */}
+                            <Form.Label htmlFor="name">Workout ID:</Form.Label>
+                            <input type="text" id="name" name="name" value={updateEnd} onChange={handleUpdateValue} />
                             <br />
                             <br />
 
@@ -405,6 +496,6 @@ export default function TestComponent() {
                 // or display nothing if false
                 ''
             )}
-        </>
-    )
+    </>
+  )
 }

@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form';
 import { FormGroup, FormLabel, FormControl } from "react-bootstrap";
 import AuthContext from "../context/AuthContext";
 
-export default function CreateWorkout() {
+export default function CreateCustomWorkout() {
 
     // grabs token from context
     const { token } = useContext(AuthContext);
@@ -143,12 +143,12 @@ export default function CreateWorkout() {
     // calls the function to set arrays and swaps boolean state when called
     // this one is for creating a workout
     const toggleNewWorkoutBox = () => {
-        createWorkoutBox();
+        CreateCustomWorkoutBox();
         setNeedsForm(!needsForm)
     }
 
     // transforms api request data into arrays to look through
-    const createWorkoutBox = () => {
+    const CreateCustomWorkoutBox = () => {
 
         //////////WORKOUT VARIATION//////////
         let filter = new Set();

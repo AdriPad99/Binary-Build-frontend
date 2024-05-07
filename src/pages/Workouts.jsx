@@ -1,8 +1,10 @@
 import GetWorkouts from "../components/GetWorkouts"
-import CreateWorkout from "../components/CreateWorkout"
-import UpdateWorkout from "../components/UpdateWorkout"
+import CreateCustomWorkout from "../components/CreateCustomWorkout"
+import UpdateCustomWorkout from "../components/UpdateCustomWorkout"
 import DeleteWorkout from "../components/DeleteWorkout"
+import CreateNormalWorkout from "../components/CreateNormalWorkout"
 import CreateRandomWorkout from "../components/CreateRandomWorkout"
+import UpdateNormalWorkout from "../components/UpdateNormalWorkout"
 
 export default function Workouts() {
 
@@ -10,11 +12,13 @@ export default function Workouts() {
 
   return (
     <>
-      <GetWorkouts/>
-      <CreateWorkout/>
-      <UpdateWorkout/>
-      <DeleteWorkout/>
-      <CreateRandomWorkout/>
+      <UpdateNormalWorkout/>
+      <GetWorkouts />
+      <CreateNormalWorkout />
+      <CreateCustomWorkout />
+      <UpdateCustomWorkout />
+      <DeleteWorkout />
+      <CreateRandomWorkout />
     </>
   )
 }

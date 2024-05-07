@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form';
 import { FormGroup, FormLabel, FormControl } from "react-bootstrap";
 import AuthContext from "../context/AuthContext";
 
-export default function UpdateWorkout() {
+export default function UpdateCustomWorkout() {
 
     // grabs token from context
     const { token } = useContext(AuthContext);
@@ -181,13 +181,13 @@ export default function UpdateWorkout() {
     // calls the function to set arrays and swaps boolean state when called
     // this one is for updating a workout
     const toggleUpdateBox = () => {
-        createWorkoutBox();
+        CreateCustomWorkoutBox();
         setUpdateForm(!updateForm);
         console.log(updateForm)
     }
 
     // transforms api request data into arrays to look through
-    const createWorkoutBox = () => {
+    const CreateCustomWorkoutBox = () => {
 
         //////////WORKOUT VARIATION//////////
         let filter = new Set();
@@ -404,7 +404,7 @@ export default function UpdateWorkout() {
                 if not prompt them to log in */}
             {String(token).length > 4 ? (
                 <div>
-                    <h1>Update A Workout</h1>
+                    <h1>Update A Custom Workout</h1>
                     {/* Changes button text based on boolean state of updateForm */}
                     <button onClick={toggleUpdateBox}>{updateForm ? 'Hide Update Workout' : 'Show Update Workout'}</button>
 
