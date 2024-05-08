@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import AuthContext from "../context/AuthContext";
+import { FormControl } from "react-bootstrap";
 
 export default function UpdateNormalWorkout() {
 
@@ -23,8 +24,8 @@ export default function UpdateNormalWorkout() {
     // set status for if the box is open or not
     const [isOpen, setIsOpen] = useState(false)
 
-    // set state for controlling when a form is on screen
-    const [needsForm, setNeedsForm] = useState(false)
+    // state for description
+    const [descText, setDescText] = useState()
 
     // TEST set state for controlling when workouts are loaded
     const [workoutsReady, setWorkoutsReady] = useState(false)
@@ -159,7 +160,7 @@ export default function UpdateNormalWorkout() {
             if (workoutData.results[i].language === 2 && workoutData.results[i].muscles[0]) {
                 // copy.push(workoutData.results[i].name);
                 if (workoutData.results[i].equipment > 0) {
-                    copy[workoutData.results[i].name] = [workoutData.results[i].muscles[0], workoutData.results[i].equipment[0]];
+                    copy[workoutData.results[i].name] = [workoutData.results[i].muscles[0], workoutData.results[i].equipment[0], workoutData.results[i].description];
                 }
                 else {
                     continue;
@@ -263,8 +264,6 @@ export default function UpdateNormalWorkout() {
         // increment the state of the counter by 1
         setVariationCounter(variationCounter - 1);
 
-        console.log('variation counter next: ', variationCounter)
-
         // set the choice of the user as the index at the current
         // value of the counter
         setVariationChoice(Object.entries(copy)[variationCounter][0]);
@@ -274,6 +273,11 @@ export default function UpdateNormalWorkout() {
 
         // set the muscle in correspondance to the variation
         setMuscleChoice(copy3[Object.values(copy)[variationCounter][1]])
+
+        console.log(Object.values(copy))
+
+        // set the description text in correspondance to the variation
+        setDescText(Object.values(copy)[variationCounter][2])
 
     }
 
@@ -304,6 +308,9 @@ export default function UpdateNormalWorkout() {
 
         // set the muscle in correspondance to the variation
         setMuscleChoice(copy3[((Object.values(copy)[variationCounter][0]) - 1)])
+
+        // set the description text in correspondance to the variation
+        setDescText(Object.values(copy)[variationCounter][2])
     }
 
     // controls moving right through days
@@ -366,8 +373,11 @@ export default function UpdateNormalWorkout() {
                             <>
                                 <Form onSubmit={handleSubmit}>
                                     <button type="button" onClick={toggleNewWorkoutBox}>Hide Update Menu</button>
+
                                     <Form.Group>
+                                        <br />
                                         <Form.Label htmlFor="inputDay_of_The_Week">Day Of The Week:</Form.Label>
+                                        <br />
                                         <Form.Label value={dayChoice}>
                                             <button type="button" onClick={previousDay}>Previous</button>
                                             {dayChoice ? (
@@ -380,9 +390,10 @@ export default function UpdateNormalWorkout() {
                                             <button type="button" onClick={nextDay}>Next</button>
                                         </Form.Label>
                                     </Form.Group>
-
+                                    <br />
                                     <Form.Group>
                                         <Form.Label htmlFor="inputWorkout_Variation">Workout Variation:</Form.Label>
+                                        <br />
                                         <Form.Label value={variationChoice}>
                                             <button type="button" onClick={previousWorkoutVariation}>Previous</button>
                                             {variationChoice ? (
@@ -395,9 +406,28 @@ export default function UpdateNormalWorkout() {
                                             <button type="button" onClick={nextWorkoutVariation}>Next</button>
                                         </Form.Label>
                                     </Form.Group>
+                                    
 
+                                    {/* Description segment */}
+                                    <Form.Group>
+
+                                        <br />
+                                        <Form.Label htmlFor="inputWorkout_Variation">Description:</Form.Label>
+                                        <br />
+                                        <Form.Label value={variationChoice}>
+                                            {descText ? (
+                                                <>
+                                                    {descText}
+                                                </>
+                                            ) : (
+                                                'Please choose a button'
+                                            )}
+                                        </Form.Label>
+                                    </Form.Group>
+<br/>
                                     <Form.Group>
                                         <Form.Label htmlFor="inputMuscle_Group">Muscle Group:</Form.Label>
+                                        <br />
                                         <Form.Label value={muscleChoice}>
                                             {muscleChoice ? (
                                                 <>
@@ -408,9 +438,10 @@ export default function UpdateNormalWorkout() {
                                             )}
                                         </Form.Label>
                                     </Form.Group>
-
+                                    <br />
                                     <Form.Group>
                                         <Form.Label htmlFor="inputEquipment">Equipment:</Form.Label>
+                                        <br />
                                         <Form.Label value={equipmentChoice}>
                                             {equipmentChoice ? (
                                                 <>
@@ -421,9 +452,10 @@ export default function UpdateNormalWorkout() {
                                             )}
                                         </Form.Label>
                                     </Form.Group>
-
+                                    <br />
                                     <Form.Group>
                                         <Form.Label htmlFor="inputWeight_Range">Weight Range:</Form.Label>
+                                        <br />
                                         <FormControl
                                             type="text"
                                             name="weight_range"
@@ -432,9 +464,10 @@ export default function UpdateNormalWorkout() {
                                             placeholder="Weight Range"
                                         />
                                     </Form.Group>
-
+                                    <br />
                                     <Form.Group>
                                         <Form.Label htmlFor="inputRep_Range">Rep Range:</Form.Label>
+                                        <br />
                                         <FormControl
                                             type="text"
                                             name="rep_range"
@@ -443,10 +476,11 @@ export default function UpdateNormalWorkout() {
                                             placeholder="Rep Range"
                                         />
                                     </Form.Group>
-
+                                    <br />
                                     <Form.Label htmlFor="name">Workout ID:</Form.Label>
                                     <input type="text" id="name" name="name" value={updateEnd} onChange={handleUpdateValue} />
-
+                                    <br />
+                                    <br />
                                     <Button variant="primary" type="submit">
                                         Submit
                                     </Button>

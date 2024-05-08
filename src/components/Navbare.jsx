@@ -31,8 +31,6 @@ function Navbare() {
           )}
           <Nav.Link id='nav' href="/signup">Sign-Up</Nav.Link>
           <Nav.Link id='nav' href="/workouts">Workouts</Nav.Link>
-          {/* testing purposes. Logs out the current token thats in local storage/context */}
-          <Nav.Link onClick={() => { console.log(token) }}>Navbar Token</Nav.Link>
           {/* testing purposes. keeps track if the user is logged in or out */}
           {String(token).length > 4 ? ' logged in'  : ' logged out' }
         </Container>

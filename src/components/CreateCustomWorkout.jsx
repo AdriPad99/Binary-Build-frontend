@@ -387,9 +387,9 @@ export default function CreateCustomWorkout() {
         <>
             {String(token).length > 4 ? (
                 <>
-                    <h1>Create Custom Workout</h1>
+                    <h1>Create A Custom Workout</h1>
                     <button onClick={toggleNewWorkoutBox}>
-                        {needsForm ? 'Hide New Workout Menu' : 'Show New Workout Menu'}
+                        {needsForm ? 'Hide New Workout' : 'Show New Workout'}
                     </button>
 
                     {needsForm ? (
@@ -489,7 +489,7 @@ export default function CreateCustomWorkout() {
                 </>
             ) : (
 
-                <h1>Please login to create a custom workout</h1>
+                <h1>Please login to create workouts</h1>
             )}
         </>
     );

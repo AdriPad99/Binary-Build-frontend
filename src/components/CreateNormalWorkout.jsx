@@ -23,6 +23,9 @@ export default function CreateNormalWorkout() {
     // TEST set state for controlling when workouts are loaded
     const [workoutsReady, setWorkoutsReady] = useState(false)
 
+    // state for description
+    const [descText, setDescText] = useState()
+
     /////////////////////////////////////////////////////////
     // state for day data from api call
     const [dayData, setDayData] = useState()
@@ -153,14 +156,13 @@ export default function CreateNormalWorkout() {
             if (workoutData.results[i].language === 2 && workoutData.results[i].muscles[0]) {
                 // copy.push(workoutData.results[i].name);
                 if (workoutData.results[i].equipment > 0) {
-                    copy[workoutData.results[i].name] = [workoutData.results[i].muscles[0], workoutData.results[i].equipment[0]];
+                    copy[workoutData.results[i].name] = [workoutData.results[i].muscles[0], workoutData.results[i].equipment[0], workoutData.results[i].description];
                 }
                 else {
                     continue;
                 }
             }
         }
-
 
         // sets variation name to copied array
         setvariationName(copy);
@@ -200,7 +202,6 @@ export default function CreateNormalWorkout() {
         // set the array of names to the day state
         setDayName(day);
         /////////////////////////////////////
-
     }
 
     // Handle form submission for adding a workout
@@ -217,7 +218,7 @@ export default function CreateNormalWorkout() {
                 "rep_range": userInputs.rep_range,
                 "weight_range": userInputs.weight_range,
                 "workout_variation": variationChoice,
-                "day": dayChoice
+                "day": dayChoice,
             }) //send data in JSON format
         });
         // if successful
@@ -253,8 +254,6 @@ export default function CreateNormalWorkout() {
         // increment the state of the counter by 1
         setVariationCounter(variationCounter - 1);
 
-        console.log('variation counter next: ', variationCounter)
-
         // set the choice of the user as the index at the current
         // value of the counter
         setVariationChoice(Object.entries(copy)[variationCounter][0]);
@@ -264,6 +263,9 @@ export default function CreateNormalWorkout() {
 
         // set the muscle in correspondance to the variation
         setMuscleChoice(copy3[Object.values(copy)[variationCounter][1]])
+
+        // set the description text in correspondance to the variation
+        setDescText(Object.values(copy)[variationCounter][2])
 
     }
 
@@ -294,6 +296,9 @@ export default function CreateNormalWorkout() {
 
         // set the muscle in correspondance to the variation
         setMuscleChoice(copy3[((Object.values(copy)[variationCounter][0]) - 1)])
+
+        // set the description text in correspondance to the variation
+        setDescText(Object.values(copy)[variationCounter][2])
     }
 
     // controls moving right through days
@@ -342,162 +347,181 @@ export default function CreateNormalWorkout() {
 
     return (
         <>
-        {String(token).length > 4 ? (
-            <>
-                <br />
-            <h1>Create New Workout</h1>
-            {/* On click will show hide or show button depeding on the boolean of the needsForm */}
-            {/* <button onClick={toggleNewWorkoutBox}>{needsForm ? 'Hide New Workout' : 'Show New Workout'}</button> */}
-            {workoutsReady ? (
-                needsForm ?
-                (
-                    // if the menu is open close the menu
-                <button onClick={toggleNewWorkoutBox}>Hide New Workout Menu</button>
-                ) :(
-                    // if menu is closed open the menu
-                    <button onClick={toggleNewWorkoutBox}>Show New Workout Menu</button>
-                )
+
+            {String(token).length > 4 ? (
+                <>
+                    <br />
+                    <h1>Create New Workout</h1>
+                    {/* On click will show hide or show button depeding on the boolean of the needsForm */}
+                    {/* <button onClick={toggleNewWorkoutBox}>{needsForm ? 'Hide New Workout' : 'Show New Workout'}</button> */}
+                    {workoutsReady ? (
+                        needsForm ?
+                            (
+                                // if the menu is open close the menu
+                                <button onClick={toggleNewWorkoutBox}>Hide New Workout Menu</button>
+                            ) : (
+                                // if menu is closed open the menu
+                                <button onClick={toggleNewWorkoutBox}>Show New Workout Menu</button>
+                            )
+                    ) : (
+                        <h1>wait</h1>
+                    )}
+
+                    {/* ternary operator that will either: */}
+                    {needsForm ? (
+                        // Display the form if the boolean of the form is true
+                        <div>
+                            {/* Nested ternary operator  that will load the form if true */}
+                            {(variationName, muscleName, equipmentName, dayName) ?
+                                (<Form onSubmit={handleSubmit}>
+
+                                    {/* Workout Variation Segment */}
+                                    <Form.Group>
+
+                                        <br />
+                                        <Form.Label htmlFor="inputDay_of_The_Week">Day Of The Week:</Form.Label>
+                                        <br />
+                                        <Form.Label value={dayChoice}>
+                                            <button onClick={previousDay}>Previous</button>
+                                            {dayChoice ? (
+                                                <>
+                                                    {dayChoice}
+                                                </>
+                                            ) : (
+                                                'Please choose a button'
+                                            )}
+
+                                            <button onClick={nextDay}>Next</button>
+                                        </Form.Label>
+                                    </Form.Group>
+
+
+                                    {/* Workout Variation Segment */}
+                                    <Form.Group>
+
+                                        <br />
+                                        <Form.Label htmlFor="inputWorkout_Variation">Workout Variation:</Form.Label>
+                                        <br />
+                                        <Form.Label value={variationChoice}>
+                                            <button onClick={previousWorkoutVariation}>Previous</button>
+                                            {variationChoice ? (
+                                                <>
+                                                    {variationChoice}
+                                                </>
+                                            ) : (
+                                                'Please choose a button'
+                                            )}
+
+                                            <button onClick={nextWorkoutVariation}>Next</button>
+                                        </Form.Label>
+                                    </Form.Group>
+
+                                    {/* Description segment */}
+                                    <Form.Group>
+
+                                    <br />
+                                    <Form.Label htmlFor="inputWorkout_Variation">Description:</Form.Label>
+                                    <br />
+                                    <Form.Label value={variationChoice}>
+                                        {descText ? (
+                                            <>
+                                                {descText}
+                                            </>
+                                        ) : (
+                                            'Please choose a button'
+                                        )}
+                                    </Form.Label>
+                                </Form.Group>
+
+
+                                    {/* Muscle Group Segment */}
+                                    <Form.Group>
+                                        <br />
+                                        <Form.Label htmlFor="inputMuscle_Group">Muscle Group:</Form.Label>
+                                        <br />
+                                        <Form.Label value={muscleChoice}>
+                                            {muscleChoice ? (
+                                                <>
+                                                    {muscleChoice}
+                                                </>
+                                            ) : (
+                                                'Please choose a button'
+                                            )}
+
+                                        </Form.Label>
+
+                                    </Form.Group>
+                                    <br />
+
+
+                                    {/* Equipment Segment */}
+                                    <Form.Group>
+                                        <Form.Label htmlFor="inputEquipment">Equipment:</Form.Label>
+                                        <br />
+                                        <Form.Label value={equipmentChoice} >
+                                            {equipmentChoice ? (
+                                                <>
+                                                    {equipmentChoice}
+                                                </>
+                                            ) : (
+                                                'Please choose a button'
+                                            )}
+
+                                        </Form.Label>
+
+                                    </Form.Group>
+                                    <br />
+
+
+                                    {/* Weight Range Segment */}
+                                    <Form.Group>
+                                        <Form.Label htmlFor="inputWeight_Range">Weight Range:</Form.Label>
+                                        <br />
+                                        <Form.Control
+                                            type="text"
+                                            name="weight_range"
+                                            value={userInputs.weight_range}
+                                            onChange={handleChange}
+                                            placeholder="Weight Range"
+                                        />
+                                    </Form.Group>
+                                    <br />
+
+                                    {/* Rep Range Segment */}
+                                    <Form.Group>
+                                        <Form.Label htmlFor="inputRep_Range">Rep Range:</Form.Label>
+                                        <br />
+                                        <Form.Control
+                                            type="text"
+                                            name="rep_range"
+                                            value={userInputs.rep_range}
+                                            onChange={handleChange}
+                                            placeholder="Rep Range"
+                                        />
+                                        <br />
+                                    </Form.Group>
+                                    <br />
+                                    <br />
+
+                                    <Button variant="primary" type="submit">
+                                        Submit
+                                    </Button>
+                                </Form>
+                                ) : (
+                                    // or output a lack of a form
+                                    <h1>form not ready</h1>
+                                )}
+                        </div>) : (
+                        // or display nothing if false
+                        ''
+                    )}
+                </>
             ) : (
-                <h1>wait</h1>
+                <>
+                    <h1>Please login to create a Normal Workout</h1>
+                </>
             )}
 
-            {/* ternary operator that will either: */}
-            {needsForm ? (
-                // Display the form if the boolean of the form is true
-                <div>
-                    {/* Nested ternary operator  that will load the form if true */}
-                    {(variationName, muscleName, equipmentName, dayName) ?
-                        (<Form onSubmit={handleSubmit}>
-
-                            {/* Workout Variation Segment */}
-                            <Form.Group>
-
-                                <br />
-                                <Form.Label htmlFor="inputDay_of_The_Week">Day Of The Week:</Form.Label>
-                                <br />
-                                <Form.Label value={dayChoice}>
-                                    <button onClick={previousDay}>Previous</button>
-                                    {dayChoice ? (
-                                        <>
-                                            {dayChoice}
-                                        </>
-                                    ) : (
-                                        'Please choose a button'
-                                    )}
-
-                                    <button onClick={nextDay}>Next</button>
-                                </Form.Label>
-                            </Form.Group>
-
-
-                            {/* Workout Variation Segment */}
-                            <Form.Group>
-
-                                <br />
-                                <Form.Label htmlFor="inputWorkout_Variation">Workout Variation:</Form.Label>
-                                <br />
-                                <Form.Label value={variationChoice}>
-                                    <button onClick={previousWorkoutVariation}>Previous</button>
-                                    {variationChoice ? (
-                                        <>
-                                            {variationChoice}
-                                        </>
-                                    ) : (
-                                        'Please choose a button'
-                                    )}
-
-                                    <button onClick={nextWorkoutVariation}>Next</button>
-                                </Form.Label>
-                            </Form.Group>
-
-                            {/* Muscle Group Segment */}
-                            <Form.Group>
-                                <br />
-                                <Form.Label htmlFor="inputMuscle_Group">Muscle Group:</Form.Label>
-                                <br />
-                                <Form.Label value={muscleChoice}>
-                                    {muscleChoice ? (
-                                        <>
-                                            {muscleChoice}
-                                        </>
-                                    ) : (
-                                        'Please choose a button'
-                                    )}
-
-                                </Form.Label>
-
-                            </Form.Group>
-                            <br />
-
-
-                            {/* Equipment Segment */}
-                            <Form.Group>
-                                <Form.Label htmlFor="inputEquipment">Equipment:</Form.Label>
-                                <br />
-                                <Form.Label value={equipmentChoice} >
-                                    {equipmentChoice ? (
-                                        <>
-                                            {equipmentChoice}
-                                        </>
-                                    ) : (
-                                        'Please choose a button'
-                                    )}
-
-                                </Form.Label>
-
-                            </Form.Group>
-                            <br />
-
-
-                            {/* Weight Range Segment */}
-                            <Form.Group>
-                                <Form.Label htmlFor="inputWeight_Range">Weight Range:</Form.Label>
-                                <br />
-                                <Form.Control
-                                    type="text"
-                                    name="weight_range"
-                                    value={userInputs.weight_range}
-                                    onChange={handleChange}
-                                    placeholder="Weight Range"
-                                />
-                            </Form.Group>
-                            <br />
-
-                            {/* Rep Range Segment */}
-                            <Form.Group>
-                                <Form.Label htmlFor="inputRep_Range">Rep Range:</Form.Label>
-                                <br />
-                                <Form.Control
-                                    type="text"
-                                    name="rep_range"
-                                    value={userInputs.rep_range}
-                                    onChange={handleChange}
-                                    placeholder="Rep Range"
-                                />
-                                <br />
-                            </Form.Group>
-                            <br />
-                            <br />
-
-                            <Button variant="primary" type="submit">
-                                Submit
-                            </Button>
-                        </Form>
-                        ) : (
-                            // or output a lack of a form
-                            <h1>form not ready</h1>
-                        )}
-                </div>) : (
-                // or display nothing if false
-                ''
-            )}
-            </>
-        ) : (
-            <>
-            <h1>Please login to create a Normal Workout</h1>
-            </>
-        )}
-            
         </>
     )
 }

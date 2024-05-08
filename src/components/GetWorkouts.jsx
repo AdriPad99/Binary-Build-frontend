@@ -9,7 +9,6 @@ export default function GetWorkouts() {
     // set state for whether or not the box is open
     const [isOpen, setIsOpen] = useState(false)
 
-
     // Handle form submission for deleting a workout
     const handleDelete = async (id) => {
         //event.preventDefault(); // Prevent the default form submit behavior
@@ -21,6 +20,7 @@ export default function GetWorkouts() {
         });
         // if successful
         if (response.ok) {
+            getDBData();
             console.log('successfully deleted')
         } else {
             // handles the errors
