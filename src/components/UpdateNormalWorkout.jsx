@@ -366,7 +366,6 @@ export default function UpdateNormalWorkout() {
         <>
             {String(token).length > 4 ? (
                 <>
-                    <br />
                     <h1>Update a Normal Workout</h1>
                     {workoutsReady ? (
                         isOpen ? (

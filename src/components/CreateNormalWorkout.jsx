@@ -350,8 +350,7 @@ export default function CreateNormalWorkout() {
 
             {String(token).length > 4 ? (
                 <>
-                    <br />
-                    <h1>Create New Workout</h1>
+                    <h1>Create A Normal Workout</h1>
                     {/* On click will show hide or show button depeding on the boolean of the needsForm */}
                     {/* <button onClick={toggleNewWorkoutBox}>{needsForm ? 'Hide New Workout' : 'Show New Workout'}</button> */}
                     {workoutsReady ? (

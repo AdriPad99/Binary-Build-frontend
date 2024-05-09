@@ -1,6 +1,13 @@
 import { useState, useContext, useEffect } from "react";
 import AuthContext from "../context/AuthContext";
 
+import * as React from 'react';
+import { Dropdown } from '@mui/base/Dropdown';
+import { Menu } from '@mui/base/Menu';
+import { MenuButton as BaseMenuButton } from '@mui/base/MenuButton';
+import { MenuItem as BaseMenuItem, menuItemClasses } from '@mui/base/MenuItem';
+import { styled } from '@mui/system';
+
 export default function GetWorkouts() {
 
     // grabs token from context
@@ -8,6 +15,26 @@ export default function GetWorkouts() {
 
     // set state for whether or not the box is open
     const [isOpen, setIsOpen] = useState(false)
+
+    useEffect(() => {
+        // fetches the workout endpoint to grab all the workouts
+        const getDBData = async () => {
+
+            // fetches the server api that has all the workouts
+            const res = await fetch('http://127.0.0.1:5000/workouts')
+            if (res.ok) {
+                const data = await res.json();
+                setUserData(data)
+            }
+            // if not error out
+            else {
+                console.error("Couldn't get the workouts :(")
+                console.log(user)
+            }
+        }
+
+        getDBData();
+    }, [])
 
     // Handle form submission for deleting a workout
     const handleDelete = async (id) => {
@@ -20,7 +47,7 @@ export default function GetWorkouts() {
         });
         // if successful
         if (response.ok) {
-            getDBData();
+            setUserData(prevUserData => prevUserData.filter(user => user.workout_id !== id));
             console.log('successfully deleted')
         } else {
             // handles the errors
@@ -30,44 +57,26 @@ export default function GetWorkouts() {
 
     const toggleNewWorkoutBox = () => {
         setIsOpen(!isOpen)
-        getDBData();
     }
 
     // state for fetched data
     const [userData, setUserData] = useState([])
 
-    // fetches the workout endpoint to grab all the workouts
-    const getDBData = async () => {
 
-        // fetches the server api that has all the workouts
-        const res = await fetch('http://127.0.0.1:5000/workouts')
-        if (res.ok) {
-            const data = await res.json();
-            setUserData(data)
-        }
-        // if not error out
-        else {
-            console.error("Couldn't get the workouts :(")
-            console.log(user)
-        }
-    }
 
     return (
         <>
-            {/* if token is greater than 4 (logged in) show the workouts
-            if not greater then 4 (logged out) prompt the user to login */}
-            {
-                String(token).length > 4 ? (
-                    // If the box open state is true, display the workout container
-                    isOpen ? (
-                        <>
-                            <br />
-                            <div className="parent-container">
-                                {userData.length > 0 ? userData.map((user, i) => (
+            <Dropdown onOpenChange={toggleNewWorkoutBox}>
+                {isOpen ? (
+                    <>
+                        <MenuButton>Your Workouts v</MenuButton>
+                        <div className="parent-container">
+                            {userData && userData.length > 0 ? (
+                                userData.map((user, i) => (
                                     <div key={i} id="test">
                                         <h3>
                                             Workout Id: {user.workout_id} <br />
-                                            Day: {user.day} <br/>
+                                            Day: {user.day} <br />
                                             Equipment: {user.equipment}<br />
                                             Muscle group: {user.muscle_group}<br />
                                             Rep Range: {user.rep_range} reps <br />
@@ -77,33 +86,121 @@ export default function GetWorkouts() {
                                             <button onClick={() => handleDelete(user.workout_id)}>Delete Workout</button>
                                         </h3>
                                     </div>
-                                )) : (
-                                    <>
-                                    {/* if box open state is false prompt the user to open the box */}
-                                    <h1>Click button to get workouts</h1>
-                                    </>
-                                )}
-                            </div>
-                            <br />
-                            {/* button placed under the div box for the workouts */}
-                            <button onClick={toggleNewWorkoutBox}>Hide workouts{isOpen}</button>
-                        </>
-                    ) : (
-                        <>
-                        {/* If current box state is false prompt the user with a button to switch the state */}
-                        <br/>
-                        <br/>
-                        <h1>Click button to get workouts</h1>
-                        <button onClick={toggleNewWorkoutBox}>Show workouts{isOpen}</button>
-                        
-                        </>
-                    )
+                                ))
+                            ) : (
+                                <p>No workouts found. Please add some workouts.</p>
+                            )}
+                        </div>
+                    </>
                 ) : (
-                    // This shows if the user isn't logged in
-                    <h1>Please Login to show your workouts</h1> 
-                )
-            }
-
+                    <>
+                        <Dropdown onOpenChange={toggleNewWorkoutBox}>
+                            <MenuButton>Your Workouts ^</MenuButton>
+                        </Dropdown>
+                    </>
+                )}
+            </Dropdown>
         </>
     )
 }
+
+const blue = {
+    50: '#F0F7FF',
+    100: '#C2E0FF',
+    200: '#99CCF3',
+    300: '#66B2FF',
+    400: '#3399FF',
+    500: '#007FFF',
+    600: '#0072E6',
+    700: '#0059B3',
+    800: '#004C99',
+    900: '#003A75',
+};
+
+const grey = {
+    50: '#F3F6F9',
+    100: '#E5EAF2',
+    200: '#DAE2ED',
+    300: '#C7D0DD',
+    400: '#B0B8C4',
+    500: '#9DA8B7',
+    600: '#6B7A90',
+    700: '#434D5B',
+    800: '#303740',
+    900: '#1C2025',
+};
+
+const Listbox = styled('ul')(
+    ({ theme }) => `
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.875rem;
+    box-sizing: border-box;
+    padding: 6px;
+    margin: 12px 0;
+    min-width: 200px;
+    border-radius: 12px;
+    overflow: auto;
+    outline: 0px;
+    background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
+    border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
+    color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
+    box-shadow: 0px 4px 6px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0, 0.50)' : 'rgba(0,0,0, 0.05)'};
+    z-index: 1;
+    `,
+);
+
+const MenuItem = styled(BaseMenuItem)(
+    ({ theme }) => `
+    list-style: none;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: default;
+    user-select: none;
+  
+    &:last-of-type {
+      border-bottom: none;
+    }
+  
+    &:focus {
+      outline: 3px solid ${theme.palette.mode === 'dark' ? blue[600] : blue[200]};
+      background-color: ${theme.palette.mode === 'dark' ? grey[800] : grey[100]};
+      color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
+    }
+  
+    &.${menuItemClasses.disabled} {
+      color: ${theme.palette.mode === 'dark' ? grey[700] : grey[400]};
+    }
+    `,
+);
+
+const MenuButton = styled(BaseMenuButton)(
+    ({ theme }) => `
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    padding: 8px 16px;
+    border-radius: 8px;
+    color: white;
+    transition: all 150ms ease;
+    cursor: pointer;
+    background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
+    border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
+    color: ${theme.palette.mode === 'dark' ? grey[200] : grey[900]};
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  
+    &:hover {
+      background: ${theme.palette.mode === 'dark' ? grey[800] : grey[50]};
+      border-color: ${theme.palette.mode === 'dark' ? grey[600] : grey[300]};
+    }
+  
+    &:active {
+      background: ${theme.palette.mode === 'dark' ? grey[700] : grey[100]};
+    }
+  
+    &:focus-visible {
+      box-shadow: 0 0 0 4px ${theme.palette.mode === 'dark' ? blue[300] : blue[200]};
+      outline: none;
+    }
+    `,
+);

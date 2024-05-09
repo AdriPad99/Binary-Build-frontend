@@ -1,10 +1,18 @@
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
 import AuthContext from '../context/AuthContext';
 import { useContext } from 'react';
-
-
+import * as React from 'react';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import Container from '@mui/material/Container';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
+import MenuItem from '@mui/material/MenuItem';
+import DropdownMenuComponent from './DropdownMenuComponent';
 
 function Navbare() {
 
@@ -16,27 +24,92 @@ function Navbare() {
     logout();
   }
 
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
   return (
-    <>
-      <Navbar expand="lg" className="bg-body-tertiary">
-        <Container>
-          <Navbar.Brand className='brand' href="/">Home</Navbar.Brand>
-          {/* If a token doesn't exist display the signin link
-              If a token DOES exist display the signout link */}
-          {String(token).length <= 4 ? 
-          (
-          <Nav.Link id='nav' href="/signin">Sign-In</Nav.Link>
-          ): (
-          <Nav.Link onClick={() => userLogout()} id='nav' href='/signin'>Sign-out</Nav.Link>
+    <AppBar position="static">
+      <Container maxWidth="xl">
+        <Toolbar disableGutters>
+        <img src='images/logo3.png' alt='bodybuilder in binary' width='100' height='100'/>
+
+          <Box>
+              <Button>
+              <a id='middle' href="/">Home</a>
+              </Button>
+          </Box>
+
+
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+              <Button>
+              {String(token).length > 4 ? (
+            <>
+              <a id='middle'href="/signup">Try for Free</a>
+            </>
+          ) : (
+            <>
+            <a id='middle' href="/signin">Sign-In</a>
+            <a id='middle' href="/signup">Try for Free</a>
+            </>
           )}
-          <Nav.Link id='nav' href="/signup">Sign-Up</Nav.Link>
-          <Nav.Link id='nav' href="/workouts">Workouts</Nav.Link>
-          {/* testing purposes. keeps track if the user is logged in or out */}
-          {String(token).length > 4 ? ' logged in'  : ' logged out' }
-        </Container>
-      </Navbar>
-    </>
+              </Button>
+
+              <Button>
+              <DropdownMenuComponent/>
+              </Button>
+          </Box>
+
+          <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="Open settings">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+                <MenuItem onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">
+                  {String(token).length > 4 ? (
+                    <>
+                    <a id='profile' href="/profile">Profile</a>
+                    <hr/>
+                    <a id='profile' onClick={() => userLogout()} href="/signin">Sign-Out</a>
+                    </>
+                  ) : (
+                    <>
+                    <a id='profile' href="/signin">Sign-In</a>
+                    <hr/>
+            <a id='profile' href="/signup">Try for Free</a>
+                    </>
+                  )}
+                    </Typography>
+                </MenuItem>
+            </Menu>
+          </Box>
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
 }
-
 export default Navbare;

@@ -183,7 +183,6 @@ export default function UpdateCustomWorkout() {
     const toggleUpdateBox = () => {
         CreateCustomWorkoutBox();
         setUpdateForm(!updateForm);
-        console.log(updateForm)
     }
 
     // transforms api request data into arrays to look through
@@ -360,11 +359,9 @@ export default function UpdateCustomWorkout() {
 
         // decrement day counter by one
         setDayCounter(dayCounter - 1)
-        console.log('prev day: ', dayCounter)
 
         // set user day choice to location of counter in the copy
         setDayChoice(copy[dayCounter])
-        console.log('prev day choice: ', dayChoice)
     }
 
     // controls moving left through days
@@ -376,9 +373,7 @@ export default function UpdateCustomWorkout() {
         }
 
         setDayCounter(dayCounter + 1);
-        console.log('next day: ', dayCounter)
         setDayChoice(copy[dayCounter])
-        console.log('next day choice: ', dayChoice)
     }
 
     // Handle changes in form inputs and displays them on screen as they happen
