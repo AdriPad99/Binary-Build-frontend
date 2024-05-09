@@ -18,6 +18,7 @@ import CreateRandomWorkoutPage from './pages/Workouts/CreateRandomWorkoutPage'
 import GetWorkoutsPage from './pages/Workouts/GetWorkoutsPage'
 import UpdateCustomWorkoutPage from './pages/Workouts/UpdateCustomWorkoutPage'
 import UpdateNormalWorkoutPage from './pages/Workouts/UpdateNormalWorkoutPage'
+import Test from '../images/test'
 
 function App() {
 
@@ -29,6 +30,7 @@ function App() {
     <>
       <AuthProvider>
         <Navbare />
+        <Test/>
         {isVisible && <TestLogin />}
         {isVisible && <RecommendWorkouts />}
         {isVisible && <UserProfileComponent/>}

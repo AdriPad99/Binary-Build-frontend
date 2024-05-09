@@ -3,20 +3,34 @@ import { useState, useEffect, useContext } from 'react'
 import { Form, Button } from 'react-bootstrap'
 import AuthContext from '../context/AuthContext'
 
+//import * as React from 'react';
+import Avatar from '@mui/joy/Avatar';
+import Chip from '@mui/joy/Chip';
+import Box from '@mui/joy/Box';
+//import Button from '@mui/joy/Button';
+import ButtonGroup from '@mui/joy/ButtonGroup';
+import Card from '@mui/joy/Card';
+import CardContent from '@mui/joy/CardContent';
+import CardOverflow from '@mui/joy/CardOverflow';
+import CardActions from '@mui/joy/CardActions';
+import IconButton from '@mui/joy/IconButton';
+import Typography from '@mui/joy/Typography';
+import SvgIcon from '@mui/joy/SvgIcon';
+
 export default function UserProfileComponent() {
 
     const { token } = useContext(AuthContext);
 
     // Combined state for all user data
     const [userData, setUserData] = useState({
-    age: "",
-    gender: "",
-    height: "",
-    weight: "",
-    email: "",
-    firstName: "",
-    lastName: "",
-    username: "",
+        age: "",
+        gender: "",
+        height: "",
+        weight: "",
+        email: "",
+        firstName: "",
+        lastName: "",
+        username: "",
     });
 
     useEffect(() => {
@@ -43,181 +57,42 @@ export default function UserProfileComponent() {
                 console.error("Error fetching data:", error);
             }
         };
-    
+
         getUserData();
     }, [token]); // Assuming token is correctly triggering useEffect when it changes
-    
 
-    // Handle form submission for updating a workout
-    // const handleUpdate = async (event) => {
-    //     event.preventDefault(); // Prevent the default form submit behavior
-    //     const response = await fetch(`http://127.0.0.1:5000/signup/1`, {
-    //         method: 'PUT', // sets method
-    //         headers: {
-    //             'Content-Type': 'application/json' // Indicates the content 
-    //         }
-    //         ,
-    //         // body: JSON.stringify(userData)
-    //         body: JSON.stringify({
-    //             "username": userData.username,
-    //             "email": userData.email,
-    //             "first_name": userData.firstName,
-    //             "last_name": userData.lastName,
-    //             "age": userData.age,
-    //             "gender": userData.gender,
-    //             "height": userData.height,
-    //             "weight": userData.weight,
-    //         }),
-    //     }
-    //     );
-    //     console.log(userData)
-    //     // if successful
-    //     if (response.ok) {
-    //         console.log(`${userData.firstName} successfully updated workout!`)
-    //         setUserInputs({
-    //             "age": "",
-    //             "gender": "",
-    //             "height": "",
-    //             "weight": "",
-    //         })
-    //         // resets the user chosen workout number to delete
-    //     } else {
-    //         // handles the errors
-    //         console.error('Failed to update the workout:', response.statusText);
-    //     }
-    // }
-
-    // Handle changes in form inputs and displays them on screen as they happen
-    // const handleChange = (event) => {
-    //     const { name, value } = event.target;
-    //     setUserData(prevState => ({
-    //         ...prevState,
-    //         [name]: value
-    //     }));
-    // };
-
-    // const toggleForm = () => {
-    //     setFormBool(!formBool)
-    // }
-
-    // const test = () => {
-    //     console.log(userData);
-    // }
 
     return (
         <>
-            {/* <button onClick={test}>Test button</button> */}
 
-            <div>
-                <div></div>
-                <div>First Name: {userData.firstName}</div>
-                <div>Last Name: {userData.lastName}</div>
-                <div>Username: {userData.username}</div>
-                <div>Email: {userData.email}</div>
-                {/* <Form onSubmit={handleUpdate}>
-                    <div>
-                        Age: {userData.age}
-                        {formBool ? (
-                            <>
-                                <Form.Group>
-                                    <Form.Label>Age</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        name="age"
-                                        value={userData.age}
-                                        onChange={handleChange}
-                                        placeholder="Age"
-                                    />
-                                </Form.Group>
-
-                                <Button variant="primary" type="submit">
-                                    Update Age
-                                </Button>
-
-                            </>
-                        ) : (
-                            <>
-                                <button onClick={toggleForm}> Change Age</button>
-                            </>
-                        )}
-                    </div>
-                    <br />
-                    <div>
-                        Gender: {userData.gender}
-                        {formBool ? (
-                            <>
-                                <Form.Group>
-                                    <Form.Control
-                                        type="text"
-                                        name="gender"
-                                        value={userData.gender}
-                                        onChange={handleChange}
-                                        placeholder="Gender"
-                                    />
-                                </Form.Group>
-
-                                <Button variant="primary" type="submit">
-                                    Update Gender
-                                </Button>
-                            </>
-                        ) : (
-                            <>
-                                <button onClick={toggleForm}> Change Gender</button>
-                            </>
-                        )}
-                    </div>
-                    <br />
-                    <div>
-                        Height: {userData.height}
-                        {formBool ? (
-                            <>
-                                <Form.Group>
-                                    <Form.Control
-                                        type="text"
-                                        name="height"
-                                        value={userData.height}
-                                        onChange={handleChange}
-                                        placeholder="height"
-                                    />
-                                </Form.Group>
-
-                                <Button variant="primary" type="submit">
-                                    Update Height
-                                </Button>
-                            </>
-                        ) : (
-                            <>
-                                <button onClick={toggleForm}> Change Height</button>
-                            </>
-                        )}
-                    </div>
-                    <br />
-                    <div>
-                        Weight: {userData.weight}
-                        {formBool ? (
-                            <>
-                                <Form.Group>
-                                    <Form.Control
-                                        type="text"
-                                        name="weight"
-                                        value={userData.weight}
-                                        onChange={handleChange}
-                                        placeholder="Weight"
-                                    />
-                                </Form.Group>
-
-                                <Button variant="primary" type="submit">
-                                    Update Weight
-                                </Button>
-                            </>
-                        ) : (
-                            <>
-                                <button onClick={toggleForm}> Change Weight</button>
-                            </>
-                        )}
-                    </div>
-                </Form> */}
-            </div>
+            <Card
+                sx={{
+                    width: 320,
+                    maxWidth: '100%',
+                    boxShadow: 'lg',
+                }}
+            >
+                <CardContent sx={{ alignItems: 'center', textAlign: 'center' }}>
+                    <Avatar src="/static/images/avatar/1.jpg" sx={{ '--Avatar-size': '4rem' }} />
+                    <Typography level="title-lg">{userData.firstName} {userData.lastName} ({userData.username})</Typography>
+                    <Typography level="body-sm" sx={{ maxWidth: '24ch' }}>
+                        Hello, this is my bio and I am a Student currently attending the Coding Temple program.
+                        <hr />
+                        Contact Me: {userData.email}
+                    </Typography>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            gap: 2,
+                            mt: 2,
+                            '& > button': { borderRadius: '2rem' },
+                        }}
+                    >
+                    </Box>
+                </CardContent>
+                <CardOverflow sx={{ bgcolor: 'background.level1' }}>
+                </CardOverflow>
+            </Card>
         </>
     )
 }

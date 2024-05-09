@@ -8,10 +8,17 @@ import { MenuButton as BaseMenuButton } from '@mui/base/MenuButton';
 import { MenuItem as BaseMenuItem, menuItemClasses } from '@mui/base/MenuItem';
 import { styled } from '@mui/system';
 
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+
+import Card from '@mui/joy/Card';
+
+
+
 export default function GetWorkouts() {
 
     // grabs token from context
-    const { token } = useContext(AuthContext);
+    const { counter, refresh } = useContext(AuthContext);
 
     // set state for whether or not the box is open
     const [isOpen, setIsOpen] = useState(false)
@@ -34,7 +41,7 @@ export default function GetWorkouts() {
         }
 
         getDBData();
-    }, [])
+    }, [counter])
 
     // Handle form submission for deleting a workout
     const handleDelete = async (id) => {
@@ -57,25 +64,52 @@ export default function GetWorkouts() {
 
     const toggleNewWorkoutBox = async () => {
         setIsOpen(!isOpen)
-        const res = await fetch('http://127.0.0.1:5000/workouts')
     }
 
     // state for fetched data
     const [userData, setUserData] = useState([])
 
-
-
     return (
         <>
+
+            <ToastContainer
+                position="bottom-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+            />
+
             <Dropdown onOpenChange={toggleNewWorkoutBox}>
                 {isOpen ? (
                     <>
+                        {/* <Card
+                            invertedColors={false}
+                            orientation="vertical"
+                            size="lg"
+                            variant="outlined"
+                        /> */}
+
                         <MenuButton>Your Workouts v</MenuButton>
+                        
+                        
                         <div className="parent-container">
                             {userData && userData.length > 0 ? (
                                 userData.map((user, i) => (
                                     <div key={i} id="test">
                                         <h3>
+                                        <Card 
+                                        invertedColors={false}
+                                        orientation="vertical"
+                                        size="lg"
+                                        variant="outlined"
+                                        color="neutral"
+                                        >
                                             Workout Id: {user.workout_id} <br />
                                             Day: {user.day} <br />
                                             Equipment: {user.equipment}<br />
@@ -84,7 +118,8 @@ export default function GetWorkouts() {
                                             Weight range: {user.weight_range} lbs<br />
                                             Workout variation: {user.workout_variation}
                                             <br />
-                                            <button onClick={() => handleDelete(user.workout_id)}>Delete Workout</button>
+                                            <button onClick={() => (handleDelete(user.workout_id), toast('Successfully deleted Workout!'))}>Delete Workout</button>
+                        </Card>
                                         </h3>
                                     </div>
                                 ))

@@ -1,10 +1,12 @@
 import { useState, useEffect, useContext } from "react";
 import AuthContext from "../context/AuthContext";
+import { toast } from "react-toastify";
+
 
 export default function CreateRandomWorkout() {
 
     // grabs token from context
-    const { token } = useContext(AuthContext);
+    const { token, refresh } = useContext(AuthContext)
 
     // state for user selections
     const [userInputs, setUserInputs] = useState({
@@ -148,21 +150,26 @@ export default function CreateRandomWorkout() {
     }, []);
 
     // when all the states are set for the random choices submit to the server
-    useEffect(() => {
-        if (muscleChoice && variationChoice && equipmentChoice && dayChoice) {
-            handleSubmit();
-        }
-    }, [muscleChoice, variationChoice, equipmentChoice, dayChoice]);
+    // useEffect(() => {
+    //     if (muscleChoice && variationChoice && equipmentChoice && dayChoice) {
+    //         handleSubmit();
+    //     }
+    // }, [muscleChoice, variationChoice, equipmentChoice, dayChoice]);
 
 
     // Handle form submission for adding a workout
     const handleSubmit = async () => {
-
+        randomMuscle();
+        randomWorkoutVariation();
+        randomEquipment();
+        randomRepAmnt();
+        randomWeightAmnt();
+        randomDay();
         // uncomment to add to user workouts
         const response = await fetch('http://127.0.0.1:5000/workouts', {
 
-        // uncomment to add to recommended workouts
-        //const response = await fetch('http://127.0.0.1:5000/randomWorkouts', {
+            // uncomment to add to recommended workouts
+            //const response = await fetch('http://127.0.0.1:5000/randomWorkouts', {
             method: 'POST', // sets method
             headers: {
                 'Content-Type': 'application/json' // Indicates the content 
@@ -178,6 +185,7 @@ export default function CreateRandomWorkout() {
         });
         // if successful
         if (response.ok) {
+            refresh();
             setUserInputs({
                 "muscle_group": "",
                 "equipment": "",
@@ -273,10 +281,10 @@ export default function CreateRandomWorkout() {
     const randomDay = () => {
 
         // holds the data when going through the for loop
-        let copy =[];
+        let copy = [];
 
         // goes through the days of the week api and grabs the days
-        for (let i = 0; i < dayData.results.length; i++){
+        for (let i = 0; i < dayData.results.length; i++) {
             copy.push(dayData.results[i].day_of_week)
         }
 
@@ -327,26 +335,16 @@ export default function CreateRandomWorkout() {
         setWeightAmnt(randomNumber);
     }
 
-    // calls all the functions to get a random value and submits them
-    const randomWorkout = () => {
-        randomMuscle();
-        randomWorkoutVariation();
-        randomEquipment();
-        randomRepAmnt();
-        randomWeightAmnt();
-        randomDay();
-        handleSubmit();
-    }
-
     return (
         <>
+
             {
                 // if token is greater than 4 (logged in)
                 String(token).length > 4 ?
                     (
                         <>
                             <h1>Create a random Workout</h1>
-                            {muscleReady && <button onClick={randomWorkout}>Create Random Workout</button>}
+                            {muscleReady && <button onClick={() => {handleSubmit, toast('Created Random Workout Successfully!')}} >Create Random Workout</button>}
                         </>
                     ) : (
                         // if token is less equal to or less than 4 (logged out)

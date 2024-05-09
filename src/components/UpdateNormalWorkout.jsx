@@ -4,9 +4,11 @@ import Form from 'react-bootstrap/Form';
 import AuthContext from "../context/AuthContext";
 import { FormControl } from "react-bootstrap";
 
+import { toast } from 'react-toastify';
+
 export default function UpdateNormalWorkout() {
 
-    const { token } = useContext(AuthContext)
+    const { token, refresh } = useContext(AuthContext)
 
     // state for user selections
     const [userInputs, setUserInputs] = useState({
@@ -230,6 +232,8 @@ export default function UpdateNormalWorkout() {
         // if successful
         if (response.ok) {
             console.log(`successfully updated workout ${updateEnd}`)
+            toast(`successfully updated workout ${updateEnd}!`)
+            refresh();
             setUserInputs({
                 "muscle_group": "",
                 "equipment": "",

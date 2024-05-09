@@ -6,6 +6,8 @@ import AuthContext from './AuthContext';
 export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(() => localStorage.getItem('token'));
 
+    const [counter, setCounter] = useState(() => localStorage.getItem('counter'))
+
     // logs the user in by setting a token with login
     const login = (userData) => {
         setToken(userData); //sets the access token to userdata
@@ -18,6 +20,12 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('token') // remove token from localStorage
     };
 
+    const refresh = () => {
+        setCounter(counter + 1);
+        localStorage.setItem('counter', counter);
+        console.log(counter)
+    }
+
     // syncs the token if it changes
     useEffect(() => {
         localStorage.setItem('token', token);
@@ -25,7 +33,7 @@ export const AuthProvider = ({ children }) => {
 
     return (
         // now set whats avaialbe through auth provider
-        <AuthContext.Provider value={{ token, login, logout }}>
+        <AuthContext.Provider value={{ token, login, logout, counter, refresh }}>
             {children}
         </AuthContext.Provider>
     );

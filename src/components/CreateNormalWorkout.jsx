@@ -3,9 +3,12 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import AuthContext from "../context/AuthContext";
 
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+
 export default function CreateNormalWorkout() {
 
-    const { token } = useContext(AuthContext);
+    const { token, refresh } = useContext(AuthContext)
 
     // state for user selections
     const [userInputs, setUserInputs] = useState({
@@ -223,6 +226,7 @@ export default function CreateNormalWorkout() {
         });
         // if successful
         if (response.ok) {
+            refresh();
             setUserInputs({
                 "muscle_group": "",
                 "equipment": "",
@@ -348,6 +352,19 @@ export default function CreateNormalWorkout() {
     return (
         <>
 
+            <ToastContainer
+                position="bottom-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+            />
+
             {String(token).length > 4 ? (
                 <>
                     <h1>Create A Normal Workout</h1>
@@ -418,19 +435,19 @@ export default function CreateNormalWorkout() {
                                     {/* Description segment */}
                                     <Form.Group>
 
-                                    <br />
-                                    <Form.Label htmlFor="inputWorkout_Variation">Description:</Form.Label>
-                                    <br />
-                                    <Form.Label value={variationChoice}>
-                                        {descText ? (
-                                            <>
-                                                {descText}
-                                            </>
-                                        ) : (
-                                            'Please choose a button'
-                                        )}
-                                    </Form.Label>
-                                </Form.Group>
+                                        <br />
+                                        <Form.Label htmlFor="inputWorkout_Variation">Description:</Form.Label>
+                                        <br />
+                                        <Form.Label value={variationChoice}>
+                                            {descText ? (
+                                                <>
+                                                    {descText}
+                                                </>
+                                            ) : (
+                                                'Please choose a button'
+                                            )}
+                                        </Form.Label>
+                                    </Form.Group>
 
 
                                     {/* Muscle Group Segment */}
@@ -502,7 +519,7 @@ export default function CreateNormalWorkout() {
                                     <br />
                                     <br />
 
-                                    <Button variant="primary" type="submit">
+                                    <Button onClick={() => (toast('test'))} variant="primary" type="submit">
                                         Submit
                                     </Button>
                                 </Form>

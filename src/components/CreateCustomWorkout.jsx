@@ -1,32 +1,29 @@
+import * as React from 'react';
+import Card from '@mui/joy/Card';
+import CardActions from '@mui/joy/CardActions';
+import CardContent from '@mui/joy/CardContent';
+import Checkbox from '@mui/joy/Checkbox';
+import Divider from '@mui/joy/Divider';
+import Input from '@mui/joy/Input';
+import Typography from '@mui/joy/Typography';
+import InfoOutlined from '@mui/icons-material/InfoOutlined';
+import CreditCardIcon from '@mui/icons-material/CreditCard';
+import Pagination from '@mui/material/Pagination';
+import PaginationItem from '@mui/material/PaginationItem';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+
 import { useState, useEffect, useContext } from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { FormGroup, FormLabel, FormControl } from "react-bootstrap";
 import AuthContext from "../context/AuthContext";
 
-import { toast, ToastContainer } from 'react-toastify';
-import "react-toastify/dist/ReactToastify.css";
-
-
-// import { toast, ToastContainer } from 'react-toastify';
-// import "react-toastify/dist/ReactToastify.css";
-
-// toast.success('🦄 Wow so easy!', {
-//     position: "bottom-right",
-//     autoClose: 5000,
-//     hideProgressBar: false,
-//     closeOnClick: true,
-//     pauseOnHover: true,
-//     draggable: true,
-//     progress: undefined,
-//     theme: "dark",
-//     transition: Bounce,
-//     });
 
 export default function CreateCustomWorkout() {
 
     // grabs token from context
-    const { token } = useContext(AuthContext);
+    const { token, refresh, counter } = useContext(AuthContext);
 
     // state for user selections
     const [userInputs, setUserInputs] = useState({
@@ -37,7 +34,6 @@ export default function CreateCustomWorkout() {
         "workout_variation": "",
         "day": ""
     })
-
 
     // set state for controlling when a form is on screen
     const [needsForm, setNeedsForm] = useState(false)
@@ -157,7 +153,7 @@ export default function CreateCustomWorkout() {
         renderMuscles();
         renderEquipment();
         renderDay();
-    }, []);
+    }, [counter]);
 
     // calls the function to set arrays and swaps boolean state when called
     // this one is for creating a workout
@@ -241,8 +237,7 @@ export default function CreateCustomWorkout() {
         });
         // if successful
         if (response.ok) {
-            //console.log('successfully added workout to your existing workouts!')
-            toast("Default Notification !");
+            refresh();
             setUserInputs({
                 "muscle_group": "",
                 "equipment": "",
@@ -389,9 +384,8 @@ export default function CreateCustomWorkout() {
         }
 
         setDayCounter(dayCounter + 1);
-        console.log('next day: ', dayCounter)
         setDayChoice(copy[dayCounter])
-        console.log('next day choice: ', dayChoice)
+
     }
 
     // Handle changes in form inputs and displays them on screen as they happen
@@ -403,15 +397,17 @@ export default function CreateCustomWorkout() {
         }));
     };
 
+
     return (
         <>
+
+            <h1>Create A Custom Workout</h1>
+            <button onClick={toggleNewWorkoutBox}>
+                {needsForm ? 'Hide New Workout' : 'Show New Workout'}
+            </button>
+
             {String(token).length > 4 ? (
                 <>
-                    <h1>Create A Custom Workout</h1>
-                    <button onClick={toggleNewWorkoutBox}>
-                        {needsForm ? 'Hide New Workout' : 'Show New Workout'}
-                    </button>
-
                     {needsForm ? (
                         <div>
                             {(variationName && muscleName && equipmentName && dayName) ? (
@@ -508,8 +504,8 @@ export default function CreateCustomWorkout() {
                     )}
                 </>
             ) : (
-
-                <h1>Please login to create workouts</h1>
+                <>
+                </>
             )}
         </>
     );

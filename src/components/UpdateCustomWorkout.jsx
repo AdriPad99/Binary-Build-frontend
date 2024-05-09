@@ -4,10 +4,12 @@ import Form from 'react-bootstrap/Form';
 import { FormGroup, FormLabel, FormControl } from "react-bootstrap";
 import AuthContext from "../context/AuthContext";
 
+import { toast } from 'react-toastify';
+
 export default function UpdateCustomWorkout() {
 
     // grabs token from context
-    const { token } = useContext(AuthContext);
+    const { token, refresh } = useContext(AuthContext);
 
     // state for user selections
     const [userInputs, setUserInputs] = useState({
@@ -162,6 +164,8 @@ export default function UpdateCustomWorkout() {
         // if successful
         if (response.ok) {
             console.log(`successfully updated workout ${updateEnd}!`)
+            refresh();
+            toast(`Successfully Updated workout ${updateEnd}!`)
             setUserInputs({
                 "muscle_group": "",
                 "equipment": "",
@@ -408,7 +412,7 @@ export default function UpdateCustomWorkout() {
                         // Sub ternary operator that will show the form on page if the arrays have content
                         <div>
                             {(variationName, muscleName, equipmentName) ?
-                                (<Form onSubmit={handleUpdate}>
+                                (<Form  onSubmit={(handleUpdate)}>
 
                                     {/* muscle Group segment */}
                                     <Form.Group>
@@ -523,7 +527,7 @@ export default function UpdateCustomWorkout() {
                                     <input type="text" id="name" name="name" value={updateEnd} onChange={handleUpdateValue} />
                                     <br />
                                     <br />
-                                    <Button variant="primary" type="submit">
+                                    <Button  variant="primary" type="submit">
                                         Update Workout
                                     </Button>
                                 </Form>

@@ -3,8 +3,20 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { useNavigate } from 'react-router-dom';
 
-//import { useAuth } from '../context/AuthContext.jsx';
 import AuthContext from '../context/AuthContext';
+
+import * as React from 'react';
+import Card from '@mui/joy/Card';
+import CardActions from '@mui/joy/CardActions';
+import CardContent from '@mui/joy/CardContent';
+import Checkbox from '@mui/joy/Checkbox';
+import Divider from '@mui/joy/Divider';
+import FormControl from '@mui/joy/FormControl';
+import FormLabel from '@mui/joy/FormLabel';
+import Input from '@mui/joy/Input';
+import Typography from '@mui/joy/Typography';
+import InfoOutlined from '@mui/icons-material/InfoOutlined';
+import CreditCardIcon from '@mui/icons-material/CreditCard';
 
 export default function TestLogin() {
 
@@ -57,41 +69,46 @@ export default function TestLogin() {
         <>
 
             <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-3" >
-                    <div>
-                        <Form.Label>Username</Form.Label>
-                    </div>
 
-                    <Form.Control
-                        type="text"
-                        name="username"
-                        value={userInfo.username}
-                        onChange={handleChange}
-                        placeholder="Email"
-                    />
-                </Form.Group>
+                <Card
+                    variant="outlined"
+                    sx={{
+                        maxHeight: 'max-content',
+                        maxWidth: '100%',
+                        mx: 'auto',
+                        // to make the demo resizable
+                        overflow: 'auto',
+                        resize: 'horizontal',
+                    }}
+                >
+                    <Typography level="title-lg" startDecorator={<InfoOutlined />}>
+                        Sign Into Binary Build
+                    </Typography>
+                    <Divider inset="none" />
+                    <CardContent
+                        sx={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(2, minmax(80px, 1fr))',
+                            gap: 1.5,
+                        }}
+                    >
+                        <FormControl sx={{ gridColumn: '1/-1' }}>
+                            <FormLabel>Username: </FormLabel>
+                            <Input onChange={handleChange} type='text' value={userInfo.username} name="username" placeholder="Enter Your username" />
+                        </FormControl>
 
-                <br />
+                        <FormControl sx={{ gridColumn: '1/-1' }}>
+                            <FormLabel>Password: </FormLabel>
+                            <Input onChange={handleChange} type='password' name='password' value={userInfo.password} placeholder="Enter your password" />
+                        </FormControl>
 
-                <Form.Group className="mb-3">
-                    <div>
-                        <Form.Label>Password</Form.Label>
-                    </div>
-
-                    <Form.Control
-                        type="password"
-                        name="password"
-                        value={userInfo.password}
-                        onChange={handleChange}
-                        placeholder="Password"
-                    />
-
-                </Form.Group>
-                <br />
-                <Button variant="primary" type="submit">
-                    Submit
-                </Button>
-
+                        <CardActions sx={{ gridColumn: '1/-1' }}>
+                            <Button type='submit' variant="solid" color="primary">
+                                Sign-In
+                            </Button>
+                        </CardActions>
+                    </CardContent>
+                </Card>
             </Form>
 
         </>
