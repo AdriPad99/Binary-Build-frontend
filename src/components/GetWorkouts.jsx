@@ -55,8 +55,9 @@ export default function GetWorkouts() {
         }
     }
 
-    const toggleNewWorkoutBox = () => {
+    const toggleNewWorkoutBox = async () => {
         setIsOpen(!isOpen)
+        const res = await fetch('http://127.0.0.1:5000/workouts')
     }
 
     // state for fetched data

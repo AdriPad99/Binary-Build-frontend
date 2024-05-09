@@ -4,6 +4,25 @@ import Form from 'react-bootstrap/Form';
 import { FormGroup, FormLabel, FormControl } from "react-bootstrap";
 import AuthContext from "../context/AuthContext";
 
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+
+
+// import { toast, ToastContainer } from 'react-toastify';
+// import "react-toastify/dist/ReactToastify.css";
+
+// toast.success('🦄 Wow so easy!', {
+//     position: "bottom-right",
+//     autoClose: 5000,
+//     hideProgressBar: false,
+//     closeOnClick: true,
+//     pauseOnHover: true,
+//     draggable: true,
+//     progress: undefined,
+//     theme: "dark",
+//     transition: Bounce,
+//     });
+
 export default function CreateCustomWorkout() {
 
     // grabs token from context
@@ -222,7 +241,8 @@ export default function CreateCustomWorkout() {
         });
         // if successful
         if (response.ok) {
-            console.log('successfully added workout to your existing workouts!')
+            //console.log('successfully added workout to your existing workouts!')
+            toast("Default Notification !");
             setUserInputs({
                 "muscle_group": "",
                 "equipment": "",

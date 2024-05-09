@@ -7,8 +7,6 @@ export default function UserProfileComponent() {
 
     const { token } = useContext(AuthContext);
 
-    //const [formBool, setFormBool] = useState(false)
-
     // Combined state for all user data
     const [userData, setUserData] = useState({
     age: "",
@@ -102,13 +100,13 @@ export default function UserProfileComponent() {
     //     setFormBool(!formBool)
     // }
 
-    const test = () => {
-        console.log(userData);
-    }
+    // const test = () => {
+    //     console.log(userData);
+    // }
 
     return (
         <>
-            <button onClick={test}>Test button</button>
+            {/* <button onClick={test}>Test button</button> */}
 
             <div>
                 <div></div>
