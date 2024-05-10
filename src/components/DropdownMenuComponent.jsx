@@ -13,10 +13,13 @@ export default function DropdownMenuComponent() {
 
     const { token } = useContext(AuthContext)
 
+    // controls the state for opening
     const [isOpen, setIsOpen] = useState(false)
 
+    // used to navigate to different pages
     const navigate = useNavigate()
 
+    // function to toggle if something is open
     const toggleOpen = () => {
         setIsOpen(!isOpen);
     }
@@ -24,9 +27,12 @@ export default function DropdownMenuComponent() {
 
     return (
         <>
-            
+            {/* if user is logged in, display the access to the different methods of managing workouts OR
+                if user is not logged in, display nothing */}
             {String(token).length > 4 ? (
                 <>
+                    {/* if the object is deemed as open, reveal the list of different things to do OR
+                        if the object is closed, just show the button in the navbar */}
                     {isOpen ? (
                         <>
                             <Dropdown onOpenChange={toggleOpen}>

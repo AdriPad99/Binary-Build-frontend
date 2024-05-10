@@ -89,7 +89,7 @@ export default function CreateRandomWorkout() {
         // calls the api that has translations 
         //(or so I thought. I thought it was all english but it wasn't)
         const renderVariations = async () => {
-            const res = await fetch('https://wger.de/api/v2/exercise-translation/?limit=50&offset=0')
+            const res = await fetch('https://wger.de/api/v2/exercise-translation/')
             if (res.ok) {
                 const data = await res.json();
                 setWorkoutData(data);
@@ -149,22 +149,9 @@ export default function CreateRandomWorkout() {
         renderDay();
     }, []);
 
-    // when all the states are set for the random choices submit to the server
-    // useEffect(() => {
-    //     if (muscleChoice && variationChoice && equipmentChoice && dayChoice) {
-    //         handleSubmit();
-    //     }
-    // }, [muscleChoice, variationChoice, equipmentChoice, dayChoice]);
-
-
     // Handle form submission for adding a workout
     const handleSubmit = async () => {
-        randomMuscle();
-        randomWorkoutVariation();
-        randomEquipment();
-        randomRepAmnt();
-        randomWeightAmnt();
-        randomDay();
+
         // uncomment to add to user workouts
         const response = await fetch('http://127.0.0.1:5000/workouts', {
 
@@ -186,6 +173,7 @@ export default function CreateRandomWorkout() {
         // if successful
         if (response.ok) {
             refresh();
+            toast('Successfully created random workout!');
             setUserInputs({
                 "muscle_group": "",
                 "equipment": "",
@@ -250,7 +238,6 @@ export default function CreateRandomWorkout() {
         // set the choice of the user as the index at the current
         // value of the counter
         setEquipmentChoice(copy[randomNumber]);
-        console.log(equipmentChoice)
     }
 
     // controls moving right for muscles
@@ -261,7 +248,6 @@ export default function CreateRandomWorkout() {
                 test.push(`${muscleData.results[j].name}`)
             }
         }
-        //console.log(test)
 
         // set muscle name to test array
         setMuscleName(test);
@@ -328,23 +314,37 @@ export default function CreateRandomWorkout() {
         // picks random number
         const randomNumber = Math.floor(Math.random() * (max - min) + min);
 
-        //console.log(randomNumber)
-
         // set the choice of the user as the index at the current
         // value of the counter
         setWeightAmnt(randomNumber);
     }
 
+    // responsible for generating the contents of the random workout
+    // it calls the functions one by one and then calls the POST request
+    // to the server to create that entry in the database/ users workouts
+    const generateRandomWorkout = () => {
+        randomMuscle();
+        randomWorkoutVariation();
+        randomEquipment();
+        randomRepAmnt();
+        randomWeightAmnt();
+        randomDay();
+        handleSubmit();
+    }
+
+
+
     return (
         <>
 
             {
-                // if token is greater than 4 (logged in)
+                // if user is logged in, prompt user to create random workout by clicking the button OR
+                // if user is logged out, prompt the user to sign into the website.
                 String(token).length > 4 ?
                     (
                         <>
                             <h1>Create a random Workout</h1>
-                            {muscleReady && <button onClick={() => {handleSubmit, toast('Created Random Workout Successfully!')}} >Create Random Workout</button>}
+                            <button onClick={generateRandomWorkout} >Create Random Workout</button>
                         </>
                     ) : (
                         // if token is less equal to or less than 4 (logged out)

@@ -9,10 +9,13 @@ export default function HomePage() {
   return (
     <>
 
+    {/* Logo on the homepage */}
     <div className="id">
     <img src="images/logo text2.png" alt="website logo"></img>
     </div>
 
+    {/* Shows recommended workouts if logged in OR
+        promts the user to build workouts if not. */}
     {String(token).length > 4 ? (
       <>
       <RecommendWorkouts/>

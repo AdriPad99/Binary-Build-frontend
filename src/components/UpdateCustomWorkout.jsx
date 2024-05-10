@@ -407,11 +407,14 @@ export default function UpdateCustomWorkout() {
                     {/* Changes button text based on boolean state of updateForm */}
                     <button onClick={toggleUpdateBox}>{updateForm ? 'Hide Update Workout' : 'Show Update Workout'}</button>
 
-                    {/* Ternary Operator that will show the div of the form if true */}
+                    {/* will continue to the next ternary operator if its deemed open OR
+                        will display nothing on the page to the user if not open */}
                     {updateForm ? (
-                        // Sub ternary operator that will show the form on page if the arrays have content
                         <div>
+                            {/* if the box is deemed open and all the api's are called correctly, the form is created for the user OR
+                                if the api calls didn't or haven't gone through the user is prompted the form wasn't found */}
                             {(variationName, muscleName, equipmentName) ?
+                                // creates the form on page and calls the server when submitted
                                 (<Form  onSubmit={(handleUpdate)}>
 
                                     {/* muscle Group segment */}
@@ -420,6 +423,7 @@ export default function UpdateCustomWorkout() {
                                         <Form.Label htmlFor="inputMuscle_Group">Muscle Group</Form.Label>
                                         <br />
                                         <Form.Label value={muscleChoice}>
+                                            {/* if they click on the button they go back in the created api array */}
                                             <button onClick={previousMuscle}>Previous</button>
                                             {muscleChoice ? (
                                                 <>
@@ -440,6 +444,7 @@ export default function UpdateCustomWorkout() {
                                         <Form.Label htmlFor="inputEquipment">Equipment</Form.Label>
                                         <br />
                                         <Form.Label value={equipmentChoice} >
+                                            {/* if they click on the button they go back in the created api array */}
                                             <button onClick={previousEquipment}>Previous</button>
                                             {equipmentChoice ? (
                                                 <>
@@ -462,6 +467,7 @@ export default function UpdateCustomWorkout() {
                                         <Form.Label htmlFor="inputWorkout_Variation">Workout Variation</Form.Label>
                                         <br />
                                         <Form.Label value={variationChoice}>
+                                            {/* if they click on the button they go back in the created api array */}
                                             <button onClick={previousWorkoutVariation}>Previous</button>
                                             {variationChoice ? (
                                                 <>
@@ -480,6 +486,7 @@ export default function UpdateCustomWorkout() {
                                     <FormGroup>
                                         <FormLabel htmlFor="inputDay_Of_The_Week">Day Of The Week</FormLabel>
                                         <br />
+                                        {/* if they click on the button they go back in the created api array */}
                                         <button onClick={previousDay}>Previous</button>
                                         {dayChoice ? (
                                             <>

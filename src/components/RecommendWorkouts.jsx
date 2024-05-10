@@ -73,6 +73,7 @@ export default function RecommendWorkouts() {
     return (
         <>
 
+            {/* styling for the toast containers */}
             <ToastContainer
                 position="bottom-right"
                 autoClose={5000}
@@ -111,11 +112,10 @@ export default function RecommendWorkouts() {
                 ) : (
                     // outputs nothing
                     ''
-                    // <h1>Click button to get workouts</h1>
                 )
             }
 
-            {/* Changes the text of the button depending on the boolean value */}
+            {/* Changes the text of the button depending on if the menu is considered closed or not */}
             {isOpen ?
                 (
                     <p>

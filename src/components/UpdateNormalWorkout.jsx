@@ -368,58 +368,87 @@ export default function UpdateNormalWorkout() {
 
     return (
         <>
+            {/* if user is logged in continue to the next ternary operator OR
+            prompt the user to log in */}
             {String(token).length > 4 ? (
                 <>
                     <h1>Update a Normal Workout</h1>
+                    {/* if the workout api call has successfully loaded, move to next ternary operator OR
+                        prompt the user and tell them to wait. */}
                     {workoutsReady ? (
+                        // if the box is deemed open, display the form contents on the screen OR
+                        // promt the user to toggle it open by clicking the provided button
                         isOpen ? (
                             <>
+                                {/* responsible for the entire form */}
                                 <Form onSubmit={handleSubmit}>
+
+                                    {/* button when pressed toggle the ability to open and close the update form */}
                                     <button type="button" onClick={toggleNewWorkoutBox}>Hide Update Menu</button>
 
+                                    {/* Day of the week segment */}
                                     <Form.Group>
                                         <br />
+                                        {/* day of the week segment name */}
                                         <Form.Label htmlFor="inputDay_of_The_Week">Day Of The Week:</Form.Label>
                                         <br />
                                         <Form.Label value={dayChoice}>
+                                            {/* button to click back one segment */}
                                             <button type="button" onClick={previousDay}>Previous</button>
+                                            {/* if there is a choice selected, display it on screen OR
+                                                prompt the user to select a button */}
                                             {dayChoice ? (
                                                 <>
+                                                    {/* displays the current users choice on the screen */}
                                                     {dayChoice}
                                                 </>
                                             ) : (
                                                 'Please choose a button'
                                             )}
+                                            {/* button to go to the next segment */}
                                             <button type="button" onClick={nextDay}>Next</button>
                                         </Form.Label>
                                     </Form.Group>
+
                                     <br />
+
+                                    {/* workout variation segment */}
                                     <Form.Group>
+                                        {/* workout variation segment name */}
                                         <Form.Label htmlFor="inputWorkout_Variation">Workout Variation:</Form.Label>
                                         <br />
                                         <Form.Label value={variationChoice}>
+                                            {/* button to click back one segment */}
                                             <button type="button" onClick={previousWorkoutVariation}>Previous</button>
+                                            {/* if there is a choice selected, display it on screen OR
+                                                prompt the user to select a button */}
                                             {variationChoice ? (
                                                 <>
+                                                {/* displays the current users choice on the screen */}
                                                     {variationChoice}
                                                 </>
                                             ) : (
                                                 'Please choose a button'
                                             )}
+                                            {/* button to go to the next segment */}
                                             <button type="button" onClick={nextWorkoutVariation}>Next</button>
                                         </Form.Label>
                                     </Form.Group>
-                                    
+
 
                                     {/* Description segment */}
                                     <Form.Group>
 
                                         <br />
+                                        {/* description label */}
                                         <Form.Label htmlFor="inputWorkout_Variation">Description:</Form.Label>
                                         <br />
                                         <Form.Label value={variationChoice}>
+                                            {/* if there is a choice selected, display it on screen OR
+                                                prompt the user to select a button */}
                                             {descText ? (
                                                 <>
+                                                {/* displays the current users choice on the screen */}
                                                     {descText}
                                                 </>
                                             ) : (
@@ -427,13 +456,19 @@ export default function UpdateNormalWorkout() {
                                             )}
                                         </Form.Label>
                                     </Form.Group>
-<br/>
+
+                                    <br />
+
                                     <Form.Group>
+                                        {/* muscle segment */}
                                         <Form.Label htmlFor="inputMuscle_Group">Muscle Group:</Form.Label>
                                         <br />
                                         <Form.Label value={muscleChoice}>
+                                            {/* if there is a choice selected, display it on screen OR
+                                                prompt the user to select a button */}
                                             {muscleChoice ? (
                                                 <>
+                                                {/* displays the current users choice on the screen */}
                                                     {muscleChoice}
                                                 </>
                                             ) : (
@@ -441,13 +476,19 @@ export default function UpdateNormalWorkout() {
                                             )}
                                         </Form.Label>
                                     </Form.Group>
+
                                     <br />
+
                                     <Form.Group>
+                                        {/* Equipment segment */}
                                         <Form.Label htmlFor="inputEquipment">Equipment:</Form.Label>
                                         <br />
+                                        {/* if there is a choice selected, display it on screen OR
+                                                prompt the user to select a button */}
                                         <Form.Label value={equipmentChoice}>
                                             {equipmentChoice ? (
                                                 <>
+                                                {/* displays the current users choice on the screen */}
                                                     {equipmentChoice}
                                                 </>
                                             ) : (
@@ -455,10 +496,15 @@ export default function UpdateNormalWorkout() {
                                             )}
                                         </Form.Label>
                                     </Form.Group>
+
                                     <br />
+
                                     <Form.Group>
+                                        {/* weight range segment */}
                                         <Form.Label htmlFor="inputWeight_Range">Weight Range:</Form.Label>
                                         <br />
+                                        {/* input field properties.
+                                            shows the change on screen and assigns the value to the server call */}
                                         <FormControl
                                             type="text"
                                             name="weight_range"
@@ -467,10 +513,15 @@ export default function UpdateNormalWorkout() {
                                             placeholder="Weight Range"
                                         />
                                     </Form.Group>
+
                                     <br />
+
                                     <Form.Group>
+                                        {/* rep range segment */}
                                         <Form.Label htmlFor="inputRep_Range">Rep Range:</Form.Label>
                                         <br />
+                                        {/* input field properties.
+                                            shows the change on screen and assigns the value to the server call */}
                                         <FormControl
                                             type="text"
                                             name="rep_range"
@@ -479,8 +530,12 @@ export default function UpdateNormalWorkout() {
                                             placeholder="Rep Range"
                                         />
                                     </Form.Group>
+
                                     <br />
+
+                                    {/* workout id segment */}
                                     <Form.Label htmlFor="name">Workout ID:</Form.Label>
+                                    
                                     <input type="text" id="name" name="name" value={updateEnd} onChange={handleUpdateValue} />
                                     <br />
                                     <br />

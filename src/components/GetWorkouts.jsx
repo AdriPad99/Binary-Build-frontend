@@ -3,7 +3,6 @@ import AuthContext from "../context/AuthContext";
 
 import * as React from 'react';
 import { Dropdown } from '@mui/base/Dropdown';
-import { Menu } from '@mui/base/Menu';
 import { MenuButton as BaseMenuButton } from '@mui/base/MenuButton';
 import { MenuItem as BaseMenuItem, menuItemClasses } from '@mui/base/MenuItem';
 import { styled } from '@mui/system';
@@ -18,7 +17,7 @@ import Card from '@mui/joy/Card';
 export default function GetWorkouts() {
 
     // grabs token from context
-    const { counter, refresh } = useContext(AuthContext);
+    const { counter } = useContext(AuthContext);
 
     // set state for whether or not the box is open
     const [isOpen, setIsOpen] = useState(false)
@@ -41,7 +40,7 @@ export default function GetWorkouts() {
         }
 
         getDBData();
-    }, [counter])
+    }, [counter]) // anytime the counter is interacted with this will get ran again
 
     // Handle form submission for deleting a workout
     const handleDelete = async (id) => {
@@ -62,6 +61,7 @@ export default function GetWorkouts() {
         }
     }
 
+    // controls toggling open the box
     const toggleNewWorkoutBox = async () => {
         setIsOpen(!isOpen)
     }
@@ -71,7 +71,7 @@ export default function GetWorkouts() {
 
     return (
         <>
-
+            {/* Details for the toast box */}
             <ToastContainer
                 position="bottom-right"
                 autoClose={5000}
@@ -84,21 +84,19 @@ export default function GetWorkouts() {
                 pauseOnHover
                 theme="dark"
             />
-
+            
+            {/* controls the workout sub menu on the bottom of the page */}
             <Dropdown onOpenChange={toggleNewWorkoutBox}>
+
+                {/* if the box is considered as open, switch the text of the dropdown and display all the workouts OR
+                    withdraw the contents of the workouts by hiding it*/}
                 {isOpen ? (
                     <>
-                        {/* <Card
-                            invertedColors={false}
-                            orientation="vertical"
-                            size="lg"
-                            variant="outlined"
-                        /> */}
-
                         <MenuButton>Your Workouts v</MenuButton>
-                        
-                        
                         <div className="parent-container">
+
+                            {/* if there exists workouts, map through the JSON objects and display the information OR
+                                inform the user they have no workouts. */}
                             {userData && userData.length > 0 ? (
                                 userData.map((user, i) => (
                                     <div key={i} id="test">
@@ -139,6 +137,8 @@ export default function GetWorkouts() {
         </>
     )
 }
+
+// BELOW THIS POINT IS THE STYLINGS FOR THE DROPDOWN MENU
 
 const blue = {
     50: '#F0F7FF',

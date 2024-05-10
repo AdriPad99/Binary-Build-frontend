@@ -3,9 +3,6 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import AuthContext from "../context/AuthContext";
 
-import { toast, ToastContainer } from 'react-toastify';
-import "react-toastify/dist/ReactToastify.css";
-
 export default function CreateNormalWorkout() {
 
     const { token, refresh } = useContext(AuthContext)
@@ -353,24 +350,13 @@ export default function CreateNormalWorkout() {
     return (
         <>
 
-            <ToastContainer
-                position="bottom-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="dark"
-            />
-
+            {/* If the user is logged in continue to the next ternary operator OR
+                if the user isn't logged in, prompt them to log in */}
             {String(token).length > 4 ? (
                 <>
                     <h1>Create A Normal Workout</h1>
-                    {/* On click will show hide or show button depeding on the boolean of the needsForm */}
-                    {/* <button onClick={toggleNewWorkoutBox}>{needsForm ? 'Hide New Workout' : 'Show New Workout'}</button> */}
+                    {/* If the workout api call is successfull move onto the next ternary operator OR
+                        if the ternary operator hasn't finished loading inform the user of the wait */}
                     {workoutsReady ? (
                         needsForm ?
                             (
@@ -384,11 +370,12 @@ export default function CreateNormalWorkout() {
                         <h1>wait</h1>
                     )}
 
-                    {/* ternary operator that will either: */}
+                    {/* if the box is deemed as open, move onto the next ternary operator OR
+                        if the box is deemed as closed, show nothing on screen */}
                     {needsForm ? (
-                        // Display the form if the boolean of the form is true
                         <div>
-                            {/* Nested ternary operator  that will load the form if true */}
+                            {/* If all the api requests are successful, reveal the form for the user OR
+                                inform the user that the form isn't ready yet.*/}
                             {(variationName, muscleName, equipmentName, dayName) ?
                                 (<Form onSubmit={handleSubmit}>
 
@@ -529,7 +516,6 @@ export default function CreateNormalWorkout() {
                                     <h1>form not ready</h1>
                                 )}
                         </div>) : (
-                        // or display nothing if false
                         ''
                     )}
                 </>

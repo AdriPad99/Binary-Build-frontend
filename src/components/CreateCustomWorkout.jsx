@@ -400,16 +400,24 @@ export default function CreateCustomWorkout() {
 
     return (
         <>
-
+            {/* controls the on screen button */}
             <h1>Create A Custom Workout</h1>
             <button onClick={toggleNewWorkoutBox}>
                 {needsForm ? 'Hide New Workout' : 'Show New Workout'}
             </button>
 
+            {/* if user is logged in, move to second ternary conditional OR
+                if user is not logged in, show nothing */}
             {String(token).length > 4 ? (
                 <>
+
+                    {/* if form is designated as open reveal the form to the user OR
+                        if the form is designated as closed reveal nothing */}
                     {needsForm ? (
                         <div>
+
+                            {/* if the api calls have successfully loaded reveal the contents of the form OR
+                                inform the user of the non-existence of the form */}
                             {(variationName && muscleName && equipmentName && dayName) ? (
                                 <Form onSubmit={handleSubmit}>
                                     <FormGroup>

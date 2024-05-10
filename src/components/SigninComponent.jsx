@@ -9,14 +9,12 @@ import * as React from 'react';
 import Card from '@mui/joy/Card';
 import CardActions from '@mui/joy/CardActions';
 import CardContent from '@mui/joy/CardContent';
-import Checkbox from '@mui/joy/Checkbox';
 import Divider from '@mui/joy/Divider';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
 import Input from '@mui/joy/Input';
 import Typography from '@mui/joy/Typography';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
-import CreditCardIcon from '@mui/icons-material/CreditCard';
 
 export default function TestLogin() {
 
@@ -70,8 +68,10 @@ export default function TestLogin() {
 
         <div className='id'>
 
+            {/* start of the form for the users input */}
             <Form onSubmit={handleSubmit}>
 
+                {/* responsible for the details of the box that contains the content */}
                 <Card
                     variant="outlined"
                     sx={{
@@ -83,10 +83,15 @@ export default function TestLogin() {
                         resize: 'horizontal',
                     }}
                 >
+                    {/* The top tile of the card telling the user to sign in */}
                     <Typography level="title-lg" startDecorator={<InfoOutlined />}>
                         Sign Into Binary Build
                     </Typography>
+
+                    {/* The divider between the title of the sign in box and the other input fields */}
                     <Divider inset="none" />
+
+                    {/* controls the layout of the form */}
                     <CardContent
                         sx={{
                             display: 'grid',
@@ -94,17 +99,23 @@ export default function TestLogin() {
                             gap: 1.5,
                         }}
                     >
+
+                        {/* username segment of the sign in window */}
                         <FormControl sx={{ gridColumn: '1/-1' }}>
                             <FormLabel>Username: </FormLabel>
                             <Input onChange={handleChange} type='text' value={userInfo.username} name="username" placeholder="Enter Your username" />
                         </FormControl>
 
+                        {/* password segment of the password window */}
                         <FormControl sx={{ gridColumn: '1/-1' }}>
                             <FormLabel>Password: </FormLabel>
                             <Input onChange={handleChange} type='password' name='password' value={userInfo.password} placeholder="Enter your password" />
                         </FormControl>
 
+                        {/* details of the button positioning */}
                         <CardActions sx={{ gridColumn: '1/-1' }}>
+                            
+                            {/* responsible for the button of the bottom of the sign in window */}
                             <Button type='submit' variant="solid" color="primary">
                                 Sign-In
                             </Button>
