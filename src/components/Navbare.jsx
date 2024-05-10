@@ -35,10 +35,13 @@ function Navbare() {
   };
 
   return (
+
+    <div className='navcolor'>
+
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-        <img src='images/logo3.png' alt='bodybuilder in binary' width='100' height='100'/>
+        <img src='images/logo3.png' alt='bodybuilder in binary' width='150' height='150'/>
 
           <Box>
               <Button>
@@ -110,6 +113,7 @@ function Navbare() {
         </Toolbar>
       </Container>
     </AppBar>
+    </div>
   );
 }
 export default Navbare;

@@ -65,6 +65,7 @@ export default function UserProfileComponent() {
     return (
         <>
 
+        <div className='id'>
             <Card
                 sx={{
                     width: 320,
@@ -93,6 +94,7 @@ export default function UserProfileComponent() {
                 <CardOverflow sx={{ bgcolor: 'background.level1' }}>
                 </CardOverflow>
             </Card>
+        </div>
         </>
     )
 }

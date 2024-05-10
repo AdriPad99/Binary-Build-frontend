@@ -16,7 +16,8 @@ export default function CreateNormalWorkout() {
         "equipment": "",
         "rep_range": '',
         "weight_range": '',
-        "workout_variation": ""
+        "workout_variation": "",
+        "day" : ""
     })
 
 

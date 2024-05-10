@@ -76,6 +76,8 @@ export default function SignupComponent() {
   return (
     <>
 
+    <div className='id'>
+
       <Form onSubmit={handleSubmit}>
 
         <Card
@@ -90,7 +92,7 @@ export default function SignupComponent() {
           }}
         >
           <Typography level="title-lg" startDecorator={<InfoOutlined />}>
-            Sign Into Binary Build
+            Sign Up Binary Build
           </Typography>
           <Divider inset="none" />
           <CardContent
@@ -133,6 +135,7 @@ export default function SignupComponent() {
           </CardContent>
         </Card>
       </Form>
+    </div>
 
       
     </>

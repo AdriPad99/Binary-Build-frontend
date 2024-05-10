@@ -87,3 +87,22 @@ html, body {
 .menu {
   background-color: rgba(25,118,210,255);
 }
+
+.id{
+  max-width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 50px;
+}
+
+.logo {
+  max-width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  text-decoration: none;
+  color: black;
+}
+
+.navcolor {
+  color: black;
+}
