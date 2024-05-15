@@ -3,6 +3,22 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import AuthContext from "../context/AuthContext";
 
+import * as React from 'react';
+import Card from '@mui/joy/Card';
+import CardActions from '@mui/joy/CardActions';
+import CardContent from '@mui/joy/CardContent';
+import Divider from '@mui/joy/Divider';
+import FormControl from '@mui/joy/FormControl';
+import FormLabel from '@mui/joy/FormLabel';
+import Input from '@mui/joy/Input';
+import Typography from '@mui/joy/Typography';
+import InfoOutlined from '@mui/icons-material/InfoOutlined';
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
+
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+
 export default function CreateNormalWorkout() {
 
     const { token, refresh } = useContext(AuthContext)
@@ -14,7 +30,7 @@ export default function CreateNormalWorkout() {
         "rep_range": '',
         "weight_range": '',
         "workout_variation": "",
-        "day" : ""
+        "day": ""
     })
 
 
@@ -39,6 +55,8 @@ export default function CreateNormalWorkout() {
 
     // set state for date counter
     const [dayCounter, setDayCounter] = useState(0)
+
+    const [dayLength, setDayLength] = useState(0)
     /////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////
@@ -126,6 +144,7 @@ export default function CreateNormalWorkout() {
             if (res.ok) {
                 const data = await res.json();
                 setDayData(data);
+                setDayLength(data.results.length)
             }
             // if not error out
             else {
@@ -347,8 +366,143 @@ export default function CreateNormalWorkout() {
         }));
     };
 
+    const test = () => {
+        CreateCustomWorkoutBox();
+        console.log(Object.keys(variationName).length)
+    }
+
     return (
         <>
+
+            <button onClick={test}>test</button>
+
+            <div className='id'>
+
+                {/* start of the form for the users input */}
+                <Form onSubmit={handleSubmit}>
+
+                    {/* responsible for the details of the box that contains the content */}
+                    <Card
+                        variant="outlined"
+                        sx={{
+                            maxHeight: 'max-content',
+                            maxWidth: '60%',
+                            mx: 'auto',
+                            // to make the demo resizable
+                            overflow: 'auto',
+                            resize: 'horizontal',
+                        }}
+                    >
+                        {/* The top tile of the card telling the user to sign in */}
+                        <Typography level="title-lg" startDecorator={<InfoOutlined />}>
+                            Create a Normal Workout
+                        </Typography>
+
+                        {/* The divider between the title of the sign in box and the other input fields */}
+                        <Divider inset="none" />
+
+
+                        {/* Day of the week segment */}
+                        <FormControl>
+                            <div className="center">
+                                <div >
+                                    <button onClick={previousDay} className="navigation">
+                                        <ArrowBackIcon />
+                                    </button>
+                                    {dayChoice ? (
+                                        <>
+                                            {dayChoice}
+                                        </>
+                                    ) : (
+                                        <>
+                                            Please select a button
+                                        </>
+                                    )}
+                                    <button onClick={nextDay} className="navigation">
+                                        <ArrowForwardIcon />
+                                    </button>
+                                </div>
+                            </div>
+                        </FormControl>
+
+                        {/* Workout variation segment */}
+                        <FormControl>
+                        <div className="center">
+                            <div >
+                                <button onClick={previousWorkoutVariation} className="navigation">
+                                    <ArrowBackIcon />
+                                </button>
+                                {variationChoice ? (
+                                    <>
+                                        {variationChoice}
+                                    </>
+                                ) : (
+                                    <>
+                                        Please select a button
+                                    </>
+                                )}
+                                <button onClick={nextWorkoutVariation} className="navigation">
+                                    <ArrowForwardIcon />
+                                </button>
+                            </div>
+                        </div>
+                        </FormControl>
+
+
+                        {/* controls the layout of the form */}
+                        <CardContent
+                            sx={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(2, minmax(80px, 1fr))',
+                                gap: 1.5,
+                            }}
+                        >
+
+
+
+                            {/* Description segment of the normal workout window */}
+                            <FormControl sx={{ gridColumn: '1/-1' }}>
+                                <FormLabel>Description: </FormLabel>
+                                <FormLabel>{descText}</FormLabel>
+                            </FormControl>
+
+                            {/* Muscle group segment of the normal workout window */}
+                            <FormControl sx={{ gridColumn: '1/-1' }}>
+                                <FormLabel>Muscle Group: </FormLabel>
+                                <FormLabel>{muscleChoice} </FormLabel>
+                            </FormControl>
+
+                            {/* Equipment segment of the normal workout window */}
+                            <FormControl sx={{ gridColumn: '1/-1' }}>
+                                <FormLabel>Equipment: </FormLabel>
+                                <FormLabel>{equipmentChoice} </FormLabel>
+                            </FormControl>
+
+                            {/* weight range segment of the normal workout window */}
+                            <FormControl sx={{ gridColumn: '1/-1' }}>
+                                <FormLabel>Weight Range: </FormLabel>
+                                <Input onChange={handleChange} type='text' value={userInputs.username} name="weight range" placeholder="Enter Your weight range" />
+                            </FormControl>
+
+                            {/* rep range segment of the normal workout window */}
+                            <FormControl sx={{ gridColumn: '1/-1' }}>
+                                <FormLabel>Rep Range: </FormLabel>
+                                <Input onChange={handleChange} type='text' name='rep range' value={userInputs.password} placeholder="Enter your rep range" />
+                            </FormControl>
+
+                            {/* details of the button positioning */}
+                            <CardActions sx={{ gridColumn: '1/-1' }}>
+
+                                {/* responsible for the button of the bottom of the sign in window */}
+                                <Button type='submit' variant="solid" color="primary">
+                                    Create Workout
+                                </Button>
+                            </CardActions>
+                        </CardContent>
+                    </Card>
+                </Form>
+            </div>
+
 
             {/* If the user is logged in continue to the next ternary operator OR
                 if the user isn't logged in, prompt them to log in */}
