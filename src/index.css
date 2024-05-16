@@ -103,6 +103,7 @@ body {
 }
 
 .navigation {
+  /* changes the cursor to a pointer */
   cursor: pointer;
   border: none;
 }
