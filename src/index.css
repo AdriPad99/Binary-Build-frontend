@@ -105,6 +105,7 @@ body {
 .navigation {
   /* changes the cursor to a pointer */
   cursor: pointer;
+  /* removes any border if there is any */
   border: none;
 }
 
