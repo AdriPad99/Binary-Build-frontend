@@ -110,6 +110,7 @@ body {
 }
 
 .center {
+  /* fits the content within the given width of the screen */
   max-width: fit-content;
   /* controls the margin of both the left and right so it becomes centered */
   margin-left: auto;
