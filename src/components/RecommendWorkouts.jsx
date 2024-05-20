@@ -1,6 +1,8 @@
 import { useState, useContext } from "react";
 import AuthContext from "../context/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
+import { styled } from '@mui/material/styles';
+import Button from '@mui/material/Button';
 
 export default function RecommendWorkouts() {
 
@@ -119,13 +121,53 @@ export default function RecommendWorkouts() {
             {isOpen ?
                 (
                     <p>
-                        <button onClick={toggleWorkoutBox}>Close recommended workouts</button>
+                        <BootstrapButton onClick={toggleWorkoutBox} variant="contained" disableRipple>
+                        Close recommended workouts
+                        </BootstrapButton>
                     </p>
                 ) : (
                     <p>
-                        <button onClick={toggleWorkoutBox}>Open recommended workouts</button>
+                        <BootstrapButton onClick={toggleWorkoutBox} variant="contained" disableRipple>
+                        Open recommended workouts
+                        </BootstrapButton>
                     </p>
                 )}
         </>
     )
 }
+
+const BootstrapButton = styled(Button)({
+    boxShadow: 'none',
+    textTransform: 'none',
+    fontSize: 16,
+    padding: '6px 12px',
+    border: '1px solid',
+    lineHeight: 1.5,
+    backgroundColor: '#0063cc',
+    borderColor: '#0063cc',
+    fontFamily: [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
+    '&:hover': {
+      backgroundColor: '#0069d9',
+      borderColor: '#0062cc',
+      boxShadow: 'none',
+    },
+    '&:active': {
+      boxShadow: 'none',
+      backgroundColor: '#0062cc',
+      borderColor: '#005cbf',
+    },
+    '&:focus': {
+      boxShadow: '0 0 0 0.2rem rgba(0,123,255,.5)',
+    },
+  });
