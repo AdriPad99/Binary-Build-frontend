@@ -1,10 +1,13 @@
 import { useState, useEffect, useContext } from "react";
-import Button from 'react-bootstrap/Button';
+//import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { FormGroup, FormLabel, FormControl } from "react-bootstrap";
 import AuthContext from "../context/AuthContext";
 
 import { toast } from 'react-toastify';
+
+import { styled } from '@mui/material/styles';
+import Button from '@mui/material/Button';
 
 export default function UpdateCustomWorkout() {
 
@@ -405,7 +408,9 @@ export default function UpdateCustomWorkout() {
                 <div>
                     <h1>Update A Custom Workout</h1>
                     {/* Changes button text based on boolean state of updateForm */}
-                    <button onClick={toggleUpdateBox}>{updateForm ? 'Hide Update Workout' : 'Show Update Workout'}</button>
+                    <BootstrapButton onClick={toggleUpdateBox} variant="contained" disableRipple>
+                        {updateForm ? 'Hide Update Workout' : 'Show Update Workout'}
+                    </BootstrapButton>
 
                     {/* will continue to the next ternary operator if its deemed open OR
                         will display nothing on the page to the user if not open */}
@@ -415,7 +420,7 @@ export default function UpdateCustomWorkout() {
                                 if the api calls didn't or haven't gone through the user is prompted the form wasn't found */}
                             {(variationName, muscleName, equipmentName) ?
                                 // creates the form on page and calls the server when submitted
-                                (<Form  onSubmit={(handleUpdate)}>
+                                (<Form onSubmit={(handleUpdate)}>
 
                                     {/* muscle Group segment */}
                                     <Form.Group>
@@ -534,7 +539,7 @@ export default function UpdateCustomWorkout() {
                                     <input type="text" id="name" name="name" value={updateEnd} onChange={handleUpdateValue} />
                                     <br />
                                     <br />
-                                    <Button  variant="primary" type="submit">
+                                    <Button variant="primary" type="submit">
                                         Update Workout
                                     </Button>
                                 </Form>
@@ -555,3 +560,39 @@ export default function UpdateCustomWorkout() {
         </>
     )
 }
+
+const BootstrapButton = styled(Button)({
+    boxShadow: 'none',
+    textTransform: 'none',
+    fontSize: 16,
+    padding: '6px 12px',
+    border: '1px solid',
+    lineHeight: 1.5,
+    backgroundColor: '#0063cc',
+    borderColor: '#0063cc',
+    fontFamily: [
+        '-apple-system',
+        'BlinkMacSystemFont',
+        '"Segoe UI"',
+        'Roboto',
+        '"Helvetica Neue"',
+        'Arial',
+        'sans-serif',
+        '"Apple Color Emoji"',
+        '"Segoe UI Emoji"',
+        '"Segoe UI Symbol"',
+    ].join(','),
+    '&:hover': {
+        backgroundColor: '#0069d9',
+        borderColor: '#0062cc',
+        boxShadow: 'none',
+    },
+    '&:active': {
+        boxShadow: 'none',
+        backgroundColor: '#0062cc',
+        borderColor: '#005cbf',
+    },
+    '&:focus': {
+        boxShadow: '0 0 0 0.2rem rgba(0,123,255,.5)',
+    },
+});

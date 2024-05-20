@@ -20,7 +20,7 @@ html, body {
 .parent-container{
   display: flex;
   width: 500px;
-  height: 320px;
+  height: 350px;
   white-space: nowrap;
   position: relative;
   overflow-x: scroll;

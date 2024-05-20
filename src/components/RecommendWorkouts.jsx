@@ -106,7 +106,7 @@ export default function RecommendWorkouts() {
                                 Workout variation: {user.workout_variation}
                                 <br />
                                 {/* event in onClick to prevent react from re-rendering it every time the button is clicked. */}
-                                <button onClick={() => {test(user.workout_id, user.equipment, user.muscle_group, user.rep_range, user.weight_range, user.workout_variation, user.day), toast('Added to Your workouts successfully!')}}>Add workout {user.workout_id}<br />to your workouts</button>
+                                <button onClick={() => { test(user.workout_id, user.equipment, user.muscle_group, user.rep_range, user.weight_range, user.workout_variation, user.day), toast('Added to Your workouts successfully!') }}>Add workout {user.workout_id}<br />to your workouts</button>
                             </div>
                         </h3>
                     )}
@@ -122,13 +122,13 @@ export default function RecommendWorkouts() {
                 (
                     <p>
                         <BootstrapButton onClick={toggleWorkoutBox} variant="contained" disableRipple>
-                        Close recommended workouts
+                            Close recommended workouts
                         </BootstrapButton>
                     </p>
                 ) : (
                     <p>
                         <BootstrapButton onClick={toggleWorkoutBox} variant="contained" disableRipple>
-                        Open recommended workouts
+                            Open recommended workouts
                         </BootstrapButton>
                     </p>
                 )}
@@ -146,28 +146,28 @@ const BootstrapButton = styled(Button)({
     backgroundColor: '#0063cc',
     borderColor: '#0063cc',
     fontFamily: [
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
+        '-apple-system',
+        'BlinkMacSystemFont',
+        '"Segoe UI"',
+        'Roboto',
+        '"Helvetica Neue"',
+        'Arial',
+        'sans-serif',
+        '"Apple Color Emoji"',
+        '"Segoe UI Emoji"',
+        '"Segoe UI Symbol"',
     ].join(','),
     '&:hover': {
-      backgroundColor: '#0069d9',
-      borderColor: '#0062cc',
-      boxShadow: 'none',
+        backgroundColor: '#0069d9',
+        borderColor: '#0062cc',
+        boxShadow: 'none',
     },
     '&:active': {
-      boxShadow: 'none',
-      backgroundColor: '#0062cc',
-      borderColor: '#005cbf',
+        boxShadow: 'none',
+        backgroundColor: '#0062cc',
+        borderColor: '#005cbf',
     },
     '&:focus': {
-      boxShadow: '0 0 0 0.2rem rgba(0,123,255,.5)',
+        boxShadow: '0 0 0 0.2rem rgba(0,123,255,.5)',
     },
-  });
+});

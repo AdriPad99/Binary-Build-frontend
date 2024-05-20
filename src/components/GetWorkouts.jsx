@@ -5,14 +5,15 @@ import * as React from 'react';
 import { Dropdown } from '@mui/base/Dropdown';
 import { MenuButton as BaseMenuButton } from '@mui/base/MenuButton';
 import { MenuItem as BaseMenuItem, menuItemClasses } from '@mui/base/MenuItem';
-import { styled } from '@mui/system';
+//import { styled } from '@mui/system';
 
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
 import Card from '@mui/joy/Card';
 
-
+import { styled } from '@mui/material/styles';
+import Button from '@mui/material/Button';
 
 export default function GetWorkouts() {
 
@@ -84,7 +85,7 @@ export default function GetWorkouts() {
                 pauseOnHover
                 theme="dark"
             />
-            
+
             {/* controls the workout sub menu on the bottom of the page */}
             <Dropdown onOpenChange={toggleNewWorkoutBox}>
 
@@ -101,23 +102,25 @@ export default function GetWorkouts() {
                                 userData.map((user, i) => (
                                     <div key={i} id="test">
                                         <h3>
-                                        <Card 
-                                        invertedColors={false}
-                                        orientation="vertical"
-                                        size="lg"
-                                        variant="outlined"
-                                        color="neutral"
-                                        >
-                                            Workout Id: {user.workout_id} <br />
-                                            Day: {user.day} <br />
-                                            Equipment: {user.equipment}<br />
-                                            Muscle group: {user.muscle_group}<br />
-                                            Rep Range: {user.rep_range} reps <br />
-                                            Weight range: {user.weight_range} lbs<br />
-                                            Workout variation: {user.workout_variation}
-                                            <br />
-                                            <button onClick={() => (handleDelete(user.workout_id), toast('Successfully deleted Workout!'))}>Delete Workout</button>
-                        </Card>
+                                            <Card
+                                                invertedColors={false}
+                                                orientation="vertical"
+                                                size="lg"
+                                                variant="outlined"
+                                                color="neutral"
+                                            >
+                                                Workout Id: {user.workout_id} <br />
+                                                Day: {user.day} <br />
+                                                Equipment: {user.equipment}<br />
+                                                Muscle group: {user.muscle_group}<br />
+                                                Rep Range: {user.rep_range} reps <br />
+                                                Weight range: {user.weight_range} lbs<br />
+                                                Workout variation: {user.workout_variation}
+                                                <br />
+                                                <BootstrapButton onClick={() => (handleDelete(user.workout_id), toast('Successfully deleted Workout!'))} variant="contained" disableRipple>
+                                                    Delete Workout
+                                                </BootstrapButton>
+                                            </Card>
                                         </h3>
                                     </div>
                                 ))
@@ -240,3 +243,39 @@ const MenuButton = styled(BaseMenuButton)(
     }
     `,
 );
+
+const BootstrapButton = styled(Button)({
+    boxShadow: 'none',
+    textTransform: 'none',
+    fontSize: 16,
+    padding: '6px 12px',
+    border: '1px solid',
+    lineHeight: 1.5,
+    backgroundColor: '#0063cc',
+    borderColor: '#0063cc',
+    fontFamily: [
+        '-apple-system',
+        'BlinkMacSystemFont',
+        '"Segoe UI"',
+        'Roboto',
+        '"Helvetica Neue"',
+        'Arial',
+        'sans-serif',
+        '"Apple Color Emoji"',
+        '"Segoe UI Emoji"',
+        '"Segoe UI Symbol"',
+    ].join(','),
+    '&:hover': {
+        backgroundColor: '#0069d9',
+        borderColor: '#0062cc',
+        boxShadow: 'none',
+    },
+    '&:active': {
+        boxShadow: 'none',
+        backgroundColor: '#0062cc',
+        borderColor: '#005cbf',
+    },
+    '&:focus': {
+        boxShadow: '0 0 0 0.2rem rgba(0,123,255,.5)',
+    },
+});
