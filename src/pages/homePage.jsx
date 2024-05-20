@@ -9,6 +9,8 @@ export default function HomePage() {
   return (
     <>
 
+    <div className = "center">
+      
     {/* Logo on the homepage */}
     <div className="id">
     <img src="images/logo text2.png" alt="website logo"></img>
@@ -41,6 +43,8 @@ export default function HomePage() {
   <br/>
   <br/>
   <br/>
+    </div>
+
     </>
   )
 }
