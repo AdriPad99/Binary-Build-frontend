@@ -36,7 +36,7 @@ export default function UserProfileComponent() {
     useEffect(() => {
         const getUserData = async () => {
             try {
-                const response = await fetch('http://127.0.0.1:5000/signup/1');
+                const response = await fetch('https://capstone-db.onrender.com/signup/1');
                 if (response.ok) {
                     const data = await response.json();
                     setUserData({

@@ -10,7 +10,7 @@ export default function GetWorkoutsPage() {
     const getDBData = async () => {
 
       // fetches the server api that has all the workouts
-      const res = await fetch('http://127.0.0.1:5000/workouts')
+      const res = await fetch('https://capstone-db.onrender.com/workouts')
       if (res.ok) {
         const data = await res.json();
         setUserData(data)
@@ -28,7 +28,7 @@ export default function GetWorkoutsPage() {
   // Handle form submission for deleting a workout
   const handleDelete = async (id) => {
     //event.preventDefault(); // Prevent the default form submit behavior
-    const response = await fetch(`http://127.0.0.1:5000/workouts/${id}`, {
+    const response = await fetch(`https://capstone-db.onrender.com/workouts/${id}`, {
       method: 'DELETE', // sets method
       headers: {
         'Content-Type': 'application/json' // Indicates the content 

@@ -23,7 +23,7 @@ export default function RecommendWorkouts() {
         }
         else {
             // fetches the server api that has all the workouts
-            const res = await fetch('http://127.0.0.1:5000/randomWorkouts')
+            const res = await fetch('https://capstone-db.onrender.com/randomWorkouts')
             if (res.ok) {
                 const data = await res.json();
                 setUserData(data)
@@ -40,7 +40,7 @@ export default function RecommendWorkouts() {
     const test = async (id, equipment, muscle, rep, weight, workout, day) => {
 
         // add to user workouts
-        const response = await fetch('http://127.0.0.1:5000/workouts', {
+        const response = await fetch('https://capstone-db.onrender.com/workouts', {
             method: 'POST', // sets method
             headers: {
                 'Content-Type': 'application/json' // Indicates the content 

@@ -224,7 +224,7 @@ export default function CreateCustomWorkout() {
     // Handle form submission for adding a workout
     const handleSubmit = async (event) => {
         event.preventDefault(); // Prevent the default form submit behavior
-        const response = await fetch('http://127.0.0.1:5000/workouts', {
+        const response = await fetch('https://capstone-db.onrender.com/workouts', {
             method: 'POST', // sets method
             headers: {
                 'Content-Type': 'application/json' // Indicates the content 

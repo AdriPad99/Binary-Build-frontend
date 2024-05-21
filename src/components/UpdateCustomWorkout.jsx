@@ -150,7 +150,7 @@ export default function UpdateCustomWorkout() {
     // Handle form submission for updating a workout
     const handleUpdate = async (event) => {
         event.preventDefault(); // Prevent the default form submit behavior
-        const response = await fetch(`http://127.0.0.1:5000/workouts/${updateEnd}`, {
+        const response = await fetch(`https://capstone-db.onrender.com/workouts/${updateEnd}`, {
             method: 'PUT', // sets method
             headers: {
                 'Content-Type': 'application/json' // Indicates the content 

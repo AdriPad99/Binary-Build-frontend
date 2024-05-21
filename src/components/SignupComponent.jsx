@@ -41,7 +41,7 @@ export default function SignupComponent() {
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent the default form submit behavior
     // fetches from server
-    const response = await fetch('http://127.0.0.1:5000/signup', {
+    const response = await fetch('https://capstone-db.onrender.com/signup', {
       // sets the method
       method: 'POST',
       headers: {

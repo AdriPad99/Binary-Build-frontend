@@ -155,10 +155,10 @@ export default function CreateRandomWorkout() {
     const handleSubmit = async () => {
 
         // uncomment to add to user workouts
-        const response = await fetch('http://127.0.0.1:5000/workouts', {
+        const response = await fetch('https://capstone-db.onrender.com/workouts', {
 
             // uncomment to add to recommended workouts
-            //const response = await fetch('http://127.0.0.1:5000/randomWorkouts', {
+            //const response = await fetch('https://capstone-db.onrender.com/randomWorkouts', {
             method: 'POST', // sets method
             headers: {
                 'Content-Type': 'application/json' // Indicates the content 
