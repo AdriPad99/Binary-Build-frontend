@@ -1,6 +1,7 @@
 
 import { useState } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+//import { Routes, Route } from 'react-router-dom'
 import Navbare from './components/Navbare'
 import HomePage from './pages/homePage'
 import Signup from './pages/signup'
