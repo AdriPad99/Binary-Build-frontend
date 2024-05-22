@@ -13,7 +13,7 @@ export default function HomePage() {
       
     {/* Logo on the homepage */}
     <div className="id">
-    <img src="images/logo text2.png" alt="website logo"></img>
+    <img src="/images/logo text2.png" alt="website logo"></img>
     </div>
 
     {/* Shows recommended workouts if logged in OR

@@ -41,7 +41,7 @@ function Navbare() {
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             {/* image of the body builder on the navbar */}
-            <img src='images/logo3.png' alt='bodybuilder in binary' width='150' height='150' />
+            <img src='/images/logo3.png' alt='bodybuilder in binary' width='150' height='150' />
 
             {/* button linking to the home page */}
             <Box>
