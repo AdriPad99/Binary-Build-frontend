@@ -1,7 +1,7 @@
 
 import { useState } from 'react'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-//import { Routes, Route } from 'react-router-dom'
+//import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom'
 import Navbare from './components/Navbare'
 import HomePage from './pages/homePage'
 import Signup from './pages/signup'
@@ -32,12 +32,12 @@ function App() {
     <>
       <AuthProvider>
         <Navbare />
-        <Test/>
+        <Test />
         {isVisible && <TestLogin />}
         {isVisible && <RecommendWorkouts />}
-        {isVisible && <UserProfileComponent/>}
-        {isVisible && <CreateNormalWorkout/>}
-        {isVisible && <DropdownMenuComponent/>}
+        {isVisible && <UserProfileComponent />}
+        {isVisible && <CreateNormalWorkout />}
+        {isVisible && <DropdownMenuComponent />}
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path='/signup' element={<Signup />} />
