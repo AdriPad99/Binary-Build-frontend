@@ -11,9 +11,9 @@ export default function Test() {
 
   return (
     <>
-      <BootstrapButton variant="contained" disableRipple>
+      {/* <BootstrapButton variant="contained" disableRipple>
         test
-      </BootstrapButton>
+      </BootstrapButton> */}
     </>
   );
 }
