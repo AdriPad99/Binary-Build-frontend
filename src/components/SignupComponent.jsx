@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
 
 import * as React from 'react';
@@ -13,6 +12,9 @@ import FormLabel from '@mui/joy/FormLabel';
 import Input from '@mui/joy/Input';
 import Typography from '@mui/joy/Typography';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
+
+import { styled } from '@mui/material/styles';
+import Button from '@mui/material/Button';
 
 export default function SignupComponent() {
 
@@ -72,86 +74,123 @@ export default function SignupComponent() {
   return (
     <>
 
-    <div className='id'>
+      <div className='id'>
 
-      {/* start of the form for the user to fill out.
+        {/* start of the form for the user to fill out.
           make an api call when submitted. */}
-      <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit}>
 
-        {/* contains the content for the sign in window */}
-        <Card
-          variant="outlined"
-          sx={{
-            maxHeight: 'max-content',
-            maxWidth: '100%',
-            mx: 'auto',
-            // to make the demo resizable
-            overflow: 'auto',
-            resize: 'horizontal',
-          }}
-        >
-          
-          {/* this is the text at the top of the window */}
-          <Typography level="title-lg" startDecorator={<InfoOutlined />}>
-            Sign Up Binary Build
-          </Typography>
-
-          {/* the divider between the above title and input boxes of the form */}
-          <Divider inset="none" />
-
-          {/* controls the positioning of the window contents */}
-          <CardContent
+          {/* contains the content for the sign in window */}
+          <Card
+            variant="outlined"
             sx={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(2, minmax(80px, 1fr))',
-              gap: 1.5,
+              maxHeight: 'max-content',
+              maxWidth: '100%',
+              mx: 'auto',
+              // to make the demo resizable
+              overflow: 'auto',
+              resize: 'horizontal',
             }}
           >
 
-            {/* Username segment */}
-            <FormControl sx={{ gridColumn: '1/-1' }}>
-              <FormLabel>Username: </FormLabel>
-              <Input onChange={handleChange} type='text' value={userInfo.username} name="username" placeholder="Enter Your username" />
-            </FormControl>
+            {/* this is the text at the top of the window */}
+            <Typography level="title-lg" startDecorator={<InfoOutlined />}>
+              Sign Up Binary Build
+            </Typography>
 
-            {/* email segment */}
-            <FormControl sx={{ gridColumn: '1/-1' }}>
-              <FormLabel>Email: </FormLabel>
-              <Input onChange={handleChange} type='text' value={userInfo.email} name="email" placeholder="Enter Your email" />
-            </FormControl>
+            {/* the divider between the above title and input boxes of the form */}
+            <Divider inset="none" />
 
-            {/* password segment */}
-            <FormControl sx={{ gridColumn: '1/-1' }}>
-              <FormLabel>Password: </FormLabel>
-              <Input onChange={handleChange} type='password' name='password' value={userInfo.password} placeholder="Enter your password" />
-            </FormControl>
+            {/* controls the positioning of the window contents */}
+            <CardContent
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2, minmax(80px, 1fr))',
+                gap: 1.5,
+              }}
+            >
 
-            {/* first name segment */}
-            <FormControl sx={{ gridColumn: '1/-1' }}>
-              <FormLabel>First Name: </FormLabel>
-              <Input onChange={handleChange} type='text' value={userInfo.first_name} name="first_name" placeholder="Enter Your first name" />
-            </FormControl>
+              {/* Username segment */}
+              <FormControl sx={{ gridColumn: '1/-1' }}>
+                <FormLabel>Username: </FormLabel>
+                <Input onChange={handleChange} type='text' value={userInfo.username} name="username" placeholder="Enter Your username" />
+              </FormControl>
 
-            {/* username segment */}
-            <FormControl sx={{ gridColumn: '1/-1' }}>
-              <FormLabel>Username: </FormLabel>
-              <Input onChange={handleChange} type='text' value={userInfo.last_name} name="last_name" placeholder="Enter Your last name" />
-            </FormControl>
+              {/* email segment */}
+              <FormControl sx={{ gridColumn: '1/-1' }}>
+                <FormLabel>Email: </FormLabel>
+                <Input onChange={handleChange} type='text' value={userInfo.email} name="email" placeholder="Enter Your email" />
+              </FormControl>
 
-            {/* controls the positioning for the form button */}
-            <CardActions sx={{ gridColumn: '1/-1' }}>
+              {/* password segment */}
+              <FormControl sx={{ gridColumn: '1/-1' }}>
+                <FormLabel>Password: </FormLabel>
+                <Input onChange={handleChange} type='password' name='password' value={userInfo.password} placeholder="Enter your password" />
+              </FormControl>
 
-              {/* this is the button on the bottom of the window */}
-              <Button type='submit' variant="solid" color="primary">
-                Sign-In
-              </Button>
-            </CardActions>
-          </CardContent>
-        </Card>
-      </Form>
-    </div>
+              {/* first name segment */}
+              <FormControl sx={{ gridColumn: '1/-1' }}>
+                <FormLabel>First Name: </FormLabel>
+                <Input onChange={handleChange} type='text' value={userInfo.first_name} name="first_name" placeholder="Enter Your first name" />
+              </FormControl>
 
-      
+              {/* username segment */}
+              <FormControl sx={{ gridColumn: '1/-1' }}>
+                <FormLabel>Username: </FormLabel>
+                <Input onChange={handleChange} type='text' value={userInfo.last_name} name="last_name" placeholder="Enter Your last name" />
+              </FormControl>
+
+              {/* controls the positioning for the form button */}
+              <CardActions sx={{ gridColumn: '1/-1' }}>
+
+                {/* this is the button on the bottom of the window */}
+                <BootstrapButton type='submit' variant="contained" disableRipple>
+                  Sign-In
+                </BootstrapButton>
+              </CardActions>
+            </CardContent>
+          </Card>
+        </Form>
+      </div>
+
+      <br />
+      <br />
     </>
   )
 }
+
+const BootstrapButton = styled(Button)({
+  boxShadow: 'none',
+  textTransform: 'none',
+  fontSize: 16,
+  padding: '6px 12px',
+  border: '1px solid',
+  lineHeight: 1.5,
+  backgroundColor: '#0063cc',
+  borderColor: '#0063cc',
+  fontFamily: [
+    '-apple-system',
+    'BlinkMacSystemFont',
+    '"Segoe UI"',
+    'Roboto',
+    '"Helvetica Neue"',
+    'Arial',
+    'sans-serif',
+    '"Apple Color Emoji"',
+    '"Segoe UI Emoji"',
+    '"Segoe UI Symbol"',
+  ].join(','),
+  '&:hover': {
+    backgroundColor: '#0069d9',
+    borderColor: '#0062cc',
+    boxShadow: 'none',
+  },
+  '&:active': {
+    boxShadow: 'none',
+    backgroundColor: '#0062cc',
+    borderColor: '#005cbf',
+  },
+  '&:focus': {
+    boxShadow: '0 0 0 0.2rem rgba(0,123,255,.5)',
+  },
+});

@@ -46,7 +46,7 @@ export default function GetWorkouts() {
     // Handle form submission for deleting a workout
     const handleDelete = async (id) => {
         //event.preventDefault(); // Prevent the default form submit behavior
-        const response = await fetch(`https://capstone-db.onrender.com/${id}`, {
+        const response = await fetch(`https://capstone-db.onrender.com/workouts/${id}`, {
             method: 'DELETE', // sets method
             headers: {
                 'Content-Type': 'application/json' // Indicates the content 

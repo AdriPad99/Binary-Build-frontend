@@ -1,5 +1,4 @@
 import { useContext, useState } from 'react';
-import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,6 +14,9 @@ import FormLabel from '@mui/joy/FormLabel';
 import Input from '@mui/joy/Input';
 import Typography from '@mui/joy/Typography';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
+
+import { styled } from '@mui/material/styles';
+import Button from '@mui/material/Button';
 
 export default function TestLogin() {
 
@@ -66,65 +68,101 @@ export default function TestLogin() {
     return (
         <>
 
-        <div className='id'>
+            <div className='id'>
 
-            {/* start of the form for the users input */}
-            <Form onSubmit={handleSubmit}>
+                {/* start of the form for the users input */}
+                <Form onSubmit={handleSubmit}>
 
-                {/* responsible for the details of the box that contains the content */}
-                <Card
-                    variant="outlined"
-                    sx={{
-                        maxHeight: 'max-content',
-                        maxWidth: '100%',
-                        mx: 'auto',
-                        // to make the demo resizable
-                        overflow: 'auto',
-                        resize: 'horizontal',
-                    }}
-                >
-                    {/* The top tile of the card telling the user to sign in */}
-                    <Typography level="title-lg" startDecorator={<InfoOutlined />}>
-                        Sign Into Binary Build
-                    </Typography>
-
-                    {/* The divider between the title of the sign in box and the other input fields */}
-                    <Divider inset="none" />
-
-                    {/* controls the layout of the form */}
-                    <CardContent
+                    {/* responsible for the details of the box that contains the content */}
+                    <Card
+                        variant="outlined"
                         sx={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(2, minmax(80px, 1fr))',
-                            gap: 1.5,
+                            maxHeight: 'max-content',
+                            maxWidth: '100%',
+                            mx: 'auto',
+                            // to make the demo resizable
+                            overflow: 'auto',
+                            resize: 'horizontal',
                         }}
                     >
+                        {/* The top tile of the card telling the user to sign in */}
+                        <Typography level="title-lg" startDecorator={<InfoOutlined />}>
+                            Sign Into Binary Build
+                        </Typography>
 
-                        {/* username segment of the sign in window */}
-                        <FormControl sx={{ gridColumn: '1/-1' }}>
-                            <FormLabel>Username: </FormLabel>
-                            <Input onChange={handleChange} type='text' value={userInfo.username} name="username" placeholder="Enter Your username" />
-                        </FormControl>
+                        {/* The divider between the title of the sign in box and the other input fields */}
+                        <Divider inset="none" />
 
-                        {/* password segment of the password window */}
-                        <FormControl sx={{ gridColumn: '1/-1' }}>
-                            <FormLabel>Password: </FormLabel>
-                            <Input onChange={handleChange} type='password' name='password' value={userInfo.password} placeholder="Enter your password" />
-                        </FormControl>
+                        {/* controls the layout of the form */}
+                        <CardContent
+                            sx={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(2, minmax(80px, 1fr))',
+                                gap: 1.5,
+                            }}
+                        >
 
-                        {/* details of the button positioning */}
-                        <CardActions sx={{ gridColumn: '1/-1' }}>
-                            
-                            {/* responsible for the button of the bottom of the sign in window */}
-                            <Button type='submit' variant="solid" color="primary">
-                                Sign-In
-                            </Button>
-                        </CardActions>
-                    </CardContent>
-                </Card>
-            </Form>
-        </div>
+                            {/* username segment of the sign in window */}
+                            <FormControl sx={{ gridColumn: '1/-1' }}>
+                                <FormLabel>Username: </FormLabel>
+                                <Input onChange={handleChange} type='text' value={userInfo.username} name="username" placeholder="Enter Your username" />
+                            </FormControl>
+
+                            {/* password segment of the password window */}
+                            <FormControl sx={{ gridColumn: '1/-1' }}>
+                                <FormLabel>Password: </FormLabel>
+                                <Input onChange={handleChange} type='password' name='password' value={userInfo.password} placeholder="Enter your password" />
+                            </FormControl>
+
+                            {/* details of the button positioning */}
+                            <CardActions sx={{ gridColumn: '1/-1' }}>
+
+                                {/* responsible for the button of the bottom of the sign in window */}
+                                <BootstrapButton type='submit' variant="contained" disableRipple>
+                                    Sign-In
+                                </BootstrapButton>
+                            </CardActions>
+                        </CardContent>
+                    </Card>
+                </Form>
+            </div>
 
         </>
     )
 }
+
+const BootstrapButton = styled(Button)({
+    boxShadow: 'none',
+    textTransform: 'none',
+    fontSize: 16,
+    padding: '6px 12px',
+    border: '1px solid',
+    lineHeight: 1.5,
+    backgroundColor: '#0063cc',
+    borderColor: '#0063cc',
+    fontFamily: [
+        '-apple-system',
+        'BlinkMacSystemFont',
+        '"Segoe UI"',
+        'Roboto',
+        '"Helvetica Neue"',
+        'Arial',
+        'sans-serif',
+        '"Apple Color Emoji"',
+        '"Segoe UI Emoji"',
+        '"Segoe UI Symbol"',
+    ].join(','),
+    '&:hover': {
+        backgroundColor: '#0069d9',
+        borderColor: '#0062cc',
+        boxShadow: 'none',
+    },
+    '&:active': {
+        boxShadow: 'none',
+        backgroundColor: '#0062cc',
+        borderColor: '#005cbf',
+    },
+    '&:focus': {
+        boxShadow: '0 0 0 0.2rem rgba(0,123,255,.5)',
+    },
+});

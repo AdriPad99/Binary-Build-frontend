@@ -152,10 +152,12 @@ export default function CreateNormalWorkout() {
             }
         }
 
-        renderVariations();
-        renderMuscles();
-        renderEquipment();
-        renderDay();
+        const fetchData = async () => {
+            await Promise.all([renderVariations(), renderMuscles(), renderEquipment(), renderDay()]);
+            CreateCustomWorkoutBox();
+        };
+
+        fetchData();
     }, []);
 
     // calls the function to set arrays and swaps boolean state when called
@@ -368,306 +370,142 @@ export default function CreateNormalWorkout() {
 
     return (
         <>
-
-            {/* start of the form for the users input */}
-            <Form onSubmit={handleSubmit}>
-
-                {/* responsible for the details of the box that contains the content */}
-                <Card
-                    variant="outlined"
-                    sx={{
-                        maxHeight: 'max-content',
-                        maxWidth: '60%',
-                        mx: 'auto',
-                        // to make the demo resizable
-                        overflow: 'auto',
-                        resize: 'horizontal',
-                    }}
-                >
-                    {/* The top tile of the card telling the user to sign in */}
-                    <Typography level="title-lg" startDecorator={<InfoOutlined />}>
-                        Create a Normal Workout
-                    </Typography>
-
-                    {/* The divider between the title of the sign in box and the other input fields */}
-                    <Divider inset="none" />
-
-
-                    {/* Day of the week segment */}
-                    <FormControl>
-                        <div className="center">
-                            <div >
-                                <button onClick={previousDay} className="navigation">
-                                    <ArrowBackIcon />
-                                </button>
-                                {dayChoice ? (
-                                    <>
-                                        {dayChoice}
-                                    </>
-                                ) : (
-                                    <>
-                                        Please select a button
-                                    </>
-                                )}
-                                <button onClick={nextDay} className="navigation">
-                                    <ArrowForwardIcon />
-                                </button>
-                            </div>
-                        </div>
-                    </FormControl>
-
-                    {/* Workout variation segment */}
-                    <FormControl>
-                        <div className="center">
-                            <div >
-                                <button onClick={previousWorkoutVariation} className="navigation">
-                                    <ArrowBackIcon />
-                                </button>
-                                {variationChoice ? (
-                                    <>
-                                        {variationChoice}
-                                    </>
-                                ) : (
-                                    <>
-                                        Please select a button
-                                    </>
-                                )}
-                                <button onClick={nextWorkoutVariation} className="navigation">
-                                    <ArrowForwardIcon />
-                                </button>
-                            </div>
-                        </div>
-                    </FormControl>
-
-
-                    {/* controls the layout of the form */}
-                    <CardContent
-                        sx={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(2, minmax(80px, 1fr))',
-                            gap: 1.5,
-                        }}
-                    >
-
-
-
-                        {/* Description segment of the normal workout window */}
-                        <FormControl sx={{ gridColumn: '1/-1' }}>
-                            <FormLabel>Description: </FormLabel>
-                            <FormLabel>{descText}</FormLabel>
-                        </FormControl>
-
-                        {/* Muscle group segment of the normal workout window */}
-                        <FormControl sx={{ gridColumn: '1/-1' }}>
-                            <FormLabel>Muscle Group: </FormLabel>
-                            <FormLabel>{muscleChoice} </FormLabel>
-                        </FormControl>
-
-                        {/* Equipment segment of the normal workout window */}
-                        <FormControl sx={{ gridColumn: '1/-1' }}>
-                            <FormLabel>Equipment: </FormLabel>
-                            <FormLabel>{equipmentChoice} </FormLabel>
-                        </FormControl>
-
-                        {/* weight range segment of the normal workout window */}
-                        <FormControl sx={{ gridColumn: '1/-1' }}>
-                            <FormLabel>Weight Range: </FormLabel>
-                            <Input onChange={handleChange} type='text' value={userInputs.username} name="weight range" placeholder="Enter Your weight range" />
-                        </FormControl>
-
-                        {/* rep range segment of the normal workout window */}
-                        <FormControl sx={{ gridColumn: '1/-1' }}>
-                            <FormLabel>Rep Range: </FormLabel>
-                            <Input onChange={handleChange} type='text' name='rep range' value={userInputs.password} placeholder="Enter your rep range" />
-                        </FormControl>
-
-                        {/* details of the button positioning */}
-                        <CardActions sx={{ gridColumn: '1/-1' }}>
-
-                            {/* responsible for the button of the bottom of the sign in window */}
-                            <div>
-                                <BootstrapButton type='submit' variant="contained" disableRipple>
-                                    Create Workout
-                                </BootstrapButton>
-                            </div>
-                        </CardActions>
-                    </CardContent>
-                </Card>
-            </Form>
-
-
-            {/* If the user is logged in continue to the next ternary operator OR
-                if the user isn't logged in, prompt them to log in */}
-            {String(token).length > 4 ? (
+            {workoutsReady ? (
                 <>
-                    <h1>Create A Normal Workout</h1>
-                    {/* If the workout api call is successfull move onto the next ternary operator OR
-                        if the ternary operator hasn't finished loading inform the user of the wait */}
-                    {workoutsReady ? (
-                        needsForm ?
-                            (
-                                // if the menu is open close the menu
-                                <button onClick={toggleNewWorkoutBox}>Hide New Workout Menu</button>
-                            ) : (
-                                // if menu is closed open the menu
-                                <button onClick={toggleNewWorkoutBox}>Show New Workout Menu</button>
-                            )
-                    ) : (
-                        <h1>wait</h1>
-                    )}
+                    {/* start of the form for the users input */}
+                    <Form onSubmit={handleSubmit}>
 
-                    {/* if the box is deemed as open, move onto the next ternary operator OR
-                        if the box is deemed as closed, show nothing on screen */}
-                    {needsForm ? (
-                        <div>
-                            {/* If all the api requests are successful, reveal the form for the user OR
-                                inform the user that the form isn't ready yet.*/}
-                            {(variationName, muscleName, equipmentName, dayName) ?
-                                (<Form onSubmit={handleSubmit}>
+                        {/* responsible for the details of the box that contains the content */}
+                        <Card
+                            variant="outlined"
+                            sx={{
+                                maxHeight: 'max-content',
+                                maxWidth: '60%',
+                                mx: 'auto',
+                                // to make the demo resizable
+                                overflow: 'auto',
+                                resize: 'horizontal',
+                            }}
+                        >
+                            {/* The top tile of the card telling the user to sign in */}
+                            <Typography level="title-lg" startDecorator={<InfoOutlined />}>
+                                Create a Normal Workout
+                            </Typography>
 
-                                    {/* Workout Variation Segment */}
+                            {/* The divider between the title of the sign in box and the other input fields */}
+                            <Divider inset="none" />
+
+
+                            {/* Day of the week segment */} {/* Workout variation segment */}
+                            {needsForm ? (
+                                <>
                                     <Form.Group>
-
-                                        <br />
-                                        <Form.Label htmlFor="inputDay_of_The_Week">Day Of The Week:</Form.Label>
-                                        <br />
                                         <Form.Label value={dayChoice}>
-                                            <button onClick={previousDay}>Previous</button>
-                                            {dayChoice ? (
-                                                <>
-                                                    {dayChoice}
-                                                </>
-                                            ) : (
-                                                'Please choose a button'
-                                            )}
+                                            <div className="center">
+                                                <br />
+                                                <Form.Label htmlFor="inputDay_of_The_Week">Day Of The Week:</Form.Label>
+                                                <br />
+                                                <button onClick={previousDay}><ArrowBackIcon /></button>
+                                                {dayChoice ? (
+                                                    <>
+                                                        {dayChoice}
+                                                    </>
+                                                ) : (
+                                                    'Please choose a button'
+                                                )}
 
-                                            <button onClick={nextDay}>Next</button>
+                                                <button onClick={nextDay}><ArrowForwardIcon /></button>
+
+                                            </div>
                                         </Form.Label>
                                     </Form.Group>
 
-
-                                    {/* Workout Variation Segment */}
                                     <Form.Group>
-
-                                        <br />
-                                        <Form.Label htmlFor="inputWorkout_Variation">Workout Variation:</Form.Label>
-                                        <br />
                                         <Form.Label value={variationChoice}>
-                                            <button onClick={previousWorkoutVariation}>Previous</button>
-                                            {variationChoice ? (
-                                                <>
-                                                    {variationChoice}
-                                                </>
-                                            ) : (
-                                                'Please choose a button'
-                                            )}
+                                            <div className="center">
+                                                <br />
+                                                <Form.Label htmlFor="inputWorkout_Variation">Workout Variation:</Form.Label>
+                                                <br />
+                                                <button onClick={previousWorkoutVariation}><ArrowBackIcon /></button>
+                                                {variationChoice ? (
+                                                    <>
+                                                        {variationChoice}
+                                                    </>
+                                                ) : (
+                                                    'Please choose a button'
+                                                )}
 
-                                            <button onClick={nextWorkoutVariation}>Next</button>
+                                                <button onClick={nextWorkoutVariation}><ArrowForwardIcon /></button>
+                                            </div>
                                         </Form.Label>
                                     </Form.Group>
+                                </>
+                            ) : (
+                                <>
+                                    <div className="center">
+                                        <button onClick={toggleNewWorkoutBox}>Choose Day & Workout</button>
+                                    </div>
+                                </>
+                            )}
 
-                                    {/* Description segment */}
-                                    <Form.Group>
-
-                                        <br />
-                                        <Form.Label htmlFor="inputWorkout_Variation">Description:</Form.Label>
-                                        <br />
-                                        <Form.Label value={variationChoice}>
-                                            {descText ? (
-                                                <>
-                                                    {descText}
-                                                </>
-                                            ) : (
-                                                'Please choose a button'
-                                            )}
-                                        </Form.Label>
-                                    </Form.Group>
-
-
-                                    {/* Muscle Group Segment */}
-                                    <Form.Group>
-                                        <br />
-                                        <Form.Label htmlFor="inputMuscle_Group">Muscle Group:</Form.Label>
-                                        <br />
-                                        <Form.Label value={muscleChoice}>
-                                            {muscleChoice ? (
-                                                <>
-                                                    {muscleChoice}
-                                                </>
-                                            ) : (
-                                                'Please choose a button'
-                                            )}
-
-                                        </Form.Label>
-
-                                    </Form.Group>
-                                    <br />
+                            {/* controls the layout of the form */}
+                            <CardContent
+                                sx={{
+                                    display: 'grid',
+                                    gridTemplateColumns: 'repeat(2, minmax(80px, 1fr))',
+                                    gap: 1.5,
+                                }}
+                            >
 
 
-                                    {/* Equipment Segment */}
-                                    <Form.Group>
-                                        <Form.Label htmlFor="inputEquipment">Equipment:</Form.Label>
-                                        <br />
-                                        <Form.Label value={equipmentChoice} >
-                                            {equipmentChoice ? (
-                                                <>
-                                                    {equipmentChoice}
-                                                </>
-                                            ) : (
-                                                'Please choose a button'
-                                            )}
 
-                                        </Form.Label>
+                                {/* Description segment of the normal workout window */}
+                                <FormControl sx={{ gridColumn: '1/-1' }}>
+                                    <FormLabel>Description: </FormLabel>
+                                    <FormLabel>{descText}</FormLabel>
+                                </FormControl>
 
-                                    </Form.Group>
-                                    <br />
+                                {/* Muscle group segment of the normal workout window */}
+                                <FormControl sx={{ gridColumn: '1/-1' }}>
+                                    <FormLabel>Muscle Group: </FormLabel>
+                                    <FormLabel>{muscleChoice} </FormLabel>
+                                </FormControl>
 
+                                {/* Equipment segment of the normal workout window */}
+                                <FormControl sx={{ gridColumn: '1/-1' }}>
+                                    <FormLabel>Equipment: </FormLabel>
+                                    <FormLabel>{equipmentChoice} </FormLabel>
+                                </FormControl>
 
-                                    {/* Weight Range Segment */}
-                                    <Form.Group>
-                                        <Form.Label htmlFor="inputWeight_Range">Weight Range:</Form.Label>
-                                        <br />
-                                        <Form.Control
-                                            type="text"
-                                            name="weight_range"
-                                            value={userInputs.weight_range}
-                                            onChange={handleChange}
-                                            placeholder="Weight Range"
-                                        />
-                                    </Form.Group>
-                                    <br />
+                                {/* weight range segment of the normal workout window */}
+                                <FormControl sx={{ gridColumn: '1/-1' }}>
+                                    <FormLabel>Weight Range: </FormLabel>
+                                    <Input onChange={handleChange} type='text' value={userInputs.weight_range} name="weight_range" placeholder="Enter Your weight range" />
+                                </FormControl>
 
-                                    {/* Rep Range Segment */}
-                                    <Form.Group>
-                                        <Form.Label htmlFor="inputRep_Range">Rep Range:</Form.Label>
-                                        <br />
-                                        <Form.Control
-                                            type="text"
-                                            name="rep_range"
-                                            value={userInputs.rep_range}
-                                            onChange={handleChange}
-                                            placeholder="Rep Range"
-                                        />
-                                        <br />
-                                    </Form.Group>
-                                    <br />
-                                    <br />
+                                {/* rep range segment of the normal workout window */}
+                                <FormControl sx={{ gridColumn: '1/-1' }}>
+                                    <FormLabel>Rep Range: </FormLabel>
+                                    <Input onChange={handleChange} type='text' name='rep_range' value={userInputs.rep_range} placeholder="Enter your rep range" />
+                                </FormControl>
 
-                                    <Button onClick={() => (toast('test'))} variant="primary" type="submit">
-                                        Submit
-                                    </Button>
-                                </Form>
-                                ) : (
-                                    // or output a lack of a form
-                                    <h1>form not ready</h1>
-                                )}
-                        </div>) : (
-                        ''
-                    )}
+                                {/* details of the button positioning */}
+                                <CardActions sx={{ gridColumn: '1/-1' }}>
+
+                                    {/* responsible for the button of the bottom of the sign in window */}
+                                    <div>
+                                        <BootstrapButton type='submit' variant="contained" disableRipple>
+                                            Create Workout
+                                        </BootstrapButton>
+                                    </div>
+                                </CardActions>
+                            </CardContent>
+                        </Card>
+                    </Form>
                 </>
             ) : (
                 <>
-                    <h1>Please login to create a Normal Workout</h1>
+                    <h1>Loading...</h1>
                 </>
             )}
 
