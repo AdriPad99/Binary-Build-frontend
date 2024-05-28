@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 
+import Card from '@mui/joy/Card';
+
 export default function GetWorkoutsPage() {
 
   useEffect(() => {
@@ -54,17 +56,25 @@ export default function GetWorkoutsPage() {
           userData.map((user, i) => (
             <div key={i} id="test">
               <h3>
-                Workout Id: {user.workout_id} <br />
-                Day: {user.day} <br />
-                Equipment: {user.equipment}<br />
-                Muscle group: {user.muscle_group}<br />
-                Rep Range: {user.rep_range} reps <br />
-                Weight range: {user.weight_range} lbs<br />
-                Workout variation: {user.workout_variation}
-                <br />
-                <BootstrapButton onClick={() => handleDelete(user.workout_id)} variant="contained" disableRipple>
-                  Delete Workout
-                </BootstrapButton>
+                <Card
+                  invertedColors={false}
+                  orientation="vertical"
+                  size="lg"
+                  variant="outlined"
+                  color="neutral"
+                >
+                  Workout Id: {user.workout_id} <br />
+                  Day: {user.day} <br />
+                  Equipment: {user.equipment}<br />
+                  Muscle group: {user.muscle_group}<br />
+                  Rep Range: {user.rep_range} reps <br />
+                  Weight range: {user.weight_range} lbs<br />
+                  Workout variation: {user.workout_variation}
+                  <br />
+                  <BootstrapButton onClick={() => handleDelete(user.workout_id)} variant="contained" disableRipple>
+                    Delete Workout
+                  </BootstrapButton>
+                </Card>
               </h3>
             </div>
           ))
