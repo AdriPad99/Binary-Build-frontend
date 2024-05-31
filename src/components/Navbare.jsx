@@ -16,14 +16,16 @@ import Divider from '@mui/material/Divider';
 import DropdownMenuComponent from './DropdownMenuComponent';
 
 function Navbare() {
+  // reveals what is shown based on if the user is logged in
   const { token, logout } = useContext(AuthContext);
 
+  // logs the user out
   const userLogout = () => {
     logout();
   };
 
+  // handles the state of the user menu and either opens or closes it
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -32,6 +34,7 @@ function Navbare() {
     setAnchorElUser(null);
   };
 
+  // controls the styles of the links on the navbar
   const linkStyle = {
     textDecoration: 'none',
     color: 'Black',
@@ -42,13 +45,18 @@ function Navbare() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
+          {/* Navbar logo */}
           <img src='/images/logo3.png' alt='bodybuilder in binary' width='150' height='150' />
+          {/* conttainer holding the home link */}
           <Box>
             <Button>
               <a style={linkStyle} id='middle' href="/">Home</a>
             </Button>
           </Box>
+          {/* container holding the link between home and the dropdown menu */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            {/* if user is logged in show the sign-up link OR
+                if user is logged outt show the sign-in and sign-up link */}
             {String(token).length > 4 ? (
               <a style={linkStyle} id='middle' href="/signup">
                 <Button style={linkStyle}>Try for Free</Button>
@@ -65,12 +73,16 @@ function Navbare() {
             )}
             <DropdownMenuComponent />
           </Box>
+          {/* controls how the menu is aligned */}
           <Box sx={{ flexGrow: 0 }}>
+            {/* tooltip on menu hover */}
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                {/* responsible for the profile image */}
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
+            {/* profile menu styling */}
             <Menu
               sx={{ mt: '45px' }}
               id="menu-appbar"
@@ -87,8 +99,12 @@ function Navbare() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
+              {/* contains the menu items */}
               <MenuItem onClick={handleCloseUserMenu}>
+                {/* centers menu text */}
                 <Typography textAlign="center">
+                  {/* if user is logged in show the profile and sign-out option OR
+                      if user is logged out show the sign-in andd sign-up option */}
                   {String(token).length > 4 ? (
                     <>
                       <a style={linkStyle} id='profile' href="/profile">Profile</a>
