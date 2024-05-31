@@ -33,13 +33,15 @@ export default function CreateCustomWorkout() {
 
     // state for user selections
     const [userInputs, setUserInputs] = useState({
-        "muscle_group": "",
-        "equipment": "",
-        "rep_range": '',
-        "weight_range": '',
-        "workout_variation": "",
-        "day": ""
-    })
+        muscle_group: "",
+        equipment: "",
+        rep_range: "",
+        weight_range: "",
+        workout_variation: "",
+        day: ""
+    });
+    
+    
 
     // set state for controlling when workouts are loaded
     const [dayReady, setDayReady] = useState(false)
@@ -55,7 +57,7 @@ export default function CreateCustomWorkout() {
     const [dayChoice, setDayChoice] = useState()
 
     // set state for date counter
-    const [dayCounter, setDayCounter] = useState(0)
+    const [dayCounter, setDayCounter] = useState(-1)
     /////////////////////////////////////////////////////////
 
     // calls the functions on initial page render
@@ -78,6 +80,9 @@ export default function CreateCustomWorkout() {
 
                 // set the array of names to the day state
                 setDayName(copy);
+                // Set initial dayCounter to a valid index
+                setDayCounter(0);
+                setDayChoice(copy[0]);
                 /////////////////////////////////////
 
             }
@@ -89,6 +94,7 @@ export default function CreateCustomWorkout() {
 
         renderDay();
     }, [counter]);
+
 
     // Update button state based on dayCounter
     useEffect(() => {
@@ -153,19 +159,20 @@ export default function CreateCustomWorkout() {
 
     // controls moving right through days
     const previousDay = () => {
-
-        // decrement day counter by one
-        setDayCounter(dayCounter - 1)
-        setDayChoice(dayData.results[dayCounter].day_of_week)
-
+        if (dayCounter > 0) {
+            setDayCounter(dayCounter - 1);
+            setDayChoice(dayData.results[dayCounter - 1].day_of_week);
+        }
     }
 
     // controls moving left through days
     const nextDay = () => {
-
-        setDayCounter(dayCounter + 1);
-        setDayChoice(dayData.results[dayCounter].day_of_week)
+        if (dayCounter < dayData.results.length - 1) {
+            setDayCounter(dayCounter + 1);
+            setDayChoice(dayData.results[dayCounter + 1].day_of_week);
+        }
     }
+
 
     // Handle changes in form inputs and displays them on screen as they happen
     const handleChange = (event) => {
@@ -223,7 +230,7 @@ export default function CreateCustomWorkout() {
                                         <Form.Label htmlFor="inputDay_of_The_Week">Day Of The Week:</Form.Label>
                                         <br />
                                         <button type="button" disabled={isLeftEnabled} onClick={previousDay}><ArrowBackIcon /></button>
-                                        {dayChoice ? (<>{dayChoice}</>) : ('Monday')}
+                                        {dayChoice ? (<>{dayChoice}</>) : ('Please select a button')}
                                         <button type="button" disabled={isRightEnabled} onClick={nextDay}><ArrowForwardIcon /></button>
                                     </div>
                                 </Form.Label>
@@ -232,32 +239,32 @@ export default function CreateCustomWorkout() {
                                 {/* muscle group segment */}
                                 <FormControl sx={{ gridColumn: '1/-1' }}>
                                     <FormLabel>Muscle: </FormLabel>
-                                    <Input onChange={handleChange} type='text' value={userInputs.muscle_group} name="muscle_group" placeholder="Enter the muscle group" />
+                                    <Input onChange={handleChange} type='text' value={userInputs.muscle_group || ""} name="muscle_group" placeholder="Enter the muscle group" />
                                 </FormControl>
 
                                 {/* workout variation segment */}
                                 <FormControl sx={{ gridColumn: '1/-1' }}>
                                     <FormLabel>Workout Variation: </FormLabel>
-                                    <Input onChange={handleChange} type='text' value={userInputs.variation} name="variation" placeholder="Enter your exercise variation" />
+                                    <Input onChange={handleChange} type='text' value={userInputs.variation || ""} name="variation" placeholder="Enter your exercise variation" />
                                 </FormControl>
 
                                 {/* workout equipment segment */}
                                 <FormControl sx={{ gridColumn: '1/-1' }}>
                                     <FormLabel>Equipment: </FormLabel>
-                                    <Input onChange={handleChange} type='text' value={userInputs.equipment} name="equipment" placeholder="Enter your equipment" />
+                                    <Input onChange={handleChange} type='text' value={userInputs.equipment || ""} name="equipment" placeholder="Enter your equipment" />
                                 </FormControl>
 
 
                                 {/* weight range segment of the normal workout window */}
                                 <FormControl sx={{ gridColumn: '1/-1' }}>
                                     <FormLabel>Weight Range: </FormLabel>
-                                    <Input onChange={handleChange} type='text' value={userInputs.weight_range} name="weight_range" placeholder="Enter your weight range" />
+                                    <Input onChange={handleChange} type='text' value={userInputs.weight_range || ""} name="weight_range" placeholder="Enter your weight range" />
                                 </FormControl>
 
                                 {/* rep range segment of the normal workout window */}
                                 <FormControl sx={{ gridColumn: '1/-1' }}>
                                     <FormLabel>Rep Range: </FormLabel>
-                                    <Input onChange={handleChange} type='text' name='rep_range' value={userInputs.rep_range} placeholder="Enter your rep range" />
+                                    <Input onChange={handleChange} type='text' name='rep_range' value={userInputs.rep_range || ""} placeholder="Enter your rep range" />
                                 </FormControl>
 
                                 {/* details of the button positioning */}
