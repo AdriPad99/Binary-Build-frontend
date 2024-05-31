@@ -1,7 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import Form from 'react-bootstrap/Form';
 import AuthContext from "../context/AuthContext";
-
 import * as React from 'react';
 import Card from '@mui/joy/Card';
 import CardActions from '@mui/joy/CardActions';
@@ -12,16 +11,13 @@ import FormLabel from '@mui/joy/FormLabel';
 import Input from '@mui/joy/Input';
 import Typography from '@mui/joy/Typography';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
-
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 
 export default function CreateNormalWorkout() {
-
-    const { token, refresh } = useContext(AuthContext)
+    const { token, refresh } = useContext(AuthContext);
 
     // state for user selections
     const [userInputs, setUserInputs] = useState({
@@ -31,126 +27,82 @@ export default function CreateNormalWorkout() {
         "weight_range": '',
         "workout_variation": "",
         "day": ""
-    })
+    });
 
+    // controls when certain things are shown on screen
+    const [needsForm, setNeedsForm] = useState(false);
+    const [workoutsReady, setWorkoutsReady] = useState(false);
 
-    // set state for controlling when a form is on screen
-    const [needsForm, setNeedsForm] = useState(false)
+    // state for the description text
+    const [descText, setDescText] = useState();
 
-    // TEST set state for controlling when workouts are loaded
-    const [workoutsReady, setWorkoutsReady] = useState(false)
+    // states for days
+    const [dayData, setDayData] = useState();
+    const [dayName, setDayName] = useState();
+    const [dayChoice, setDayChoice] = useState();
+    const [dayCounter, setDayCounter] = useState(0);
+    const [dayLength, setDayLength] = useState(0);
 
-    // state for description
-    const [descText, setDescText] = useState()
+    // states for variations
+    const [workoutData, setWorkoutData] = useState();
+    const [variationName, setVariationName] = useState({});
+    const [variationChoice, setVariationChoice] = useState();
+    const [variationCounter, setVariationCounter] = useState(0);
 
-    /////////////////////////////////////////////////////////
-    // state for day data from api call
-    const [dayData, setDayData] = useState()
+    // states for muscles
+    const [muscleData, setMuscleData] = useState();
+    const [muscleName, setMuscleName] = useState([]);
+    const [muscleChoice, setMuscleChoice] = useState();
 
-    // state for day name
-    const [dayName, setDayName] = useState()
+    // states for equipment
+    const [equipmentData, setEquipmentData] = useState();
+    const [equipmentName, setEquipmentName] = useState();
+    const [equipmentChoice, setEquipmentChoice] = useState();
 
-    // set state for day choice
-    const [dayChoice, setDayChoice] = useState()
-
-    // set state for date counter
-    const [dayCounter, setDayCounter] = useState(0)
-
-    const [dayLength, setDayLength] = useState(0)
-    /////////////////////////////////////////////////////////
-
-    ////////////////////////////////////////////////////////
-    // state for workout data from api call
-    const [workoutData, setWorkoutData] = useState()
-
-    // state for workout name
-    const [variationName, setvariationName] = useState({})
-
-    // set state for the selected users choice
-    const [variationChoice, setVariationChoice] = useState()
-
-    //sets state for counter to go through the array choices
-    const [variationCounter, setVariationCounter] = useState(0)
-    /////////////////////////////////////////////////////////
-
-    /////////////////////////////////////////////////////////
-    // state for muscle data from api call
-    const [muscleData, setMuscleData] = useState()
-
-    // state for muscle group
-    const [muscleName, setMuscleName] = useState([])
-
-    // set state for muscle choice
-    const [muscleChoice, setMuscleChoice] = useState()
-    /////////////////////////////////////////////////////////
-
-    /////////////////////////////////////////////////////////
-    // state for equipment data from api call
-    const [equipmentData, setEquipmentData] = useState()
-
-    // state for equipment Name
-    const [equipmentName, setEquipmentName] = useState()
-
-    // set state for equipment choice
-    const [equipmentChoice, setEquipmentChoice] = useState()
-    /////////////////////////////////////////////////////////
-
-    // calls the functions on initial page render
+    // calls all the API's on render and sets the data or errors out
+    // if something happens
     useEffect(() => {
-        // calls the api that has translations 
-        //(or so I thought. I thought it was all english but it wasn't)
         const renderVariations = async () => {
-            const res = await fetch('https://wger.de/api/v2/exercise/?limit=1369&offset=0')
+            const res = await fetch('https://wger.de/api/v2/exercise/?limit=1369&offset=0');
             if (res.ok) {
                 const data = await res.json();
                 setWorkoutData(data);
                 setWorkoutsReady(true);
+            } else {
+                console.error("Couldn't get the products :(");
             }
-            // if not error out
-            else {
-                console.error("Couldn't get the products :(")
-            }
-        }
+        };
 
-        // calls the api that has the muscle groups
         const renderMuscles = async () => {
-            const res = await fetch('https://wger.de/api/v2/muscle/')
+            const res = await fetch('https://wger.de/api/v2/muscle/');
             if (res.ok) {
                 const data = await res.json();
                 setMuscleData(data);
+            } else {
+                console.error("Couldn't get the products :(");
             }
-            // if not error out
-            else {
-                console.error("Couldn't get the products :(")
-            }
-        }
+        };
 
-        // calls the api that has the workout equipment
         const renderEquipment = async () => {
-            const res = await fetch('https://wger.de/api/v2/equipment/')
+            const res = await fetch('https://wger.de/api/v2/equipment/');
             if (res.ok) {
                 const data = await res.json();
                 setEquipmentData(data);
+            } else {
+                console.error("Couldn't get the products :(");
             }
-            // if not error out
-            else {
-                console.error("Couldn't get the products :(")
-            }
-        }
+        };
 
-        // calls the api that has the day data
         const renderDay = async () => {
-            const res = await fetch('https://wger.de/api/v2/daysofweek/')
+            const res = await fetch('https://wger.de/api/v2/daysofweek/');
             if (res.ok) {
                 const data = await res.json();
                 setDayData(data);
-                setDayLength(data.results.length)
+                setDayLength(data.results.length);
+            } else {
+                console.error("Couldn't get the products :(");
             }
-            // if not error out
-            else {
-                console.error("Couldn't get the products :(")
-            }
-        }
+        };
 
         const fetchData = async () => {
             await Promise.all([renderVariations(), renderMuscles(), renderEquipment(), renderDay()]);
@@ -160,90 +112,73 @@ export default function CreateNormalWorkout() {
         fetchData();
     }, []);
 
-    // calls the function to set arrays and swaps boolean state when called
-    // this one is for creating a workout
+    // used to open the day and workout options
+    // calls workoutbox and inverts the boolean state of form when called
     const toggleNewWorkoutBox = () => {
         CreateCustomWorkoutBox();
-        setNeedsForm(!needsForm)
-    }
+        setNeedsForm(!needsForm);
+    };
 
-    // transforms api request data into arrays to look through
+    // Formats all the API' data called in
     const CreateCustomWorkoutBox = () => {
+        // returns out if any of the API's fail to get called
+        if (!workoutData || !muscleData || !equipmentData || !dayData) {
+            return;
+        }
 
-        // holds the workouts
+        // formats variation info
         let copy = {};
 
-        // creates entries in the object for an exercise and associated equipment number
         for (let i = 0; i < workoutData.results.length; i++) {
             if (workoutData.results[i].language === 2 && workoutData.results[i].muscles[0]) {
-                // copy.push(workoutData.results[i].name);
-                if (workoutData.results[i].equipment > 0) {
+                if (workoutData.results[i].equipment.length > 0) {
                     copy[workoutData.results[i].name] = [workoutData.results[i].muscles[0], workoutData.results[i].equipment[0], workoutData.results[i].description];
-                }
-                else {
-                    continue;
                 }
             }
         }
 
-        // sets variation name to copied array
-        setvariationName(copy);
+        setVariationName(copy);
 
-        // has all the equipment in their respective positions
-        const equipment = ["Barbell", "SZ-Bar", "Dumbbell", "Gym Mat", "Swiss Ball", "Pull-up bar", "none (bodyweight exercise)", "Bench", "Incline Bench", "Kettlebell"]
-
-        // set the equipment name to the above
+        // formats equipment info
+        const equipment = ["Barbell", "SZ-Bar", "Dumbbell", "Gym Mat", "Swiss Ball", "Pull-up bar", "none (bodyweight exercise)", "Bench", "Incline Bench", "Kettlebell"];
         setEquipmentName(equipment);
 
-        // Empty array to store results
+        // formats the names of the muscles
         let combinedMuscles = [];
-
-        // Sort the results array by `id`
         const sortedResults = muscleData.results.sort((a, b) => a.id - b.id);
-
-        // Loop through the sorted results and append combined strings
         sortedResults.forEach(muscle => {
-            // Combine `name` and `name_en` strings with a separator, e.g., " (Name_en)"
             const combinedName = muscle.name + (muscle.name_en ? ` (${muscle.name_en})` : '');
-            // Append to the result array
             combinedMuscles.push(combinedName);
         });
 
-        // sets array of created muscles to the muscles array state
-        setMuscleName(combinedMuscles)
+        setMuscleName(combinedMuscles);
 
-        //////////DAYS OF THE WEEK////////////
-        // holds the data when going through the for loop
+        // formats the names of the days
         let day = [];
-
-        // goes through the days of the week api and grabs the days
         for (let i = 0; i < dayData.results.length; i++) {
-            day.push(dayData.results[i].day_of_week)
+            day.push(dayData.results[i].day_of_week);
         }
-
-        // set the array of names to the day state
         setDayName(day);
-        /////////////////////////////////////
-    }
+    };
 
-    // Handle form submission for adding a workout
+    // handles the data when a form is submittedd
     const handleSubmit = async (event) => {
-        event.preventDefault(); // Prevent the default form submit behavior
+        event.preventDefault();
         const response = await fetch('https://capstone-db.onrender.com/workouts', {
-            method: 'POST', // sets method
+            method: 'POST',
             headers: {
-                'Content-Type': 'application/json' // Indicates the content 
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify({  // uses these values in the body
+            body: JSON.stringify({
                 "muscle_group": muscleChoice,
                 "equipment": equipmentChoice,
                 "rep_range": userInputs.rep_range,
                 "weight_range": userInputs.weight_range,
                 "workout_variation": variationChoice,
                 "day": dayChoice,
-            }) //send data in JSON format
+            })
         });
-        // if successful
+        // refreshes the page and reverts text boxes to empty if successful
         if (response.ok) {
             refresh();
             setUserInputs({
@@ -252,114 +187,71 @@ export default function CreateNormalWorkout() {
                 "rep_range": '',
                 "weight_range": '',
                 "workout_variation": ""
-            })
+            });
         } else {
-            // handles the errors
             console.error('Failed to create workout:', response.statusText);
         }
     };
 
-    // has the controls for moving left through the workouts
+    // controls the previous button and its pointer
     const previousWorkoutVariation = () => {
-
-        // make a copy of the array from the api
         let copy = variationName;
-
         let copy2 = equipmentName;
-
         let copy3 = muscleName;
 
-        // if the associated counter is 0 return
+        // if pointer is at 0 return out
         if (variationCounter === 0) {
             return;
         }
 
-        // increment the state of the counter by 1
         setVariationCounter(variationCounter - 1);
-
-        // set the choice of the user as the index at the current
-        // value of the counter
         setVariationChoice(Object.entries(copy)[variationCounter][0]);
+        setEquipmentChoice(copy2[Object.values(copy)[variationCounter][1] - 1]);
+        setMuscleChoice(copy3[Object.values(copy)[variationCounter][0] - 1]);
+        setDescText(Object.values(copy)[variationCounter][2]);
+    };
 
-        // set the equipment in correspondance to the variation
-        setEquipmentChoice(copy2[Object.values(copy)[variationCounter][0]])
-
-        // set the muscle in correspondance to the variation
-        setMuscleChoice(copy3[Object.values(copy)[variationCounter][1]])
-
-        // set the description text in correspondance to the variation
-        setDescText(Object.values(copy)[variationCounter][2])
-
-    }
-
-    // has the controls for moving left through the workouts
+    // responsible for the next workout and its pointer
     const nextWorkoutVariation = () => {
-
-        // make a copy of the array from the api
         let copy = variationName;
-
         let copy2 = equipmentName;
-
         let copy3 = muscleName;
 
-        // if the associated counter is at the end of the array return
-        if (variationCounter === copy.length - 1) {
+        // if counter is at the very end return out
+        if (variationCounter === Object.keys(copy).length - 1) {
             return;
         }
 
-        // decrement the state of the counter by 1
         setVariationCounter(variationCounter + 1);
-
-        // set the choice of the user as the index at the current
-        // value of the counter
         setVariationChoice(Object.entries(copy)[variationCounter][0]);
+        setEquipmentChoice(copy2[Object.values(copy)[variationCounter][1] - 1]);
+        setMuscleChoice(copy3[Object.values(copy)[variationCounter][0] - 1]);
+        setDescText(Object.values(copy)[variationCounter][2]);
+    };
 
-        // set the equipment in correspondance to the variation
-        setEquipmentChoice(copy2[((Object.values(copy)[variationCounter][1]) - 1)])
-
-        // set the muscle in correspondance to the variation
-        setMuscleChoice(copy3[((Object.values(copy)[variationCounter][0]) - 1)])
-
-        // set the description text in correspondance to the variation
-        setDescText(Object.values(copy)[variationCounter][2])
-    }
-
-    // controls moving right through days
+    // responsible for the previous day button
     const previousDay = () => {
-
-        // create copy of day array
         let copy = dayName;
-
-        // decrement day counter by one
-        setDayCounter(dayCounter - 1)
-
-        //if start of array return
+        setDayCounter(dayCounter - 1);
+        // if day counter becomes less than 0 set it back to 0
         if (dayCounter < 0) {
-            setDayCounter(0)
+            setDayCounter(0);
         }
+        setDayChoice(copy[dayCounter]);
+    };
 
-        console.log('prev day: ', dayCounter)
-
-        // set user day choice to location of counter in the copy
-        setDayChoice(copy[dayCounter])
-        console.log('prev day choice: ', dayChoice)
-    }
-
-    // controls moving left through days
+    // responsible for the next day button
     const nextDay = () => {
         let copy = dayName;
-
+        // if counter is at the end of the array return out
         if (dayCounter === copy.length) {
             return;
         }
-
         setDayCounter(dayCounter + 1);
-        console.log('next day: ', dayCounter)
-        setDayChoice(copy[dayCounter])
-        console.log('next day choice: ', dayChoice)
-    }
+        setDayChoice(copy[dayCounter]);
+    };
 
-    // Handle changes in form inputs and displays them on screen as they happen
+    // responsible for showing the text inputed on screen
     const handleChange = (event) => {
         const { name, value } = event.target;
         setUserInputs(prevState => ({
@@ -370,42 +262,42 @@ export default function CreateNormalWorkout() {
 
     return (
         <>
+            <br />
+            <br />
+            {/* if the workouts api call is successful move on OR
+                inform the user the form is still loading */}
             {workoutsReady ? (
                 <>
-                    {/* start of the form for the users input */}
+                {/* Start of the form */}
                     <Form onSubmit={handleSubmit}>
-
-                        {/* responsible for the details of the box that contains the content */}
+                        {/* handles the styling of the form */}
                         <Card
                             variant="outlined"
                             sx={{
                                 maxHeight: 'max-content',
                                 maxWidth: '60%',
                                 mx: 'auto',
-                                // to make the demo resizable
                                 overflow: 'auto',
                                 resize: 'horizontal',
                             }}
                         >
-                            {/* The top tile of the card telling the user to sign in */}
+                            {/* Header of the form */}
                             <Typography level="title-lg" startDecorator={<InfoOutlined />}>
                                 Create a Normal Workout
                             </Typography>
-
-                            {/* The divider between the title of the sign in box and the other input fields */}
+                            {/* line separating the header and rest of the forrm */}
                             <Divider inset="none" />
-
-
-                            {/* Day of the week segment */} {/* Workout variation segment */}
+                            {/* if needsForm is true show the day and workout buttons OR
+                                 prompt the user to show the buttons*/}
                             {needsForm ? (
                                 <>
-                                    <Form.Group>
+                                        {/* day choice segment */}
                                         <Form.Label value={dayChoice}>
                                             <div className="center">
                                                 <br />
                                                 <Form.Label htmlFor="inputDay_of_The_Week">Day Of The Week:</Form.Label>
                                                 <br />
-                                                <button onClick={previousDay}><ArrowBackIcon /></button>
+                                                <button type="button" onClick={previousDay}><ArrowBackIcon /></button>
                                                 {dayChoice ? (
                                                     <>
                                                         {dayChoice}
@@ -413,20 +305,17 @@ export default function CreateNormalWorkout() {
                                                 ) : (
                                                     'Please choose a button'
                                                 )}
-
-                                                <button onClick={nextDay}><ArrowForwardIcon /></button>
-
+                                                <button type="button" onClick={nextDay}><ArrowForwardIcon /></button>
                                             </div>
                                         </Form.Label>
-                                    </Form.Group>
 
-                                    <Form.Group>
+                                        {/* variation segment */}
                                         <Form.Label value={variationChoice}>
                                             <div className="center">
                                                 <br />
                                                 <Form.Label htmlFor="inputWorkout_Variation">Workout Variation:</Form.Label>
                                                 <br />
-                                                <button onClick={previousWorkoutVariation}><ArrowBackIcon /></button>
+                                                <button type="button" onClick={previousWorkoutVariation}><ArrowBackIcon /></button>
                                                 {variationChoice ? (
                                                     <>
                                                         {variationChoice}
@@ -434,11 +323,9 @@ export default function CreateNormalWorkout() {
                                                 ) : (
                                                     'Please choose a button'
                                                 )}
-
-                                                <button onClick={nextWorkoutVariation}><ArrowForwardIcon /></button>
+                                                <button type="button" onClick={nextWorkoutVariation}><ArrowForwardIcon /></button>
                                             </div>
                                         </Form.Label>
-                                    </Form.Group>
                                 </>
                             ) : (
                                 <>
@@ -448,7 +335,6 @@ export default function CreateNormalWorkout() {
                                 </>
                             )}
 
-                            {/* controls the layout of the form */}
                             <CardContent
                                 sx={{
                                     display: 'grid',
@@ -456,43 +342,38 @@ export default function CreateNormalWorkout() {
                                     gap: 1.5,
                                 }}
                             >
-
-
-
-                                {/* Description segment of the normal workout window */}
+                                {/* shows the description */}
                                 <FormControl sx={{ gridColumn: '1/-1' }}>
                                     <FormLabel>Description: </FormLabel>
                                     <FormLabel>{descText}</FormLabel>
                                 </FormControl>
 
-                                {/* Muscle group segment of the normal workout window */}
+                                {/* shows the muscle */}
                                 <FormControl sx={{ gridColumn: '1/-1' }}>
                                     <FormLabel>Muscle Group: </FormLabel>
                                     <FormLabel>{muscleChoice} </FormLabel>
                                 </FormControl>
 
-                                {/* Equipment segment of the normal workout window */}
+                                {/* shows the equipment */}
                                 <FormControl sx={{ gridColumn: '1/-1' }}>
                                     <FormLabel>Equipment: </FormLabel>
                                     <FormLabel>{equipmentChoice} </FormLabel>
                                 </FormControl>
 
-                                {/* weight range segment of the normal workout window */}
+                                {/* Weight Range Segment */}
                                 <FormControl sx={{ gridColumn: '1/-1' }}>
                                     <FormLabel>Weight Range: </FormLabel>
                                     <Input onChange={handleChange} type='text' value={userInputs.weight_range} name="weight_range" placeholder="Enter Your weight range" />
                                 </FormControl>
 
-                                {/* rep range segment of the normal workout window */}
+                                {/* Rep Range segment */}
                                 <FormControl sx={{ gridColumn: '1/-1' }}>
                                     <FormLabel>Rep Range: </FormLabel>
                                     <Input onChange={handleChange} type='text' name='rep_range' value={userInputs.rep_range} placeholder="Enter your rep range" />
                                 </FormControl>
 
-                                {/* details of the button positioning */}
+                                {/* Bottom of the form and submit button */}
                                 <CardActions sx={{ gridColumn: '1/-1' }}>
-
-                                    {/* responsible for the button of the bottom of the sign in window */}
                                     <div>
                                         <BootstrapButton type='submit' variant="contained" disableRipple>
                                             Create Workout
@@ -508,11 +389,11 @@ export default function CreateNormalWorkout() {
                     <h1>Loading...</h1>
                 </>
             )}
-
         </>
-    )
+    );
 }
 
+// Styling for the submit button
 const BootstrapButton = styled(Button)({
     boxShadow: 'none',
     textTransform: 'none',

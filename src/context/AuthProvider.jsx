@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
     const refresh = () => {
         setCounter(counter + 1);
         localStorage.setItem('counter', counter);
-        console.log(counter)
+        // console.log(counter)
     }
 
     // syncs the token if it changes
