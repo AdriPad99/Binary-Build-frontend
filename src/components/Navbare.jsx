@@ -34,7 +34,7 @@ function Navbare() {
 
   const linkStyle = {
     textDecoration: 'none',
-    color: 'white',
+    color: 'Black',
     margin: '0 10px'
   };
 
@@ -51,15 +51,15 @@ function Navbare() {
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {String(token).length > 4 ? (
               <a style={linkStyle} id='middle' href="/signup">
-                <Button style={{ color: 'white' }}>Try for Free</Button>
+                <Button style={linkStyle}>Try for Free</Button>
               </a>
             ) : (
               <>
                 <a style={linkStyle} id='middle' href="/signin">
-                  <Button style={{ color: 'white' }}>Sign-In</Button>
+                  <Button style={linkStyle}>Sign-In</Button>
                 </a>
                 <a style={linkStyle} id='middle' href="/signup">
-                  <Button style={{ color: 'white' }}>Try for Free</Button>
+                  <Button style={linkStyle}>Try for Free</Button>
                 </a>
               </>
             )}
@@ -92,19 +92,15 @@ function Navbare() {
                   {String(token).length > 4 ? (
                     <>
                       <a style={linkStyle} id='profile' href="/profile">Profile</a>
+                      <hr/>
+                      <a style={linkStyle} id='profile' onClick={() => userLogout()} href="/signin">Sign-Out</a>
                     </>
                   ) : (
                     <>
                       <a style={linkStyle} id='profile' href="/signin">Sign-In</a>
+                      <hr/>
+                      <a style={linkStyle} id='profile' href="/signup">Try for Free</a>
                     </>
-                  )}
-                </Typography>
-                <Divider />
-                <Typography textAlign="center">
-                  {String(token).length > 4 ? (
-                    <a style={linkStyle} id='profile' onClick={() => userLogout()} href="/signin">Sign-Out</a>
-                  ) : (
-                    <a style={linkStyle} id='profile' href="/signup">Try for Free</a>
                   )}
                 </Typography>
               </MenuItem>
