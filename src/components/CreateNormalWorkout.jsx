@@ -40,8 +40,17 @@ export default function CreateNormalWorkout() {
     const [dayData, setDayData] = useState();
     const [dayName, setDayName] = useState();
     const [dayChoice, setDayChoice] = useState();
-    const [dayCounter, setDayCounter] = useState(0);
+    const [dayCounter, setDayCounter] = useState(-1);
     const [dayLength, setDayLength] = useState(0);
+
+    // enables / disables the left day button
+    const [isLeftEnabled, setIsLeftEnabled] = useState(false);
+
+    // enables / disables the right day button
+    const [isRightEnabled, setIsRightEnabled] = useState(false);
+
+    // set state for controlling when workouts are loaded
+    const [dayReady, setDayReady] = useState(false)
 
     // states for variations
     const [workoutData, setWorkoutData] = useState();
@@ -63,54 +72,104 @@ export default function CreateNormalWorkout() {
     // if something happens
     useEffect(() => {
         const renderVariations = async () => {
-            const res = await fetch('https://wger.de/api/v2/exercise/?limit=1369&offset=0');
-            if (res.ok) {
-                const data = await res.json();
-                setWorkoutData(data);
-                setWorkoutsReady(true);
-            } else {
-                console.error("Couldn't get the products :(");
+            try {
+                const res = await fetch('https://wger.de/api/v2/exercise/?limit=1369&offset=0');
+                if (res.ok) {
+                    const data = await res.json();
+                    setWorkoutData(data);
+                    setWorkoutsReady(true);
+                } else {
+                    console.error("Couldn't get the products :(");
+                }
+            } catch (error) {
+                console.error("Network error while fetching variations:", error);
             }
         };
 
         const renderMuscles = async () => {
-            const res = await fetch('https://wger.de/api/v2/muscle/');
-            if (res.ok) {
-                const data = await res.json();
-                setMuscleData(data);
-            } else {
-                console.error("Couldn't get the products :(");
+            try {
+                const res = await fetch('https://wger.de/api/v2/muscle/');
+                if (res.ok) {
+                    const data = await res.json();
+                    setMuscleData(data);
+                } else {
+                    console.error("Couldn't get the products :(");
+                }
+            } catch (error) {
+                console.error("Network error while fetching muscles:", error);
             }
         };
 
         const renderEquipment = async () => {
-            const res = await fetch('https://wger.de/api/v2/equipment/');
-            if (res.ok) {
-                const data = await res.json();
-                setEquipmentData(data);
-            } else {
-                console.error("Couldn't get the products :(");
+            try {
+                const res = await fetch('https://wger.de/api/v2/equipment/');
+                if (res.ok) {
+                    const data = await res.json();
+                    setEquipmentData(data);
+                } else {
+                    console.error("Couldn't get the products :(");
+                }
+            } catch (error) {
+                console.error("Network error while fetching equipment:", error);
             }
         };
 
         const renderDay = async () => {
-            const res = await fetch('https://wger.de/api/v2/daysofweek/');
-            if (res.ok) {
-                const data = await res.json();
-                setDayData(data);
-                setDayLength(data.results.length);
-            } else {
-                console.error("Couldn't get the products :(");
+            try {
+                const res = await fetch('https://wger.de/api/v2/daysofweek/');
+                if (res.ok) {
+                    const data = await res.json();
+                    setDayData(data);
+                    setDayReady(true);
+                    let copy = [];
+                    for (let i = 0; i < data.results.length; i++) {
+                        copy.push(data.results[i].day_of_week)
+                    }
+                    setDayName(copy);
+                    setDayCounter(0);
+                    setDayChoice(copy[0]);
+                } else {
+                    console.error("Couldn't get the products :(");
+                }
+            } catch (error) {
+                console.error("Network error while fetching days:", error);
             }
         };
 
         const fetchData = async () => {
             await Promise.all([renderVariations(), renderMuscles(), renderEquipment(), renderDay()]);
-            CreateCustomWorkoutBox();
         };
 
         fetchData();
+        CreateCustomWorkoutBox();
     }, []);
+
+
+    // Update button state based on dayCounter
+    useEffect(() => {
+        // if api call is successfull
+        if (dayReady) {
+            // disable button if the counter is at 0
+            if (dayCounter === 0) {
+                setIsLeftEnabled(true);
+            } else {
+                setIsLeftEnabled(false);
+            }
+
+            // diable the counter if its at 6
+            if (dayCounter === 6) {
+                setIsRightEnabled(true);
+            } else {
+                setIsRightEnabled(false);
+            }
+
+            // set the current day choice
+            setDayChoice(dayData.results[dayCounter].day_of_week)
+        }
+        else {
+            setIsLeftEnabled(true);
+        }
+    }, [dayCounter]);
 
     // used to open the day and workout options
     // calls workoutbox and inverts the boolean state of form when called
@@ -229,27 +288,21 @@ export default function CreateNormalWorkout() {
         setDescText(Object.values(copy)[variationCounter][2]);
     };
 
-    // responsible for the previous day button
+    // controls moving right through days
     const previousDay = () => {
-        let copy = dayName;
-        setDayCounter(dayCounter - 1);
-        // if day counter becomes less than 0 set it back to 0
-        if (dayCounter < 0) {
-            setDayCounter(0);
+        if (dayCounter > 0) {
+            setDayCounter(dayCounter - 1);
+            setDayChoice(dayData.results[dayCounter - 1].day_of_week);
         }
-        setDayChoice(copy[dayCounter]);
-    };
+    }
 
-    // responsible for the next day button
+    // controls moving left through days
     const nextDay = () => {
-        let copy = dayName;
-        // if counter is at the end of the array return out
-        if (dayCounter === copy.length) {
-            return;
+        if (dayCounter < dayData.results.length - 1) {
+            setDayCounter(dayCounter + 1);
+            setDayChoice(dayData.results[dayCounter + 1].day_of_week);
         }
-        setDayCounter(dayCounter + 1);
-        setDayChoice(copy[dayCounter]);
-    };
+    }
 
     // responsible for showing the text inputed on screen
     const handleChange = (event) => {
@@ -268,7 +321,7 @@ export default function CreateNormalWorkout() {
                 inform the user the form is still loading */}
             {workoutsReady ? (
                 <>
-                {/* Start of the form */}
+                    {/* Start of the form */}
                     <Form onSubmit={handleSubmit}>
                         {/* handles the styling of the form */}
                         <Card
@@ -291,41 +344,35 @@ export default function CreateNormalWorkout() {
                                  prompt the user to show the buttons*/}
                             {needsForm ? (
                                 <>
-                                        {/* day choice segment */}
-                                        <Form.Label value={dayChoice}>
-                                            <div className="center">
-                                                <br />
-                                                <Form.Label htmlFor="inputDay_of_The_Week">Day Of The Week:</Form.Label>
-                                                <br />
-                                                <button type="button" onClick={previousDay}><ArrowBackIcon /></button>
-                                                {dayChoice ? (
-                                                    <>
-                                                        {dayChoice}
-                                                    </>
-                                                ) : (
-                                                    'Please choose a button'
-                                                )}
-                                                <button type="button" onClick={nextDay}><ArrowForwardIcon /></button>
-                                            </div>
-                                        </Form.Label>
+                                    {/* day of the week segment */}
+                                    <Form.Label value={dayChoice}>
+                                        <div className="center">
+                                            <br />
+                                            <Form.Label htmlFor="inputDay_of_The_Week">Day Of The Week:</Form.Label>
+                                            <br />
+                                            <button type="button" disabled={isLeftEnabled} onClick={previousDay}><ArrowBackIcon /></button>
+                                            {dayChoice ? (<>{dayChoice}</>) : ('Please select a button')}
+                                            <button type="button" disabled={isRightEnabled} onClick={nextDay}><ArrowForwardIcon /></button>
+                                        </div>
+                                    </Form.Label>
 
-                                        {/* variation segment */}
-                                        <Form.Label value={variationChoice}>
-                                            <div className="center">
-                                                <br />
-                                                <Form.Label htmlFor="inputWorkout_Variation">Workout Variation:</Form.Label>
-                                                <br />
-                                                <button type="button" onClick={previousWorkoutVariation}><ArrowBackIcon /></button>
-                                                {variationChoice ? (
-                                                    <>
-                                                        {variationChoice}
-                                                    </>
-                                                ) : (
-                                                    'Please choose a button'
-                                                )}
-                                                <button type="button" onClick={nextWorkoutVariation}><ArrowForwardIcon /></button>
-                                            </div>
-                                        </Form.Label>
+                                    {/* variation segment */}
+                                    <Form.Label value={variationChoice}>
+                                        <div className="center">
+                                            <br />
+                                            <Form.Label htmlFor="inputWorkout_Variation">Workout Variation:</Form.Label>
+                                            <br />
+                                            <button type="button" onClick={previousWorkoutVariation}><ArrowBackIcon /></button>
+                                            {variationChoice ? (
+                                                <>
+                                                    {variationChoice}
+                                                </>
+                                            ) : (
+                                                'Please choose a button'
+                                            )}
+                                            <button type="button" onClick={nextWorkoutVariation}><ArrowForwardIcon /></button>
+                                        </div>
+                                    </Form.Label>
                                 </>
                             ) : (
                                 <>

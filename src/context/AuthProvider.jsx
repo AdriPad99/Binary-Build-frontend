@@ -6,7 +6,7 @@ import AuthContext from './AuthContext';
 export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(() => localStorage.getItem('token'));
 
-    const [counter, setCounter] = useState(() => localStorage.getItem('counter'))
+    const [counter, setCounter] = useState(() => parseInt(localStorage.getItem('counter'), 10) || 0)
 
     // logs the user in by setting a token with login
     const login = (userData) => {
@@ -21,10 +21,13 @@ export const AuthProvider = ({ children }) => {
     };
 
     const refresh = () => {
-        setCounter(counter + 1);
-        localStorage.setItem('counter', counter);
-        // console.log(counter)
+        setCounter(prevCounter => {
+            const newCounter = prevCounter + 1;
+            localStorage.setItem('counter', newCounter);
+            return newCounter;
+        });
     }
+
 
     // syncs the token if it changes
     useEffect(() => {

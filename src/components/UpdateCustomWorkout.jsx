@@ -1,13 +1,20 @@
 import { useState, useEffect, useContext } from "react";
-//import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { FormGroup, FormLabel, FormControl } from "react-bootstrap";
 import AuthContext from "../context/AuthContext";
-
-import { toast } from 'react-toastify';
-
-import { styled } from '@mui/material/styles';
+import * as React from 'react';
+import Card from '@mui/joy/Card';
+import CardActions from '@mui/joy/CardActions';
+import CardContent from '@mui/joy/CardContent';
+import Divider from '@mui/joy/Divider';
+import FormControl from '@mui/joy/FormControl';
+import FormLabel from '@mui/joy/FormLabel';
+import Input from '@mui/joy/Input';
+import Typography from '@mui/joy/Typography';
+import InfoOutlined from '@mui/icons-material/InfoOutlined';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Button from '@mui/material/Button';
+import { styled } from '@mui/material/styles';
 
 export default function UpdateCustomWorkout() {
 
@@ -16,12 +23,12 @@ export default function UpdateCustomWorkout() {
 
     // state for user selections
     const [userInputs, setUserInputs] = useState({
-        "muscle_group": "",
-        "equipment": "",
-        "rep_range": '',
-        "weight_range": '',
-        "workout_variation": "",
-        "day": ""
+        muscle_group: "",
+        equipment: "",
+        rep_range: '',
+        weight_range: '',
+        workout_variation: "",
+        day: ""
     })
 
     // set the state to hold the endpoint to update
@@ -29,6 +36,8 @@ export default function UpdateCustomWorkout() {
 
     // set state for update form when on screen
     const [updateForm, setUpdateForm] = useState(false)
+
+    const [workoutsReady, setWorkoutsReady] = useState(false);
 
     ////////////////////////////////////////////////////////
     // state for workout data from api call
@@ -95,6 +104,7 @@ export default function UpdateCustomWorkout() {
             if (res.ok) {
                 const data = await res.json();
                 setWorkoutData(data);
+                setWorkoutsReady(true);
             }
             // if not error out
             else {
@@ -401,162 +411,117 @@ export default function UpdateCustomWorkout() {
 
     return (
         <>
-            {/* Update a Workout Segment */}
-            {/* if user is logged in display the form
-                if not prompt them to log in */}
-            {String(token).length > 4 ? (
-                <div>
-                    <h1>Update A Custom Workout</h1>
-                    {/* Changes button text based on boolean state of updateForm */}
-                    <BootstrapButton onClick={toggleUpdateBox} variant="contained" disableRipple>
-                        {updateForm ? 'Hide Update Workout' : 'Show Update Workout'}
-                    </BootstrapButton>
-
-                    {/* will continue to the next ternary operator if its deemed open OR
-                        will display nothing on the page to the user if not open */}
-                    {updateForm ? (
-                        <div>
-                            {/* if the box is deemed open and all the api's are called correctly, the form is created for the user OR
-                                if the api calls didn't or haven't gone through the user is prompted the form wasn't found */}
-                            {(variationName, muscleName, equipmentName) ?
-                                // creates the form on page and calls the server when submitted
-                                (<Form onSubmit={(handleUpdate)}>
-
-                                    {/* muscle Group segment */}
-                                    <Form.Group>
-                                        <br />
-                                        <Form.Label htmlFor="inputMuscle_Group">Muscle Group</Form.Label>
-                                        <br />
-                                        <Form.Label value={muscleChoice}>
-                                            {/* if they click on the button they go back in the created api array */}
-                                            <button onClick={previousMuscle}>Previous</button>
-                                            {muscleChoice ? (
+            <br />
+            <br />
+            {/* if the workouts api call is successful move on OR
+                inform the user the form is still loading */}
+            {workoutsReady ? (
+                <>
+                    {/* Start of the form */}
+                    <Form onSubmit={handleUpdate}>
+                        {/* handles the styling of the form */}
+                        <Card
+                            variant="outlined"
+                            sx={{
+                                maxHeight: 'max-content',
+                                maxWidth: '60%',
+                                mx: 'auto',
+                                overflow: 'auto',
+                                resize: 'horizontal',
+                            }}
+                        >
+                            {/* Header of the form */}
+                            <Typography level="title-lg" startDecorator={<InfoOutlined />}>
+                                Update Custom Workout
+                            </Typography>
+                            {/* line separating the header and rest of the forrm */}
+                            <Divider inset="none" />
+                            {/* if needsForm is true show the day and workout buttons OR
+                                 prompt the user to show the buttons*/}
+                            {updateForm ? (
+                                <>
+                                    {/* day choice segment */}
+                                    <Form.Label value={dayChoice}>
+                                        <div className="center">
+                                            <br />
+                                            <Form.Label htmlFor="inputDay_of_The_Week">Day Of The Week:</Form.Label>
+                                            <br />
+                                            <button type="button" onClick={previousDay}><ArrowBackIcon /></button>
+                                            {dayChoice ? (
                                                 <>
-                                                    {muscleChoice}
+                                                    {dayChoice}
                                                 </>
                                             ) : (
                                                 'Please choose a button'
                                             )}
+                                            <button type="button" onClick={nextDay}><ArrowForwardIcon /></button>
+                                        </div>
+                                    </Form.Label>
 
-                                            <button onClick={nextMuscle}>Next</button>
-                                        </Form.Label>
+                                </>
+                            ) : (
+                                <>
+                                    <div className="center">
+                                        <button onClick={toggleUpdateBox}>Choose Day & Workout</button>
+                                    </div>
+                                </>
+                            )}
 
-                                    </Form.Group>
-                                    <br />
+                            <CardContent
+                                sx={{
+                                    display: 'grid',
+                                    gridTemplateColumns: 'repeat(2, minmax(80px, 1fr))',
+                                    gap: 1.5,
+                                }}
+                            >
 
-                                    {/* Equipment Segment */}
-                                    <Form.Group>
-                                        <Form.Label htmlFor="inputEquipment">Equipment</Form.Label>
-                                        <br />
-                                        <Form.Label value={equipmentChoice} >
-                                            {/* if they click on the button they go back in the created api array */}
-                                            <button onClick={previousEquipment}>Previous</button>
-                                            {equipmentChoice ? (
-                                                <>
-                                                    {equipmentChoice}
-                                                </>
-                                            ) : (
-                                                'Please choose a button'
-                                            )}
+                                {/* Equipment Segment */}
+                                <FormControl sx={{ gridColumn: '1/-1' }}>
+                                    <FormLabel>Workout: </FormLabel>
+                                    <Input onChange={handleChange} type='text' value={userInputs.workout_variation || ""} name="workout_variation" placeholder="Enter your workout name" />
+                                </FormControl>
 
-                                            <button onClick={nextEquipment}>Next</button>
-                                        </Form.Label>
+                                {/* Muscle Group Segment */}
+                                <FormControl sx={{ gridColumn: '1/-1' }}>
+                                    <FormLabel>Muscle Group: </FormLabel>
+                                    <Input onChange={handleChange} type='text' value={userInputs.muscle_group || ""} name="muscle_group" placeholder="Enter your muscle group" />
+                                </FormControl>
 
-                                    </Form.Group>
-                                    <br />
+                                {/* Equipment Segment */}
+                                <FormControl sx={{ gridColumn: '1/-1' }}>
+                                    <FormLabel>Workout Equipment: </FormLabel>
+                                    <Input onChange={handleChange} type='text' value={userInputs.equipment || ""} name="equipment" placeholder="Enter your equipment name" />
+                                </FormControl>
 
-                                    {/* Workout Variation segment */}
-                                    <Form.Group>
+                                {/* Weight Range Segment */}
+                                <FormControl sx={{ gridColumn: '1/-1' }}>
+                                    <FormLabel>Weight Range: </FormLabel>
+                                    <Input onChange={handleChange} type='text' value={userInputs.weight_range || ""} name="weight_range" placeholder="Enter your weight range" />
+                                </FormControl>
 
+                                {/* Rep Range segment */}
+                                <FormControl sx={{ gridColumn: '1/-1' }}>
+                                    <FormLabel>Rep Range: </FormLabel>
+                                    <Input onChange={handleChange} type='text' name='rep_range' value={userInputs.rep_range || ""} placeholder="Enter your rep range" />
+                                </FormControl>
 
-                                        <Form.Label htmlFor="inputWorkout_Variation">Workout Variation</Form.Label>
-                                        <br />
-                                        <Form.Label value={variationChoice}>
-                                            {/* if they click on the button they go back in the created api array */}
-                                            <button onClick={previousWorkoutVariation}>Previous</button>
-                                            {variationChoice ? (
-                                                <>
-                                                    {variationChoice}
-                                                </>
-                                            ) : (
-                                                'Please choose a button'
-                                            )}
-
-                                            <button onClick={nextWorkoutVariation}>Next</button>
-                                        </Form.Label>
-                                    </Form.Group>
-                                    <br />
-
-                                    {/* Day of the Week Segment */}
-                                    <FormGroup>
-                                        <FormLabel htmlFor="inputDay_Of_The_Week">Day Of The Week</FormLabel>
-                                        <br />
-                                        {/* if they click on the button they go back in the created api array */}
-                                        <button onClick={previousDay}>Previous</button>
-                                        {dayChoice ? (
-                                            <>
-                                                {dayChoice}
-                                            </>
-                                        ) : (
-                                            'Please choose a button'
-                                        )}
-                                        <button onClick={nextDay}>Next</button>
-                                    </FormGroup>
-
-                                    {/* Weight Range Segment */}
-                                    <Form.Group>
-                                        <br />
-                                        <Form.Label htmlFor="inputWeight_Range">Weight Range</Form.Label>
-                                        <br />
-                                        <Form.Control
-                                            type="text"
-                                            name="weight_range"
-                                            value={userInputs.weight_range}
-                                            onChange={handleChange}
-                                            placeholder="Weight Range"
-                                        />
-                                    </Form.Group>
-                                    <br />
-
-                                    {/* Rep Range Segment */}
-                                    <Form.Group>
-                                        <Form.Label htmlFor="inputRep_Range">Rep Range</Form.Label>
-                                        <br />
-                                        <Form.Control
-                                            type="text"
-                                            name="rep_range"
-                                            value={userInputs.rep_range}
-                                            onChange={handleChange}
-                                            placeholder="Rep Range"
-                                        />
-                                        <br />
-
-                                    </Form.Group>
-                                    <br />
-
-                                    {/* input box segment */}
-                                    <Form.Label htmlFor="name">Workout ID:</Form.Label>
-                                    <input type="text" id="name" name="name" value={updateEnd} onChange={handleUpdateValue} />
-                                    <br />
-                                    <br />
-                                    <Button variant="primary" type="submit">
-                                        Update Workout
-                                    </Button>
-                                </Form>
-                                ) : (
-                                    // or output a notice of missing form
-                                    'Form not Found :('
-                                )}
-                        </div>) : (
-                        // or output an empty string on page
-                        ''
-                    )}
-                </div>
+                                {/* Bottom of the form and submit button */}
+                                <CardActions sx={{ gridColumn: '1/-1' }}>
+                                    <div>
+                                        <BootstrapButton type='submit' variant="contained" disableRipple>
+                                            Update Workout
+                                        </BootstrapButton>
+                                    </div>
+                                </CardActions>
+                            </CardContent>
+                        </Card>
+                    </Form>
+                </>
             ) : (
-                <h1>Please login to update a custom workout</h1>
-            )
-            }
-
+                <>
+                    <h1>Loading...</h1>
+                </>
+            )}
         </>
     )
 }

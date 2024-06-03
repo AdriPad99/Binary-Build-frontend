@@ -103,22 +103,23 @@ function Navbare() {
               <MenuItem onClick={handleCloseUserMenu}>
                 {/* centers menu text */}
                 <Typography textAlign="center">
-                  {/* if user is logged in show the profile and sign-out option OR
+                {/* if user is logged in show the profile and sign-out option OR
                       if user is logged out show the sign-in andd sign-up option */}
                   {String(token).length > 4 ? (
                     <>
                       <a style={linkStyle} id='profile' href="/profile">Profile</a>
-                      <hr/>
+                      <Divider />
                       <a style={linkStyle} id='profile' onClick={() => userLogout()} href="/signin">Sign-Out</a>
                     </>
                   ) : (
                     <>
                       <a style={linkStyle} id='profile' href="/signin">Sign-In</a>
-                      <hr/>
+                      <Divider />
                       <a style={linkStyle} id='profile' href="/signup">Try for Free</a>
                     </>
                   )}
                 </Typography>
+
               </MenuItem>
             </Menu>
           </Box>
