@@ -27,13 +27,13 @@ export default function UpdateCustomWorkout() {
         equipment: "",
         rep_range: '',
         weight_range: '',
-        variation: "", 
+        variation: "",
         day: ""
     })
-    
+
 
     // set the state to hold the endpoint to update
-    const [updateEnd, setUpdateEnd] = useState()
+    const [updateEnd, setUpdateEnd] = useState('')
 
     // set state for update form when on screen
     const [updateForm, setUpdateForm] = useState(false)
@@ -261,41 +261,53 @@ export default function UpdateCustomWorkout() {
                                 }}
                             >
 
-                                {/* Equipment Segment */}
-                                <FormControl sx={{ gridColumn: '1/-1' }}>
-                                    <FormLabel>Workout: </FormLabel>
-                                    <Input onChange={handleChange} type='text' value={userInputs.workout_variation || ""} name="workout_variation" placeholder="Enter your workout name" />
-                                </FormControl>
+                                {/* Workout Segment */}
+                                <Form.Group>
+                                    <FormControl sx={{ gridColumn: '1/-1' }}>
+                                        <FormLabel>Workout: </FormLabel>
+                                        <Input onChange={handleChange} type='text' value={userInputs.variation} name="variation" placeholder="Enter your workout name" />
+                                    </FormControl>
+                                </Form.Group>
 
                                 {/* Muscle Group Segment */}
-                                <FormControl sx={{ gridColumn: '1/-1' }}>
-                                    <FormLabel>Muscle Group: </FormLabel>
-                                    <Input onChange={handleChange} type='text' value={userInputs.muscle_group || ""} name="muscle_group" placeholder="Enter your muscle group" />
-                                </FormControl>
+                                <Form.Group>
+                                    <FormControl sx={{ gridColumn: '1/-1' }}>
+                                        <FormLabel>Muscle Group: </FormLabel>
+                                        <Input onChange={handleChange} type='text' value={userInputs.muscle_group || ""} name="muscle_group" placeholder="Enter your muscle group" />
+                                    </FormControl>
+                                </Form.Group>
 
                                 {/* Equipment Segment */}
-                                <FormControl sx={{ gridColumn: '1/-1' }}>
-                                    <FormLabel>Workout Equipment: </FormLabel>
-                                    <Input onChange={handleChange} type='text' value={userInputs.equipment || ""} name="equipment" placeholder="Enter your equipment name" />
-                                </FormControl>
+                                <Form.Group>
+                                    <FormControl sx={{ gridColumn: '1/-1' }}>
+                                        <FormLabel>Workout Equipment: </FormLabel>
+                                        <Input onChange={handleChange} type='text' value={userInputs.equipment || ""} name="equipment" placeholder="Enter your equipment name" />
+                                    </FormControl>
+                                </Form.Group>
 
                                 {/* Weight Range Segment */}
-                                <FormControl sx={{ gridColumn: '1/-1' }}>
-                                    <FormLabel>Weight Range: </FormLabel>
-                                    <Input onChange={handleChange} type='text' value={userInputs.weight_range || ""} name="weight_range" placeholder="Enter your weight range" />
-                                </FormControl>
+                                <Form.Group>
+                                    <FormControl sx={{ gridColumn: '1/-1' }}>
+                                        <FormLabel>Weight Range: </FormLabel>
+                                        <Input onChange={handleChange} type='text' value={userInputs.weight_range || ""} name="weight_range" placeholder="Enter your weight range" />
+                                    </FormControl>
+                                </Form.Group>
 
                                 {/* Rep Range segment */}
-                                <FormControl sx={{ gridColumn: '1/-1' }}>
-                                    <FormLabel>Rep Range: </FormLabel>
-                                    <Input onChange={handleChange} type='text' name='rep_range' value={userInputs.rep_range || ""} placeholder="Enter your rep range" />
-                                </FormControl>
+                                <Form.Group>
+                                    <FormControl sx={{ gridColumn: '1/-1' }}>
+                                        <FormLabel>Rep Range: </FormLabel>
+                                        <Input onChange={handleChange} type='text' name='rep_range' value={userInputs.rep_range || ""} placeholder="Enter your rep range" />
+                                    </FormControl>
+                                </Form.Group>
 
                                 {/* input box segment */}
-                                <FormControl sx={{ gridColumn: '1/-1' }}>
-                                    <Form.Label htmlFor="name">Workout ID:</Form.Label>
-                                    <Input type="text" name="name" value={updateEnd} onChange={handleUpdateValue} placeholder="Enter the workout ID to delete" />
-                                </FormControl>
+                                <Form.Group>
+                                    <FormControl sx={{ gridColumn: '1/-1' }}>
+                                        <FormLabel htmlFor="name">Workout ID:</FormLabel>
+                                        <Input type="text" name="name" value={updateEnd || ''} onChange={handleUpdateValue} placeholder="Enter the workout ID to delete" />
+                                    </FormControl>
+                                </Form.Group>
 
                                 {/* Bottom of the form and submit button */}
                                 <CardActions sx={{ gridColumn: '1/-1' }}>
