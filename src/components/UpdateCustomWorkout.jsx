@@ -7,6 +7,7 @@ import CardActions from '@mui/joy/CardActions';
 import CardContent from '@mui/joy/CardContent';
 import Divider from '@mui/joy/Divider';
 import FormControl from '@mui/joy/FormControl';
+//import { FormControl } from "react-bootstrap";
 import FormLabel from '@mui/joy/FormLabel';
 import Input from '@mui/joy/Input';
 import Typography from '@mui/joy/Typography';
@@ -48,6 +49,16 @@ export default function UpdateCustomWorkout() {
 
     ////////////////////////////////////////////////////////
 
+    const [muscleChoice, setMuscleChoice] = useState();
+
+    const [equipmentChoice, setEquipmentChoice] = useState();
+
+    const [repChoice, setRepChoice] = useState();
+
+    const [weightChoice, setWeightChoice] = useState();
+
+    const [variationChoice, setVariationChoice] = useState();
+
     /////////////////////////////////////////////////////////
     // state for day data from api call
     const [dayData, setDayData] = useState()
@@ -59,7 +70,7 @@ export default function UpdateCustomWorkout() {
     const [dayChoice, setDayChoice] = useState()
 
     // set state for date counter
-    const [dayCounter, setDayCounter] = useState(-1)
+    const [dayCounter, setDayCounter] = useState(0)
     /////////////////////////////////////////////////////////
 
     // calls the functions on initial page render
@@ -84,29 +95,28 @@ export default function UpdateCustomWorkout() {
 
     // Update button state based on dayCounter
     useEffect(() => {
-        // if api call is successfull
-        if (daysReady) {
-            // disable button if the counter is at 0
-            if (dayCounter === 0) {
+        if (daysReady && dayData && dayData.results) {
+            if (dayCounter >= 0 && dayCounter < dayData.results.length) {
+                if (dayCounter === 0) {
+                    setIsLeftEnabled(true);
+                } else {
+                    setIsLeftEnabled(false);
+                }
+
+                if (dayCounter === dayData.results.length - 1) {
+                    setIsRightEnabled(true);
+                } else {
+                    setIsRightEnabled(false);
+                }
+
+                setDayChoice(dayData.results[dayCounter].day_of_week);
+            } else {
                 setIsLeftEnabled(true);
-            } else {
-                setIsLeftEnabled(false);
-            }
-
-            // diable the counter if its at 6
-            if (dayCounter === 6) {
                 setIsRightEnabled(true);
-            } else {
-                setIsRightEnabled(false);
             }
+        }
+    }, [dayCounter, daysReady, dayData]);
 
-            // set the current day choice
-            setDayChoice(dayData.results[dayCounter].day_of_week)
-        }
-        else {
-            setIsLeftEnabled(true);
-        }
-    }, [dayCounter]);
 
     // Handle form submission for updating a workout
     const handleUpdate = async (event) => {
@@ -143,6 +153,8 @@ export default function UpdateCustomWorkout() {
         } else {
             // handles the errors
             console.error('Failed to update the workout:', response.statusText);
+            console.log((userInputs.muscle_group), (userInputs.equipment), (userInputs.rep_range),
+            (userInputs.weight_range), (userInputs.variation), (dayChoice), (updateEnd))
         }
     }
 
@@ -193,6 +205,28 @@ export default function UpdateCustomWorkout() {
             [name]: value
         }));
     };
+
+    
+    // const handleMuscleGroupValue = (event) => {
+    //     setMuscleChoice(event.target.value);
+    // }
+
+    // const handleEquipmentValue = (event) => {
+    //     setEquipmentChoice(event.target.value);
+    // }
+    
+    // const handleRepRangeValue = (event) => {
+    //     setRepChoice(event.target.value);
+    // }
+
+
+    // const handleWeightRangeValue = (event) => {
+    //     setWeightChoice(event.target.value);
+    // }
+
+    // const handleVariationValue = (event) => {
+    //     setVariationChoice(event.target.value);
+    // }
 
     // grabs user input to be placed into endpoint to update user
     const handleUpdateValue = (event) => {
@@ -260,52 +294,84 @@ export default function UpdateCustomWorkout() {
                                     gap: 1.5,
                                 }}
                             >
-
+                                
                                 {/* Workout Segment */}
                                 <Form.Group>
-                                    <FormControl sx={{ gridColumn: '1/-1' }}>
-                                        <FormLabel>Workout: </FormLabel>
-                                        <Input onChange={handleChange} type='text' value={userInputs.variation} name="variation" placeholder="Enter your workout name" />
+                                    {/* <Form.Label htmlFor="inputworkout_variation">Workout Variation:</Form.Label> */}
+                                    <FormControl
+                                        sx={{ gridColumn: '1/-1' }}
+                                        type="text"
+                                        name="variation"
+                                        value={userInputs.variation || ''}
+                                    >
+                                        <FormLabel>Workout Variation: </FormLabel>
+                                        <Input onChange={handleChange} placeholder="Enter your workout name" />
                                     </FormControl>
                                 </Form.Group>
 
                                 {/* Muscle Group Segment */}
+                                
                                 <Form.Group>
-                                    <FormControl sx={{ gridColumn: '1/-1' }}>
+                                    <FormControl
+                                        sx={{ gridColumn: '1/-1' }}
+                                        type="text"
+                                        name="muscle_group"
+                                        value={userInputs.muscle_group || ""}
+                                    >
                                         <FormLabel>Muscle Group: </FormLabel>
-                                        <Input onChange={handleChange} type='text' value={userInputs.muscle_group || ""} name="muscle_group" placeholder="Enter your muscle group" />
+                                        <Input onChange={handleChange} placeholder="Enter your muscle group" />
                                     </FormControl>
                                 </Form.Group>
 
                                 {/* Equipment Segment */}
                                 <Form.Group>
-                                    <FormControl sx={{ gridColumn: '1/-1' }}>
+                                    <FormControl
+                                        sx={{ gridColumn: '1/-1' }}
+                                        type="text"
+                                        name="equipment"
+                                        value={userInputs.equipment || ""}
+                                    >
                                         <FormLabel>Workout Equipment: </FormLabel>
-                                        <Input onChange={handleChange} type='text' value={userInputs.equipment || ""} name="equipment" placeholder="Enter your equipment name" />
+                                        <Input onChange={handleChange} placeholder="Enter your equipment name" />
                                     </FormControl>
                                 </Form.Group>
 
                                 {/* Weight Range Segment */}
                                 <Form.Group>
-                                    <FormControl sx={{ gridColumn: '1/-1' }}>
+                                    <FormControl
+                                        sx={{ gridColumn: '1/-1' }}
+                                        type="text"
+                                        name="weight_range"
+                                        value={userInputs.weight_range || ""}
+                                    >
                                         <FormLabel>Weight Range: </FormLabel>
-                                        <Input onChange={handleChange} type='text' value={userInputs.weight_range || ""} name="weight_range" placeholder="Enter your weight range" />
+                                        <Input onChange={handleChange} placeholder="Enter your weight range" />
                                     </FormControl>
                                 </Form.Group>
 
                                 {/* Rep Range segment */}
                                 <Form.Group>
-                                    <FormControl sx={{ gridColumn: '1/-1' }}>
+                                    <FormControl
+                                        sx={{ gridColumn: '1/-1' }}
+                                        type="text"
+                                        name='rep_range'
+                                        value={userInputs.rep_range || ""}
+                                    >
                                         <FormLabel>Rep Range: </FormLabel>
-                                        <Input onChange={handleChange} type='text' name='rep_range' value={userInputs.rep_range || ""} placeholder="Enter your rep range" />
+                                        <Input onChange={handleChange} placeholder="Enter your rep range" />
                                     </FormControl>
                                 </Form.Group>
 
                                 {/* input box segment */}
                                 <Form.Group>
-                                    <FormControl sx={{ gridColumn: '1/-1' }}>
-                                        <FormLabel htmlFor="name">Workout ID:</FormLabel>
-                                        <Input type="text" name="name" value={updateEnd || ''} onChange={handleUpdateValue} placeholder="Enter the workout ID to delete" />
+                                    <FormControl
+                                        sx={{ gridColumn: '1/-1' }}
+                                        type="text"
+                                        name="name"
+                                        value={updateEnd || ''}
+                                    >
+                                        <FormLabel>Workout ID:</FormLabel>
+                                        <Input onChange={handleUpdateValue} placeholder="Enter the workout ID to update" />
                                     </FormControl>
                                 </Form.Group>
 
