@@ -7,7 +7,6 @@ import CardActions from '@mui/joy/CardActions';
 import CardContent from '@mui/joy/CardContent';
 import Divider from '@mui/joy/Divider';
 import FormControl from '@mui/joy/FormControl';
-//import { FormControl } from "react-bootstrap";
 import FormLabel from '@mui/joy/FormLabel';
 import Input from '@mui/joy/Input';
 import Typography from '@mui/joy/Typography';
@@ -48,16 +47,6 @@ export default function UpdateCustomWorkout() {
     const [isRightEnabled, setIsRightEnabled] = useState(false);
 
     ////////////////////////////////////////////////////////
-
-    const [muscleChoice, setMuscleChoice] = useState();
-
-    const [equipmentChoice, setEquipmentChoice] = useState();
-
-    const [repChoice, setRepChoice] = useState();
-
-    const [weightChoice, setWeightChoice] = useState();
-
-    const [variationChoice, setVariationChoice] = useState();
 
     /////////////////////////////////////////////////////////
     // state for day data from api call
