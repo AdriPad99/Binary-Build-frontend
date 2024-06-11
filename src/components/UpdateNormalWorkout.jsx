@@ -56,7 +56,7 @@ export default function UpdateNormalWorkout() {
     const [dayChoice, setDayChoice] = useState()
 
     // set state for date counter
-    const [dayCounter, setDayCounter] = useState(0)
+    const [dayCounter, setDayCounter] = useState(-1)
 
     const [daysReady, setIsDaysReady] = useState(false)
     /////////////////////////////////////////////////////////
@@ -166,92 +166,153 @@ export default function UpdateNormalWorkout() {
     }, []);
 
     // Update button state based on dayCounter
+    // Update button state based on dayCounter
     useEffect(() => {
-        if (daysReady && dayData && dayData.results) {
-            if (dayCounter >= 0 && dayCounter < dayData.results.length) {
-                if (dayCounter === 0) {
-                    setIsLeftEnabled(true);
-                } else {
-                    setIsLeftEnabled(false);
-                }
-
-                if (dayCounter === dayData.results.length - 1) {
-                    setIsRightEnabled(true);
-                } else {
-                    setIsRightEnabled(false);
-                }
-
-                setDayChoice(dayData.results[dayCounter].day_of_week);
-            } else {
+        // if api call is successfull
+        if (daysReady) {
+            // disable button if the counter is at 0
+            if (dayCounter === 0) {
                 setIsLeftEnabled(true);
-                setIsRightEnabled(true);
+            } else {
+                setIsLeftEnabled(false);
             }
+
+            // diable the counter if its at 6
+            if (dayCounter === 5) {
+                setIsRightEnabled(true);
+            } else {
+                setIsRightEnabled(false);
+            }
+
+            // set the current day choice
+            setDayChoice(dayData.results[dayCounter].day_of_week)
         }
-    }, [dayCounter, daysReady, dayData]);
+        else {
+            setIsLeftEnabled(true);
+        }
+    }, [dayCounter]);
+
+    useEffect(() => {
+        if (workoutData && muscleData && dayData && equipmentData) {
+            // holds the workouts
+            let copy = {};
+
+            // creates entries in the object for an exercise and associated equipment number
+            for (let i = 0; i < workoutData.results.length; i++) {
+                if (workoutData.results[i].language === 2 && workoutData.results[i].muscles[0]) {
+                    if (workoutData.results[i].equipment.length > 0) {
+                        copy[workoutData.results[i].name] = [workoutData.results[i].muscles[0], workoutData.results[i].equipment[0], workoutData.results[i].description];
+                    }
+                }
+            }
+
+
+            // sets variation name to copied array
+            setvariationName(copy);
+
+            // has all the equipment in their respective positions
+            const equipment = ["Barbell", "SZ-Bar", "Dumbbell", "Gym Mat", "Swiss Ball", "Pull-up bar", "none (bodyweight exercise)", "Bench", "Incline Bench", "Kettlebell"]
+
+            // set the equipment name to the above
+            setEquipmentName(equipment);
+
+            // Empty array to store results
+            let combinedMuscles = [];
+
+            // Sort the results array by `id`
+            const sortedResults = muscleData.results.sort((a, b) => a.id - b.id);
+
+            // Loop through the sorted results and append combined strings
+            sortedResults.forEach(muscle => {
+                // Combine `name` and `name_en` strings with a separator, e.g., " (Name_en)"
+                const combinedName = muscle.name + (muscle.name_en ? ` (${muscle.name_en})` : '');
+                // Append to the result array
+                combinedMuscles.push(combinedName);
+            });
+
+            // sets array of created muscles to the muscles array state
+            setMuscleName(combinedMuscles)
+
+            //////////DAYS OF THE WEEK////////////
+            // holds the data when going through the for loop
+            let day = [];
+
+            // goes through the days of the week api and grabs the days
+            for (let i = 0; i < dayData.results.length; i++) {
+                day.push(dayData.results[i].day_of_week)
+            }
+
+            // set the array of names to the day state
+            setDayName(day);
+            /////////////////////////////////////
+
+            setIsOpen(true);
+        }
+    }, [])
 
     // calls the function to set arrays and swaps boolean state when called
     // this one is for creating a workout
-    const toggleNewWorkoutBox = () => {
-        CreateCustomWorkoutBox();
-        setIsOpen(!isOpen)
-    }
+    // const toggleNewWorkoutBox = () => {
+    //     CreateCustomWorkoutBox();
+    //     setIsOpen(!isOpen)
+    // }
 
-    // transforms api request data into arrays to look through
-    const CreateCustomWorkoutBox = () => {
+    // // transforms api request data into arrays to look through
+    // const CreateCustomWorkoutBox = () => {
 
-        // holds the workouts
-        let copy = {};
+    //     // holds the workouts
+    //     let copy = {};
 
-        // creates entries in the object for an exercise and associated equipment number
-        for (let i = 0; i < workoutData.results.length; i++) {
-            if (workoutData.results[i].language === 2 && workoutData.results[i].muscles[0]) {
-                if (workoutData.results[i].equipment.length > 0) {
-                    copy[workoutData.results[i].name] = [workoutData.results[i].muscles[0], workoutData.results[i].equipment[0], workoutData.results[i].description];
-                }
-            }
-        }
+    //     // creates entries in the object for an exercise and associated equipment number
+    //     for (let i = 0; i < workoutData.results.length; i++) {
+    //         if (workoutData.results[i].language === 2 && workoutData.results[i].muscles[0]) {
+    //             if (workoutData.results[i].equipment.length > 0) {
+    //                 copy[workoutData.results[i].name] = [workoutData.results[i].muscles[0], workoutData.results[i].equipment[0], workoutData.results[i].description];
+    //             }
+    //         }
+    //     }
 
 
-        // sets variation name to copied array
-        setvariationName(copy);
+    //     // sets variation name to copied array
+    //     setvariationName(copy);
 
-        // has all the equipment in their respective positions
-        const equipment = ["Barbell", "SZ-Bar", "Dumbbell", "Gym Mat", "Swiss Ball", "Pull-up bar", "none (bodyweight exercise)", "Bench", "Incline Bench", "Kettlebell"]
+    //     // has all the equipment in their respective positions
+    //     const equipment = ["Barbell", "SZ-Bar", "Dumbbell", "Gym Mat", "Swiss Ball", "Pull-up bar", "none (bodyweight exercise)", "Bench", "Incline Bench", "Kettlebell"]
 
-        // set the equipment name to the above
-        setEquipmentName(equipment);
+    //     // set the equipment name to the above
+    //     setEquipmentName(equipment);
 
-        // Empty array to store results
-        let combinedMuscles = [];
+    //     // Empty array to store results
+    //     let combinedMuscles = [];
 
-        // Sort the results array by `id`
-        const sortedResults = muscleData.results.sort((a, b) => a.id - b.id);
+    //     // Sort the results array by `id`
+    //     const sortedResults = muscleData.results.sort((a, b) => a.id - b.id);
 
-        // Loop through the sorted results and append combined strings
-        sortedResults.forEach(muscle => {
-            // Combine `name` and `name_en` strings with a separator, e.g., " (Name_en)"
-            const combinedName = muscle.name + (muscle.name_en ? ` (${muscle.name_en})` : '');
-            // Append to the result array
-            combinedMuscles.push(combinedName);
-        });
+    //     // Loop through the sorted results and append combined strings
+    //     sortedResults.forEach(muscle => {
+    //         // Combine `name` and `name_en` strings with a separator, e.g., " (Name_en)"
+    //         const combinedName = muscle.name + (muscle.name_en ? ` (${muscle.name_en})` : '');
+    //         // Append to the result array
+    //         combinedMuscles.push(combinedName);
+    //     });
 
-        // sets array of created muscles to the muscles array state
-        setMuscleName(combinedMuscles)
+    //     // sets array of created muscles to the muscles array state
+    //     setMuscleName(combinedMuscles)
 
-        //////////DAYS OF THE WEEK////////////
-        // holds the data when going through the for loop
-        let day = [];
+    //     //////////DAYS OF THE WEEK////////////
+    //     // holds the data when going through the for loop
+    //     let day = [];
 
-        // goes through the days of the week api and grabs the days
-        for (let i = 0; i < dayData.results.length; i++) {
-            day.push(dayData.results[i].day_of_week)
-        }
+    //     // goes through the days of the week api and grabs the days
+    //     for (let i = 0; i < dayData.results.length; i++) {
+    //         day.push(dayData.results[i].day_of_week)
+    //     }
 
-        // set the array of names to the day state
-        setDayName(day);
-        /////////////////////////////////////
+    //     // set the array of names to the day state
+    //     setDayName(day);
+    //     /////////////////////////////////////
 
-    }
+    // }
 
     // Handle form submission for adding a workout
     const handleSubmit = async (event) => {
@@ -296,11 +357,11 @@ export default function UpdateNormalWorkout() {
         let copy2 = equipmentName;
         let copy3 = muscleName;
 
-        
+
         if (variationCounter === 0) {
             return;
         }
-        
+
         const newCounter = variationCounter - 1;
         setVariationCounter(newCounter);
         console.log(variationChoice)
@@ -311,17 +372,17 @@ export default function UpdateNormalWorkout() {
             setDescText(Object.values(copy)[newCounter][2]);
         }
     }
-    
+
     const nextWorkoutVariation = () => {
         let copy = variationName;
         let copy2 = equipmentName;
         let copy3 = muscleName;
-    
-        
+
+
         if (variationCounter >= Object.entries(copy).length - 1) {
             return;
         }
-        
+
         const newCounter = variationCounter + 1;
         setVariationCounter(newCounter);
         console.log(variationChoice)
@@ -331,7 +392,7 @@ export default function UpdateNormalWorkout() {
             setMuscleChoice(copy3[Object.values(copy)[newCounter][0]]);
             setDescText(Object.values(copy)[newCounter][2]);
         }
-    }    
+    }
 
     // controls moving right through days
     const previousDay = () => {
@@ -339,6 +400,7 @@ export default function UpdateNormalWorkout() {
             setDayCounter(dayCounter - 1);
             setDayChoice(dayData.results[dayCounter - 1].day_of_week);
         }
+        console.log(dayCounter);
     }
 
     // controls moving left through days
@@ -347,6 +409,7 @@ export default function UpdateNormalWorkout() {
             setDayCounter(dayCounter + 1);
             setDayChoice(dayData.results[dayCounter + 1].day_of_week);
         }
+        console.log(dayCounter);
     }
 
     // Handle changes in form inputs and displays them on screen as they happen
@@ -369,7 +432,7 @@ export default function UpdateNormalWorkout() {
 
     return (
         <>
-        <button onClick={test}>test button</button>
+            <button onClick={test}>test button</button>
             {/* if user is logged in continue to the next ternary operator OR
             prompt the user to log in */}
             {String(token).length > 4 ? (
@@ -378,195 +441,185 @@ export default function UpdateNormalWorkout() {
                     <br />
                     {/* <Form onSubmit={handleSubmit}> */}
                     {workoutsReady ? (<><h1>Update a Normal Workout</h1></>) : (<><h1>workouts loading</h1></>)}
-                        
-                        {/* if the workout api call has successfully loaded, move to next ternary operator OR
-                        prompt the user and tell them to wait. */}
-                        {workoutsReady ? (
-                            <>
-                                {/* responsible for the entire form */}
-                                <Form onSubmit={handleSubmit}>
-                                    <Card
-                                        variant="outlined"
-                                        sx={{
-                                            maxHeight: 'max-content',
-                                            maxWidth: '60%',
-                                            mx: 'auto',
-                                            overflow: 'auto',
-                                            resize: 'horizontal',
-                                        }}
-                                    >
 
-                                        {/* Day of the week segment */}
-                                        <Form.Group>
+                    {/* if the workout api call has successfully loaded, move to next ternary operator OR
+                        prompt the user and tell them to wait. */}
+                    {workoutsReady ? (
+                        <>
+                            {/* responsible for the entire form */}
+                            <Form onSubmit={handleSubmit}>
+                                <Card
+                                    variant="outlined"
+                                    sx={{
+                                        maxHeight: 'max-content',
+                                        maxWidth: '60%',
+                                        mx: 'auto',
+                                        overflow: 'auto',
+                                        resize: 'horizontal',
+                                    }}
+                                >
+
+                                    {/* Day of the week segment */}
+
+                                    <Form.Label value={dayChoice}>
+                                        <div className="center">
                                             <br />
-                                            {/* day of the week segment name */}
                                             <Form.Label htmlFor="inputDay_of_The_Week">Day Of The Week:</Form.Label>
                                             <br />
-                                            <Form.Label value={dayChoice}>
-                                                {/* button to click back one segment */}
-                                                <button type="button" onClick={previousDay}>Previous</button>
-                                                {/* if there is a choice selected, display it on screen OR
+                                            <button type="button" disabled={isLeftEnabled} onClick={previousDay}><ArrowBackIcon /></button>
+                                            {dayChoice ? (<>{dayChoice}</>) : ('Please select a button')}
+                                            <button type="button" disabled={isRightEnabled} onClick={nextDay}><ArrowForwardIcon /></button>
+                                        </div>
+                                    </Form.Label>
+
+                                    <br />
+
+                                    {isOpen ? (
+                                        <>
+                                            {/* workout variation segment */}
+                                            <Form.Group>
+                                                {/* workout variation segment name */}
+                                                <Form.Label htmlFor="inputWorkout_Variation">Workout Variation:</Form.Label>
+                                                <br />
+                                                <Form.Label value={variationChoice}>
+                                                    {/* button to click back one segment */}
+                                                    <button type="button" onClick={previousWorkoutVariation}>Previous</button>
+                                                    {/* if there is a choice selected, display it on screen OR
                                                 prompt the user to select a button */}
-                                                {dayChoice ? (
-                                                    <>
-                                                        {/* displays the current users choice on the screen */}
-                                                        {dayChoice}
-                                                    </>
-                                                ) : (
-                                                    'Please choose a button'
-                                                )}
-                                                {/* button to go to the next segment */}
-                                                <button type="button" onClick={nextDay}>Next</button>
-                                            </Form.Label>
-                                        </Form.Group>
+                                                    {variationChoice ? (
+                                                        <>
+                                                            {/* displays the current users choice on the screen */}
+                                                            {variationChoice}
+                                                        </>
+                                                    ) : (
+                                                        'Please choose a button'
+                                                    )}
+                                                    {/* button to go to the next segment */}
+                                                    <button type="button" onClick={nextWorkoutVariation}>Next</button>
+                                                </Form.Label>
+                                            </Form.Group>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Form.Label htmlFor="inputWorkout_Variation">Workout Variation:</Form.Label>
+                                            Loading...
+                                        </>
+                                    )}
+
+
+                                    {/* Description segment */}
+                                    <Form.Group>
 
                                         <br />
-
-                                        {isOpen ? (
-                                            <>
-                                                {/* workout variation segment */}
-                                                <Form.Group>
-                                                    {/* workout variation segment name */}
-                                                    <Form.Label htmlFor="inputWorkout_Variation">Workout Variation:</Form.Label>
-                                                    <br />
-                                                    <Form.Label value={variationChoice}>
-                                                        {/* button to click back one segment */}
-                                                        <button type="button" onClick={previousWorkoutVariation}>Previous</button>
-                                                        {/* if there is a choice selected, display it on screen OR
-                                                prompt the user to select a button */}
-                                                        {variationChoice ? (
-                                                            <>
-                                                                {/* displays the current users choice on the screen */}
-                                                                {variationChoice}
-                                                            </>
-                                                        ) : (
-                                                            'Please choose a button'
-                                                        )}
-                                                        {/* button to go to the next segment */}
-                                                        <button type="button" onClick={nextWorkoutVariation}>Next</button>
-                                                    </Form.Label>
-                                                </Form.Group>
-                                            </>
-                                        ) : (
-                                            <>
-                                            <button onClick={toggleNewWorkoutBox}>Select Workout Variation</button>
-                                            </>
-                                        )}
-
-
-                                        {/* Description segment */}
-                                        <Form.Group>
-
-                                            <br />
-                                            {/* description label */}
-                                            <Form.Label htmlFor="inputWorkout_Variation">Description:</Form.Label>
-                                            <br />
-                                            <Form.Label value={variationChoice}>
-                                                {/* if there is a choice selected, display it on screen OR
-                                                prompt the user to select a button */}
-                                                {descText ? (
-                                                    <>
-                                                        {/* displays the current users choice on the screen */}
-                                                        {descText}
-                                                    </>
-                                                ) : (
-                                                    'Please choose a button'
-                                                )}
-                                            </Form.Label>
-                                        </Form.Group>
-
+                                        {/* description label */}
+                                        <Form.Label htmlFor="inputWorkout_Variation">Description:</Form.Label>
                                         <br />
-
-                                        <Form.Group>
-                                            {/* muscle segment */}
-                                            <Form.Label htmlFor="inputMuscle_Group">Muscle Group:</Form.Label>
-                                            <br />
-                                            <Form.Label value={muscleChoice}>
-                                                {/* if there is a choice selected, display it on screen OR
-                                                prompt the user to select a button */}
-                                                {muscleChoice ? (
-                                                    <>
-                                                        {/* displays the current users choice on the screen */}
-                                                        {muscleChoice}
-                                                    </>
-                                                ) : (
-                                                    'Please choose a button'
-                                                )}
-                                            </Form.Label>
-                                        </Form.Group>
-
-                                        <br />
-
-                                        <Form.Group>
-                                            {/* Equipment segment */}
-                                            <Form.Label htmlFor="inputEquipment">Equipment:</Form.Label>
-                                            <br />
+                                        <Form.Label value={variationChoice}>
                                             {/* if there is a choice selected, display it on screen OR
                                                 prompt the user to select a button */}
-                                            <Form.Label value={equipmentChoice}>
-                                                {equipmentChoice ? (
-                                                    <>
-                                                        {/* displays the current users choice on the screen */}
-                                                        {equipmentChoice}
-                                                    </>
-                                                ) : (
-                                                    'Please choose a button'
-                                                )}
-                                            </Form.Label>
-                                        </Form.Group>
+                                            {descText ? (
+                                                <>
+                                                    {/* displays the current users choice on the screen */}
+                                                    {descText}
+                                                </>
+                                            ) : (
+                                                'Please choose a button'
+                                            )}
+                                        </Form.Label>
+                                    </Form.Group>
 
+                                    <br />
+
+                                    <Form.Group>
+                                        {/* muscle segment */}
+                                        <Form.Label htmlFor="inputMuscle_Group">Muscle Group:</Form.Label>
                                         <br />
+                                        <Form.Label value={muscleChoice}>
+                                            {/* if there is a choice selected, display it on screen OR
+                                                prompt the user to select a button */}
+                                            {muscleChoice ? (
+                                                <>
+                                                    {/* displays the current users choice on the screen */}
+                                                    {muscleChoice}
+                                                </>
+                                            ) : (
+                                                'Please choose a button'
+                                            )}
+                                        </Form.Label>
+                                    </Form.Group>
 
-                                        <Form.Group>
-                                            {/* weight range segment */}
-                                            <Form.Label htmlFor="inputWeight_Range">Weight Range:</Form.Label>
-                                            <br />
-                                            {/* input field properties.
+                                    <br />
+
+                                    <Form.Group>
+                                        {/* Equipment segment */}
+                                        <Form.Label htmlFor="inputEquipment">Equipment:</Form.Label>
+                                        <br />
+                                        {/* if there is a choice selected, display it on screen OR
+                                                prompt the user to select a button */}
+                                        <Form.Label value={equipmentChoice}>
+                                            {equipmentChoice ? (
+                                                <>
+                                                    {/* displays the current users choice on the screen */}
+                                                    {equipmentChoice}
+                                                </>
+                                            ) : (
+                                                'Please choose a button'
+                                            )}
+                                        </Form.Label>
+                                    </Form.Group>
+
+                                    <br />
+
+                                    <Form.Group>
+                                        {/* weight range segment */}
+                                        <Form.Label htmlFor="inputWeight_Range">Weight Range:</Form.Label>
+                                        <br />
+                                        {/* input field properties.
                                             shows the change on screen and assigns the value to the server call */}
-                                            <FormControl
-                                                type="text"
-                                                name="weight_range"
-                                                value={userInputs.weight_range}
-                                                onChange={handleChange}
-                                                placeholder="Weight Range"
-                                            />
-                                        </Form.Group>
+                                        <FormControl
+                                            type="text"
+                                            name="weight_range"
+                                            value={userInputs.weight_range}
+                                            onChange={handleChange}
+                                            placeholder="Weight Range"
+                                        />
+                                    </Form.Group>
 
+                                    <br />
+
+                                    <Form.Group>
+                                        {/* rep range segment */}
+                                        <Form.Label htmlFor="inputRep_Range">Rep Range:</Form.Label>
                                         <br />
-
-                                        <Form.Group>
-                                            {/* rep range segment */}
-                                            <Form.Label htmlFor="inputRep_Range">Rep Range:</Form.Label>
-                                            <br />
-                                            {/* input field properties.
+                                        {/* input field properties.
                                             shows the change on screen and assigns the value to the server call */}
-                                            <FormControl
-                                                type="text"
-                                                name="rep_range"
-                                                value={userInputs.rep_range}
-                                                onChange={handleChange}
-                                                placeholder="Rep Range"
-                                            />
-                                        </Form.Group>
+                                        <FormControl
+                                            type="text"
+                                            name="rep_range"
+                                            value={userInputs.rep_range}
+                                            onChange={handleChange}
+                                            placeholder="Rep Range"
+                                        />
+                                    </Form.Group>
 
-                                        <br />
+                                    <br />
 
-                                        {/* workout id segment */}
-                                        <Form.Label htmlFor="name">Workout ID:</Form.Label>
+                                    {/* workout id segment */}
+                                    <Form.Label htmlFor="name">Workout ID:</Form.Label>
 
-                                        <input type="text" id="name" name="name" value={updateEnd} onChange={handleUpdateValue} />
-                                        <br />
-                                        <br />
-                                        <BootstrapButton variant="primary" type="submit">
-                                            Submit
-                                        </BootstrapButton>
-                                    </Card>
-                                </Form>
-                                <br />
-                            </>) : (
-                            <>
-                            </>
-                        )}
+                                    <input type="text" id="name" name="name" value={updateEnd} onChange={handleUpdateValue} />
+                                    <br />
+                                    <br />
+                                    <BootstrapButton variant="primary" type="submit">
+                                        Submit
+                                    </BootstrapButton>
+                                </Card>
+                            </Form>
+                            <br />
+                        </>) : (
+                        <>
+                        </>
+                    )}
                     {/* </Form> */}
                 </>
             ) : (
