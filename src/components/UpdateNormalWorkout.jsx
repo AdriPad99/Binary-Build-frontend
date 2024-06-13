@@ -33,6 +33,11 @@ export default function UpdateNormalWorkout() {
     })
 
 
+    const [data, setData] = useState(null); // Initially null to handle loading state
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [fileData, setFileData] = useState([])
+
     // set the state to hold the endpoint to update
     const [updateEnd, setUpdateEnd] = useState()
 
@@ -173,9 +178,10 @@ export default function UpdateNormalWorkout() {
             else {
                 console.error("Couldn't get the products :(")
             }
+            setIsOpen(true);
             setWorkoutsReady(true);
-            setButtonDisabled(false)
-            console.log(workoutData)
+            setButtonDisabled(false);
+            // console.log(workoutData)
         }
 
         renderVariations();
@@ -211,11 +217,24 @@ export default function UpdateNormalWorkout() {
         // holds the workouts
         let copy = {};
 
+        //   //grabs the name
+        //   console.log(data.results[0].name);
+        //   // grabs the associated description
+        //   console.log(data.results[0].description);
+        //   // grabs the language
+        //   console.log(data.results[0].language);
+        //   // grabs the workout muscle
+        //   console.log(data.results[0].muscles[0]);
+        // // grabs the length of the object
+        // console.log(Object.values(data.results).length)
+        // // grabs the equipment
+        // console.log(data.results[0].equipment[0]);
+
         // creates entries in the object for an exercise and associated equipment number
-        for (let i = 0; i < workoutData.results.length; i++) {
-            if (workoutData.results[i].language === 2 && workoutData.results[i].muscles[0]) {
-                if (workoutData.results[i].equipment.length > 0) {
-                    copy[workoutData.results[i].name] = [workoutData.results[i].muscles[0], workoutData.results[i].equipment[0], workoutData.results[i].description];
+        for (let i = 0; i < Object.values(data.results).length; i++) {
+            if (data.results[i].language === 2 && data.results[i].muscles[0] && data.results[i].description.length > 0) {
+                if (data.results[i].equipment[0] > 0) {
+                    copy[data.results[i].name] = [data.results[i].muscles[0], data.results[i].equipment[0], data.results[i].description];
                 }
             }
         }
@@ -249,16 +268,64 @@ export default function UpdateNormalWorkout() {
 
         //////////DAYS OF THE WEEK////////////
         // holds the data when going through the for loop
-        let day = [];
 
-        // goes through the days of the week api and grabs the days
-        for (let i = 0; i < dayData.results.length; i++) {
-            day.push(dayData.results[i].day_of_week)
-        }
+        // // goes through the days of the week api and grabs the days
+        // for (let i = 0; i < day.length; i++) {
+        //     day.push(dayData.results[i].day_of_week)
+        // }
 
         // set the array of names to the day state
+        let day = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
         setDayName(day);
         /////////////////////////////////////
+    }
+
+    useEffect(() => {
+        // Fetch the data from the public directory
+        fetch('/data.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Fetched data:', data); // Verify the data structure
+                setData(data);
+                setIsOpen(true);
+                setWorkoutsReady(true);
+                setButtonDisabled(false);
+                let newFileData = [];
+                setFileData(newFileData);
+                // set the array of names to the day state
+                let day = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                setDayName(day);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                setError(error);
+                setLoading(false);
+            });
+    }, []); // Empty dependency array ensures this runs once on mount
+
+    const test = () => {
+        let copy = variationName;
+
+        // //grabs the name
+        // console.log(data.results[0].name);
+        // // grabs the associated description
+        // console.log(data.results[0].description);
+        // // grabs the language
+        // console.log(data.results[0].language);
+        // // grabs the workout muscle
+        // console.log(data.results[0].muscles[0]);
+        // // grabs the length of the object
+        // console.log(Object.values(data.results).length)
+        // // grabs the equipment
+        // console.log(data.results[0].equipment[0]);
+        console.log(data.results[1].description.length)
+        console.log(copy)
+        console.log(dayName)
     }
 
     // Handle form submission for adding a workout
@@ -324,15 +391,9 @@ export default function UpdateNormalWorkout() {
         let copy = variationName;
         let copy2 = equipmentName;
         let copy3 = muscleName;
-
-        console.log(`current object length: ${Object.entries(copy).length}`)
-        console.log('Object data: ', copy)
-        console.log('current variation counter: ', variationCounter)
-        console.log('variation name: ', variationName)
-        console.log('current counter: ', variationCounter, 'current object length: ', Object.entries(copy).length - 1)
         console.log(variationChoice)
-        const newCounter = variationCounter + 1;
-        if (variationCounter === Object.entries(copy).length - 1){
+        const newCounter = variationCounter;
+        if (variationCounter === Object.entries(copy).length - 1) {
             setLimit(limit + 100)
             setOffset(limit - 100)
             loadData();
@@ -346,22 +407,17 @@ export default function UpdateNormalWorkout() {
                 }
                 counter++;
             }
-            // setVariationCounter(0)
             setWorkoutsReady(false)
-            // setVariationCounter(0)
             setLimit(limit + 100)
             setOffset(limit - 100)
-            console.log('test')
-            console.log('current limit: ', limit)
-            console.log('current offset: ', limit - 20)
             loadData();
         }
         else {
             setVariationChoice(Object.entries(copy)[newCounter][0]);
             setEquipmentChoice(copy2[Object.values(copy)[newCounter][1]]);
             setMuscleChoice(copy3[Object.values(copy)[newCounter][0]]);
-            setDescText(Object.values(copy)[variationCounter][2]);
-            setVariationCounter(variationCounter + 1);
+            setDescText(Object.values(copy)[newCounter][2]);
+            setVariationCounter(newCounter + 1);
         }
     }
 
@@ -369,16 +425,15 @@ export default function UpdateNormalWorkout() {
     const previousDay = () => {
         if (dayCounter > 0) {
             setDayCounter(dayCounter - 1);
-            setDayChoice(dayData.results[dayCounter - 1].day_of_week);
-            console.log('current variation counter: ', variationCounter)
+            setDayChoice(dayName[dayCounter - 1]);
         }
     }
 
     // controls moving left through days
     const nextDay = () => {
-        if (dayCounter < dayData.results.length - 1) {
+        if (dayCounter < dayName.length - 1) {
             setDayCounter(dayCounter + 1);
-            setDayChoice(dayData.results[dayCounter + 1].day_of_week);
+            setDayChoice(dayName[dayCounter + 1]);
         }
         loadData();
         console.log(dayCounter);
@@ -396,16 +451,6 @@ export default function UpdateNormalWorkout() {
     // grabs user input to be placed into endpoint to update user
     const handleUpdateValue = (event) => {
         setUpdateEnd(event.target.value);
-    }
-
-    const test = () => {
-        let copy = variationName;
-
-        console.log('current variation object: ', Object.entries(copy)[17][0])
-        console.log('current variation name: ', Object.entries(copy)[2][0])
-        // console.log('current variation counter: ', variationCounter)
-        // console.log('current limit: ',limit)
-        // console.log('current offset: ', offset)
     }
 
     return (
@@ -439,14 +484,14 @@ export default function UpdateNormalWorkout() {
 
                                     {/* Day of the week segment */}
 
-                                    {dayData ? (
+                                    {data ? (
                                         <>
                                             <Form.Label value={dayChoice}>
                                                 <div className="center">
                                                     <br />
                                                     <Form.Label htmlFor="inputDay_of_The_Week">Day Of The Week:</Form.Label>
                                                     <br />
-                                                    <button type="button" disabled={isLeftEnabled} onClick={previousDay}><ArrowBackIcon /></button>
+                                                    <button type="button"  onClick={previousDay}><ArrowBackIcon /></button>
                                                     {dayChoice ? (<>{dayChoice}</>) : ('Please select a button')}
                                                     <button type="button" disabled={variationName ? false : true} onClick={nextDay}><ArrowForwardIcon /></button>
                                                 </div>
