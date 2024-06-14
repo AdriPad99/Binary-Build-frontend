@@ -217,19 +217,6 @@ export default function UpdateNormalWorkout() {
         // holds the workouts
         let copy = {};
 
-        //   //grabs the name
-        //   console.log(data.results[0].name);
-        //   // grabs the associated description
-        //   console.log(data.results[0].description);
-        //   // grabs the language
-        //   console.log(data.results[0].language);
-        //   // grabs the workout muscle
-        //   console.log(data.results[0].muscles[0]);
-        // // grabs the length of the object
-        // console.log(Object.values(data.results).length)
-        // // grabs the equipment
-        // console.log(data.results[0].equipment[0]);
-
         // creates entries in the object for an exercise and associated equipment number
         for (let i = 0; i < Object.values(data.results).length; i++) {
             if (data.results[i].language === 2 && data.results[i].muscles[0] && data.results[i].description.length > 0) {
@@ -267,12 +254,6 @@ export default function UpdateNormalWorkout() {
         setMuscleName(combinedMuscles)
 
         //////////DAYS OF THE WEEK////////////
-        // holds the data when going through the for loop
-
-        // // goes through the days of the week api and grabs the days
-        // for (let i = 0; i < day.length; i++) {
-        //     day.push(dayData.results[i].day_of_week)
-        // }
 
         // set the array of names to the day state
         let day = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -309,23 +290,9 @@ export default function UpdateNormalWorkout() {
     }, []); // Empty dependency array ensures this runs once on mount
 
     const test = () => {
-        let copy = variationName;
-
-        // //grabs the name
-        // console.log(data.results[0].name);
-        // // grabs the associated description
-        // console.log(data.results[0].description);
-        // // grabs the language
-        // console.log(data.results[0].language);
-        // // grabs the workout muscle
-        // console.log(data.results[0].muscles[0]);
-        // // grabs the length of the object
-        // console.log(Object.values(data.results).length)
-        // // grabs the equipment
-        // console.log(data.results[0].equipment[0]);
         console.log(data.results[1].description.length)
-        console.log(copy)
-        console.log(dayName)
+        console.log('amount of variations: ', Object.values(variationName).length)
+        console.log('variation counter: ', variationCounter)
     }
 
     // Handle form submission for adding a workout
@@ -484,6 +451,8 @@ export default function UpdateNormalWorkout() {
 
                                     {/* Day of the week segment */}
 
+                                    {/* if workout data hasn't loaded inform the user its loading OR
+                                        if the data is loaded reveal the day segment */}
                                     {data ? (
                                         <>
                                             <Form.Label value={dayChoice}>
@@ -491,9 +460,38 @@ export default function UpdateNormalWorkout() {
                                                     <br />
                                                     <Form.Label htmlFor="inputDay_of_The_Week">Day Of The Week:</Form.Label>
                                                     <br />
-                                                    <button type="button"  onClick={previousDay}><ArrowBackIcon /></button>
-                                                    {dayChoice ? (<>{dayChoice}</>) : ('Please select a button')}
-                                                    <button type="button" disabled={variationName ? false : true} onClick={nextDay}><ArrowForwardIcon /></button>
+                                                    {/* if dayChoice is falsy prompt the user to choose a day OR
+                                                        if dayChoice is truthy reveal the day picker */}
+                                                    {dayChoice ? (
+                                                        <>
+                                                            {/* if current day is monday diable the left button OR
+                                                                if it isn't monday enable the button */}
+                                                            {dayChoice === 'Monday' ? (
+                                                                <>
+                                                                    <button type="button" disabled={true} onClick={previousDay}><ArrowBackIcon /></button>
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    <button type="button" onClick={previousDay}><ArrowBackIcon /></button>
+                                                                </>
+                                                            )}
+                                                            {dayChoice}
+                                                            {/* if current day is Sunday disable the right button OR
+                                                                if the current day isn't Sunday enable the button */}
+                                                            {dayChoice === 'Sunday' ? (
+                                                                <>
+                                                                    <button type="button" disabled={true} onClick={nextDay}><ArrowForwardIcon /></button>
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    <button type="button" disabled={false} onClick={nextDay}><ArrowForwardIcon /></button>
+                                                                </>
+                                                            )}
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <BootstrapButton onClick={nextDay}>Choose day</BootstrapButton>
+                                                        </>)}
                                                 </div>
                                             </Form.Label>
                                         </>
@@ -509,6 +507,8 @@ export default function UpdateNormalWorkout() {
 
                                     <br />
 
+                                    {/* if the day counter is at it's initialized state (-1) promt the user to choose a day OR
+                                        if the day counter has been altered, reveal the workout variation segment */}
                                     {dayCounter === -1 ? (
                                         <>
                                             <Form.Label htmlFor="inputWorkout_Variation">Workout Variation:</Form.Label>
@@ -523,25 +523,40 @@ export default function UpdateNormalWorkout() {
                                                 <br />
                                                 <Form.Label value={variationChoice}>
                                                     {/* button to click back one segment */}
-                                                    <button type="button" onClick={previousWorkoutVariation}>Previous</button>
+                                                    
+                                                    {/* if a variant is existant enable the button OR
+                                                        if a variant is non-existant disable the button */}
+                                                    {variationCounter === 0 ? (
+                                                        <>
+                                                            <button type="button" disabled={true} onClick={previousWorkoutVariation}><ArrowBackIcon /></button>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                        <button type="button" onClick={previousWorkoutVariation}><ArrowBackIcon /></button>
+                                                        </>
+                                                    )}
+                                                    
                                                     {/* if there is a choice selected, display it on screen OR
-                                                prompt the user to select a button */}
+                                                        prompt the user to select a button */}
                                                     {variationChoice ? (
                                                         <>
                                                             {/* displays the current users choice on the screen */}
                                                             {variationChoice}
                                                         </>
                                                     ) : (
-                                                        'Please choose a button'
+                                                        'Please choose a variant'
                                                     )}
+
                                                     {/* button to go to the next segment */}
-                                                    {workoutsReady ? (
+                                                    {/* if current variation counter is at the end of all the variations diable the button OR
+                                                        if current variation is not at the end of the variations enable the button */}
+                                                    {Object.values(variationName).length === variationCounter + 1? (
                                                         <>
-                                                            <button type="button" onClick={nextWorkoutVariation}>Next</button>
+                                                            <button type="button" disabled={true} onClick={nextWorkoutVariation}><ArrowForwardIcon /></button>
                                                         </>
                                                     ) : (
                                                         <>
-                                                            <button type="button" disabled={true}>Loading...</button>
+                                                            <button type="button" onClick={nextWorkoutVariation}><ArrowForwardIcon /></button>
                                                         </>
                                                     )}
                                                 </Form.Label>
@@ -681,6 +696,7 @@ const BootstrapButton = styled(Button)({
     lineHeight: 1.5,
     backgroundColor: '#0063cc',
     borderColor: '#0063cc',
+    color: '#ffffff',
     fontFamily: [
         '-apple-system',
         'BlinkMacSystemFont',
