@@ -422,7 +422,7 @@ export default function UpdateNormalWorkout() {
 
     return (
         <>
-            <button disabled={buttonDisabled} onClick={test}>test button</button>
+            {/* <button disabled={buttonDisabled} onClick={test}>test button</button> */}
             {/* if user is logged in continue to the next ternary operator OR
             prompt the user to log in */}
             {String(token).length > 4 ? (
@@ -523,7 +523,7 @@ export default function UpdateNormalWorkout() {
                                                 <br />
                                                 <Form.Label value={variationChoice}>
                                                     {/* button to click back one segment */}
-                                                    
+
                                                     {/* if a variant is existant enable the button OR
                                                         if a variant is non-existant disable the button */}
                                                     {variationCounter === 0 ? (
