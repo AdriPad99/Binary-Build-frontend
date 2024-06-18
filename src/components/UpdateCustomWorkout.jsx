@@ -3,18 +3,15 @@ import Form from 'react-bootstrap/Form';
 import AuthContext from "../context/AuthContext";
 import * as React from 'react';
 import Card from '@mui/joy/Card';
-import CardActions from '@mui/joy/CardActions';
-import CardContent from '@mui/joy/CardContent';
-import Divider from '@mui/joy/Divider';
-import FormControl from '@mui/joy/FormControl';
-import FormLabel from '@mui/joy/FormLabel';
-import Input from '@mui/joy/Input';
-import Typography from '@mui/joy/Typography';
-import InfoOutlined from '@mui/icons-material/InfoOutlined';
+//import FormControl from '@mui/joy/FormControl';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
+
+import { FormControl } from "react-bootstrap";
+
+import { toast } from 'react-toastify';
 
 export default function UpdateCustomWorkout() {
 
@@ -147,29 +144,6 @@ export default function UpdateCustomWorkout() {
         }
     }
 
-    // calls the function to set arrays and swaps boolean state when called
-    // this one is for updating a workout
-    const toggleUpdateBox = () => {
-        CreateCustomWorkoutBox();
-        setUpdateForm(!updateForm);
-    }
-
-    // transforms api request data into arrays to look through
-    const CreateCustomWorkoutBox = () => {
-        //////////DAYS OF THE WEEK////////////
-        // holds the data when going through the for loop
-        let copy = [];
-
-        // goes through the days of the week api and grabs the days
-        for (let i = 0; i < dayData.results.length; i++) {
-            copy.push(dayData.results[i].day_of_week)
-        }
-
-        // set the array of names to the day state
-        setDayName(copy);
-        /////////////////////////////////////
-    }
-
     // controls moving right through days
     const previousDay = () => {
         if (dayCounter > 0) {
@@ -195,189 +169,143 @@ export default function UpdateCustomWorkout() {
         }));
     };
 
-
-    // const handleMuscleGroupValue = (event) => {
-    //     setMuscleChoice(event.target.value);
-    // }
-
-    // const handleEquipmentValue = (event) => {
-    //     setEquipmentChoice(event.target.value);
-    // }
-
-    // const handleRepRangeValue = (event) => {
-    //     setRepChoice(event.target.value);
-    // }
-
-
-    // const handleWeightRangeValue = (event) => {
-    //     setWeightChoice(event.target.value);
-    // }
-
-    // const handleVariationValue = (event) => {
-    //     setVariationChoice(event.target.value);
-    // }
-
     // grabs user input to be placed into endpoint to update user
     const handleUpdateValue = (event) => {
         setUpdateEnd(event.target.value);
     }
 
 
-
     return (
         <>
-            <br />
-            <br />
-            {/* if the workouts api call is successful move on OR
-                inform the user the form is still loading */}
-            {daysReady ? (
-                <>
-                    {/* Start of the form */}
-                    <Form onSubmit={handleUpdate}>
-                        {/* handles the styling of the form */}
-                        <Card
-                            variant="outlined"
-                            sx={{
-                                maxHeight: 'max-content',
-                                maxWidth: '60%',
-                                mx: 'auto',
-                                overflow: 'auto',
-                                resize: 'horizontal',
-                            }}
-                        >
-                            {/* Header of the form */}
-                            <Typography level="title-lg" startDecorator={<InfoOutlined />}>
-                                Update Custom Workout
-                            </Typography>
-                            {/* line separating the header and rest of the forrm */}
-                            <Divider inset="none" />
-                            {/* if needsForm is true show the day and workout buttons OR
-                                 prompt the user to show the buttons*/}
-                            {updateForm ? (
-                                <>
-                                    {/* day of the week segment */}
-                                    <Form.Label value={dayChoice}>
-                                        <div className="center">
-                                            <br />
-                                            <Form.Label htmlFor="inputDay_of_The_Week">Day Of The Week:</Form.Label>
-                                            <br />
-                                            <button type="button" disabled={isLeftEnabled} onClick={previousDay}><ArrowBackIcon /></button>
-                                            {dayChoice ? (<>{dayChoice}</>) : ('Please select a button')}
-                                            <button type="button" disabled={isRightEnabled} onClick={nextDay}><ArrowForwardIcon /></button>
-                                        </div>
-                                    </Form.Label>
-
-                                </>
-                            ) : (
-                                <>
-                                    <div className="center">
-                                        <button onClick={toggleUpdateBox}>Choose Day & Workout</button>
-                                    </div>
-                                </>
-                            )}
-
-                            {/* Workout Segment */}
-                            <Form.Group>
-                                {/* <Form.Label htmlFor="inputworkout_variation">Workout Variation:</Form.Label> */}
-                                <FormControl
-                                    sx={{ gridColumn: '1/-1' }}
-
-                                >
-                                    <FormLabel>Workout Variation: </FormLabel>
-                                    <Input
-                                        onChange={handleChange}
-                                        placeholder="Enter your workout name"
-                                        type="text"
-                                        name="variation"
-                                        value={userInputs.variation || ''}
-                                    />
-                                </FormControl>
-                            </Form.Group>
-
-                            {/* Muscle Group Segment */}
-
-                            <Form.Group>
-                                <FormControl
-                                    sx={{ gridColumn: '1/-1' }}
-                                    type="text"
-                                    name="muscle_group"
-                                    value={userInputs.muscle_group || ""}
-                                >
-                                    <FormLabel>Muscle Group: </FormLabel>
-                                    <Input onChange={handleChange} placeholder="Enter your muscle group" />
-                                </FormControl>
-                            </Form.Group>
-
-                            {/* Equipment Segment */}
-                            <Form.Group>
-                                <FormControl
-                                    sx={{ gridColumn: '1/-1' }}
-                                    type="text"
-                                    name="equipment"
-                                    value={userInputs.equipment || ""}
-                                >
-                                    <FormLabel>Workout Equipment: </FormLabel>
-                                    <Input onChange={handleChange} placeholder="Enter your equipment name" />
-                                </FormControl>
-                            </Form.Group>
-
-                            {/* Weight Range Segment */}
-                            <Form.Group>
-                                <FormControl
-                                    sx={{ gridColumn: '1/-1' }}
-                                    type="text"
-                                    name="weight_range"
-                                    value={userInputs.weight_range || ""}
-                                >
-                                    <FormLabel>Weight Range: </FormLabel>
-                                    <Input onChange={handleChange} placeholder="Enter your weight range" />
-                                </FormControl>
-                            </Form.Group>
-
-                            {/* Rep Range segment */}
-                            <Form.Group>
-                                <FormControl
-                                    sx={{ gridColumn: '1/-1' }}
-                                    type="text"
-                                    name='rep_range'
-                                    value={userInputs.rep_range || ""}
-                                >
-                                    <FormLabel>Rep Range: </FormLabel>
-                                    <Input onChange={handleChange} placeholder="Enter your rep range" />
-                                </FormControl>
-                            </Form.Group>
-
-                            {/* input box segment */}
-                            <Form.Group>
-                                <FormControl
-                                    sx={{ gridColumn: '1/-1' }}
-                                    type="text"
-                                    name="name"
-                                    value={updateEnd || ''}
-                                >
-                                    <FormLabel>Workout ID:</FormLabel>
-                                    <Input onChange={handleUpdateValue} placeholder="Enter the workout ID to update" />
-                                </FormControl>
-                            </Form.Group>
-
-                            {/* Bottom of the form and submit button */}
-                            <CardActions sx={{ gridColumn: '1/-1' }}>
-                                <div>
-                                    <BootstrapButton type='submit' variant="contained" disableRipple>
-                                        Update Workout
-                                    </BootstrapButton>
+            {/* responsible for the entire form */}
+            <Form onSubmit={handleUpdate}>
+                <Card
+                    variant="outlined"
+                    sx={{
+                        maxHeight: 'max-content',
+                        maxWidth: '60%',
+                        mx: 'auto',
+                        overflow: 'auto',
+                        resize: 'horizontal',
+                    }}
+                >
+                    {/* Day of the week segment */}
+                    {daysReady ? (
+                        <>
+                            <Form.Label value={dayChoice}>
+                                <div className="center">
+                                    <br />
+                                    <Form.Label htmlFor="inputDay_of_The_Week">Day Of The Week:</Form.Label>
+                                    <br />
+                                    {dayChoice ? (
+                                        <>
+                                            {dayChoice === 'Monday' ? (
+                                                <button type="button" disabled={true} onClick={previousDay}><ArrowBackIcon /></button>
+                                            ) : (
+                                                <button type="button" onClick={previousDay}><ArrowBackIcon /></button>
+                                            )}
+                                            {dayChoice}
+                                            {dayChoice === 'Sunday' ? (
+                                                <button type="button" disabled={true} onClick={nextDay}><ArrowForwardIcon /></button>
+                                            ) : (
+                                                <button type="button" onClick={nextDay}><ArrowForwardIcon /></button>
+                                            )}
+                                        </>
+                                    ) : (
+                                        <BootstrapButton onClick={nextDay}>Choose day</BootstrapButton>
+                                    )}
                                 </div>
-                            </CardActions>
-                        </Card>
-                    </Form>
-                </>
-            ) : (
-                <>
-                    <h1>Loading...</h1>
-                </>
-            )}
+                            </Form.Label>
+                        </>
+                    ) : (
+                        <div className="center">
+                            <Form.Label htmlFor="inputDay_of_The_Week">Day Of The Week:</Form.Label>
+                            <br />
+                            Loading...
+                        </div>
+                    )}
+
+                    <Form.Group>
+                        <Form.Label htmlFor="inputVariation">Workout Variation:</Form.Label>
+                        <br />
+                        <FormControl
+                            type="text"
+                            name="variation"
+                            value={userInputs.variation}
+                            onChange={handleChange}
+                            placeholder="Workout Variation"
+                        />
+                    </Form.Group>
+
+                    <br />
+
+                    <Form.Group>
+                        <Form.Label htmlFor="inputMuscle_Group">Muscle Group:</Form.Label>
+                        <br />
+                        <FormControl
+                            type="text"
+                            name="muscle_group"
+                            value={userInputs.muscle_group}
+                            onChange={handleChange}
+                            placeholder="Muscle Group"
+                        />
+                    </Form.Group>
+
+                    <br />
+
+                    <Form.Group>
+                        <Form.Label htmlFor="inputEquipment">Equipment:</Form.Label>
+                        <br />
+                        <FormControl
+                            type="text"
+                            name="equipment"
+                            value={userInputs.equipment}
+                            onChange={handleChange}
+                            placeholder="Equipment"
+                        />
+                    </Form.Group>
+
+                    <br />
+
+                    <Form.Group>
+                        <Form.Label htmlFor="inputWeight_Range">Weight Range:</Form.Label>
+                        <br />
+                        <FormControl
+                            type="text"
+                            name="weight_range"
+                            value={userInputs.weight_range}
+                            onChange={handleChange}
+                            placeholder="Weight Range"
+                        />
+                    </Form.Group>
+
+                    <br />
+
+                    <Form.Group>
+                        <Form.Label htmlFor="inputRep_Range">Rep Range:</Form.Label>
+                        <br />
+                        <FormControl
+                            type="text"
+                            name="rep_range"
+                            value={userInputs.rep_range}
+                            onChange={handleChange}
+                            placeholder="Rep Range"
+                        />
+                    </Form.Group>
+
+                    <br />
+
+                    <Form.Label htmlFor="name">Workout ID:</Form.Label>
+                    <input type="text" id="name" name="name" value={updateEnd} onChange={handleUpdateValue} />
+                    <br />
+                    <br />
+                    <BootstrapButton variant="primary" type="submit">
+                        Submit
+                    </BootstrapButton>
+                </Card>
+            </Form>
         </>
-    )
+    );
 }
 
 const BootstrapButton = styled(Button)({
