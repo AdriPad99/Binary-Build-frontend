@@ -32,8 +32,15 @@ export default function UpdateCustomWorkout() {
     // set the state to hold the endpoint to update
     const [updateEnd, setUpdateEnd] = useState('')
 
-    // set state for update form when on screen
-    const [updateForm, setUpdateForm] = useState(false)
+    const [variation, setVariation] = useState();
+
+    const [muscle, setMuscle] = useState();
+
+    const [equipment, setEquipment] = useState();
+
+    const [weight, setWeight] = useState();
+
+    const [rep, setRep] = useState();
 
     const [daysReady, setIsDaysReady] = useState(false)
 
@@ -48,9 +55,6 @@ export default function UpdateCustomWorkout() {
     /////////////////////////////////////////////////////////
     // state for day data from api call
     const [dayData, setDayData] = useState()
-
-    // state for day name
-    const [dayName, setDayName] = useState()
 
     // set state for day choice
     const [dayChoice, setDayChoice] = useState()
@@ -113,11 +117,11 @@ export default function UpdateCustomWorkout() {
                 'Content-Type': 'application/json' // Indicates the content 
             },
             body: JSON.stringify({
-                "muscle_group": userInputs.muscle_group,
-                "equipment": userInputs.equipment,
-                "rep_range": userInputs.rep_range,
-                "weight_range": userInputs.weight_range,
-                "variation": userInputs.variation,
+                "muscle_group": muscle,
+                "equipment": equipment,
+                "rep_range": Number(rep),
+                "weight_range": Number(weight),
+                "variation": variation,
                 "day": dayChoice
             }),
         });
@@ -139,8 +143,8 @@ export default function UpdateCustomWorkout() {
         } else {
             // handles the errors
             console.error('Failed to update the workout:', response.statusText);
-            console.log((userInputs.muscle_group), (userInputs.equipment), (userInputs.rep_range),
-                (userInputs.weight_range), (userInputs.variation), (dayChoice), (updateEnd))
+            console.log((muscle), (equipment), (rep),
+                (weight), (variation), (dayChoice), (updateEnd))
         }
     }
 
@@ -172,11 +176,38 @@ export default function UpdateCustomWorkout() {
     // grabs user input to be placed into endpoint to update user
     const handleUpdateValue = (event) => {
         setUpdateEnd(event.target.value);
+        // setVariation(event.target.value);
+        // setMuscle(event.target.value);
+        // setEquipment(event.target.value);
+        // setWeight(event.target.value);
+        // setRep(event.target.value);
+    }
+
+    const handleVariationValue = (event) => {
+        setVariation(event.target.value);
+    }
+
+    const handleMuscleValue = (event) => {
+        setMuscle(event.target.value);
+    }
+
+    const handleEquipmentValue = (event) => {
+        setEquipment(event.target.value);
+    }
+
+    const handleWeightValue = (event) => {
+        setWeight(event.target.value);
+    }
+
+    const handleRepValue = (event) => {
+        setRep(event.target.value);
     }
 
 
     return (
         <>
+        <br/>
+        <br/>
             {/* responsible for the entire form */}
             <Form onSubmit={handleUpdate}>
                 <Card
@@ -231,8 +262,8 @@ export default function UpdateCustomWorkout() {
                         <FormControl
                             type="text"
                             name="variation"
-                            value={userInputs.variation}
-                            onChange={handleChange}
+                            value={variation}
+                            onChange={handleVariationValue}
                             placeholder="Workout Variation"
                         />
                     </Form.Group>
@@ -245,8 +276,8 @@ export default function UpdateCustomWorkout() {
                         <FormControl
                             type="text"
                             name="muscle_group"
-                            value={userInputs.muscle_group}
-                            onChange={handleChange}
+                            value={muscle}
+                            onChange={handleMuscleValue}
                             placeholder="Muscle Group"
                         />
                     </Form.Group>
@@ -259,8 +290,8 @@ export default function UpdateCustomWorkout() {
                         <FormControl
                             type="text"
                             name="equipment"
-                            value={userInputs.equipment}
-                            onChange={handleChange}
+                            value={equipment}
+                            onChange={handleEquipmentValue}
                             placeholder="Equipment"
                         />
                     </Form.Group>
@@ -273,8 +304,8 @@ export default function UpdateCustomWorkout() {
                         <FormControl
                             type="text"
                             name="weight_range"
-                            value={userInputs.weight_range}
-                            onChange={handleChange}
+                            value={weight}
+                            onChange={handleWeightValue}
                             placeholder="Weight Range"
                         />
                     </Form.Group>
@@ -287,8 +318,8 @@ export default function UpdateCustomWorkout() {
                         <FormControl
                             type="text"
                             name="rep_range"
-                            value={userInputs.rep_range}
-                            onChange={handleChange}
+                            value={rep}
+                            onChange={handleRepValue}
                             placeholder="Rep Range"
                         />
                     </Form.Group>
