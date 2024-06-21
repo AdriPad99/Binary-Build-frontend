@@ -31,6 +31,8 @@ export default function UpdateCustomWorkout() {
     const [updateForm, setUpdateForm] = useState(false)
 
     ////////////////////////////////////////////////////////
+    const[data, setData] = useState();
+
     // state for workout data from api call
     const [workoutData, setWorkoutData] = useState()
 
@@ -83,25 +85,13 @@ export default function UpdateCustomWorkout() {
     const [dayChoice, setDayChoice] = useState()
 
     // set state for date counter
-    const [dayCounter, setDayCounter] = useState(0)
+    const [dayCounter, setDayCounter] = useState(-1)
     /////////////////////////////////////////////////////////
+
+    
 
     // calls the functions on initial page render
     useEffect(() => {
-        // calls the api that has translations 
-        //(or so I thought. I thought it was all english but it wasn't)
-        const renderVariations = async () => {
-            const res = await fetch('https://wger.de/api/v2/exercise-translation/?limit=50&offset=0')
-            if (res.ok) {
-                const data = await res.json();
-                setWorkoutData(data);
-            }
-            // if not error out
-            else {
-                console.error("Couldn't get the products :(")
-            }
-        }
-
         // calls the api that has the muscle groups
         const renderMuscles = async () => {
             const res = await fetch('https://wger.de/api/v2/muscle/')
@@ -128,23 +118,8 @@ export default function UpdateCustomWorkout() {
             }
         }
 
-        // calls the api that has the day data
-        const renderDay = async () => {
-            const res = await fetch('https://wger.de/api/v2/daysofweek/')
-            if (res.ok) {
-                const data = await res.json();
-                setDayData(data);
-            }
-            // if not error out
-            else {
-                console.error("Couldn't get the products :(")
-            }
-        }
-
-        renderVariations();
         renderMuscles();
         renderEquipment();
-        renderDay();
     }, []);
 
     // Handle form submission for updating a workout
@@ -185,68 +160,76 @@ export default function UpdateCustomWorkout() {
         }
     }
 
-    // calls the function to set arrays and swaps boolean state when called
-    // this one is for updating a workout
-    const toggleUpdateBox = () => {
-        CreateCustomWorkoutBox();
-        setUpdateForm(!updateForm);
+    useEffect(() => {
+        // Fetch the data from the public directory
+        fetch('/data.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // console.log('Fetched data:', data); // Verify the data structure
+                setData(data);
+                // set the array of names to the day state
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+            let day = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            setDayData(day);
+    }, []);
+
+    const test = () => {
+        console.log(dayChoice)
     }
 
-    // transforms api request data into arrays to look through
-    const CreateCustomWorkoutBox = () => {
+    const loadData = () => {
+        // holds the workouts
+        let copy = {};
 
-        //////////WORKOUT VARIATION//////////
-        let filter = new Set();
-        for (let i = 0; i < workoutData.results.length; i++) {
-            if (workoutData.results[i].language === 2) {
-                filter.add(workoutData.results[i].name)
+        // creates entries in the object for an exercise and associated equipment number
+        for (let i = 0; i < Object.values(data.results).length; i++) {
+            if (data.results[i].language === 2 && data.results[i].muscles[0] && data.results[i].description.length > 0) {
+                if (data.results[i].equipment[0] > 0) {
+                    copy[data.results[i].name] = [data.results[i].muscles[0], data.results[i].equipment[0], data.results[i].description];
+                }
             }
         }
 
-        // Convert Set to array before setting state
-        const workoutNamesArray = [...filter];
-        setvariationName(workoutNamesArray);
-        //////////////////////////////////////
 
-        //////////MUSCLE GROUP//////////
-        let filter2 = new Set();
-        for (let j = 0; j < muscleData.results.length; j++) {
-            if (muscleData.results[j].name_en.length === 0) {
-                filter2.add(`${muscleData.results[j].name}`)
-            }
-            else {
-                filter2.add(`${muscleData.results[j].name}(${muscleData.results[j].name_en})`)
-            }
-        }
+        // sets variation name to copied array
+        setvariationName(copy);
 
-        // Convert Set to array before setting state
-        const workoutNamesArray2 = [...filter2];
-        setMuscleName(workoutNamesArray2);
-        ////////////////////////////////
+        // has all the equipment in their respective positions
+        const equipment = ["Barbell", "SZ-Bar", "Dumbbell", "Gym Mat", "Swiss Ball", "Pull-up bar", "none (bodyweight exercise)", "Bench", "Incline Bench", "Kettlebell"]
 
+        // set the equipment name to the above
+        setEquipmentName(equipment);
 
-        //////////WORKOUT EQUIPMENT//////////
-        let filter3 = new Set();
-        for (let k = 0; k < equipmentData.results.length; k++) {
-            filter3.add(equipmentData.results[k].name)
-        }
-        // Convert Set to array before setting state
-        const workoutNamesArray3 = [...filter3];
-        setEquipmentName(workoutNamesArray3);
-        /////////////////////////////////////
+        // Empty array to store results
+        let combinedMuscles = [];
 
+        // Sort the results array by `id`
+        const sortedResults = muscleData.results.sort((a, b) => a.id - b.id);
+
+        // Loop through the sorted results and append combined strings
+        sortedResults.forEach(muscle => {
+            // Combine `name` and `name_en` strings with a separator, e.g., " (Name_en)"
+            const combinedName = muscle.name + (muscle.name_en ? ` (${muscle.name_en})` : '');
+            // Append to the result array
+            combinedMuscles.push(combinedName);
+        });
+
+        // sets array of created muscles to the muscles array state
+        setMuscleName(combinedMuscles)
 
         //////////DAYS OF THE WEEK////////////
-        // holds the data when going through the for loop
-        let copy = [];
-
-        // goes through the days of the week api and grabs the days
-        for (let i = 0; i < dayData.results.length; i++) {
-            copy.push(dayData.results[i].day_of_week)
-        }
 
         // set the array of names to the day state
-        setDayName(copy);
+        let day = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        setDayName(day);
         /////////////////////////////////////
     }
 
@@ -355,33 +338,21 @@ export default function UpdateCustomWorkout() {
 
     // controls moving right through days
     const previousDay = () => {
-
-        // create copy of day array
-        let copy = dayName;
-
-        //if start of array return
-        if (dayCounter === 0) {
-            return;
+        if (dayCounter > 0) {
+            setDayCounter(dayCounter - 1);
+            setDayChoice(dayName[dayCounter - 1]);
         }
-
-        // decrement day counter by one
-        setDayCounter(dayCounter - 1)
-
-        // set user day choice to location of counter in the copy
-        setDayChoice(copy[dayCounter])
     }
 
-    // controls moving left through days
-    const nextDay = () => {
-        let copy = dayName;
-
-        if (dayCounter === copy.length) {
-            return;
+     // controls moving left through days
+     const nextDay = () => {
+        if (dayCounter < dayName.length - 1) {
+            setDayCounter(dayCounter + 1);
+            setDayChoice(dayName[dayCounter + 1]);
         }
-
-        setDayCounter(dayCounter + 1);
-        setDayChoice(copy[dayCounter])
+        loadData();
     }
+
 
     // Handle changes in form inputs and displays them on screen as they happen
     const handleChange = (event) => {
@@ -397,10 +368,14 @@ export default function UpdateCustomWorkout() {
         setUpdateEnd(event.target.value);
     }
 
-
+    const toggleForm = () => {
+        loadData();
+        setUpdateForm(!updateForm);
+    }
 
     return (
         <>
+        <button onClick={test}>test</button>
             {/* Update a Workout Segment */}
             {/* if user is logged in display the form
                 if not prompt them to log in */}
@@ -414,11 +389,11 @@ export default function UpdateCustomWorkout() {
 
                     {/* will continue to the next ternary operator if its deemed open OR
                         will display nothing on the page to the user if not open */}
-                    {dayData ? (
+                    { dayData ? (
                         <div>
                             {/* if the box is deemed open and all the api's are called correctly, the form is created for the user OR
                                 if the api calls didn't or haven't gone through the user is prompted the form wasn't found */}
-                            {dayData ?
+                            {updateForm ?
                                 // creates the form on page and calls the server when submitted
                                 (<Form onSubmit={(handleUpdate)}>
                                     <Card
@@ -502,15 +477,37 @@ export default function UpdateCustomWorkout() {
                                             <FormLabel htmlFor="inputDay_Of_The_Week">Day Of The Week</FormLabel>
                                             <br />
                                             {/* if they click on the button they go back in the created api array */}
-                                            <button onClick={previousDay}><ArrowBackIcon/></button>
                                             {dayChoice ? (
                                                 <>
-                                                    {dayChoice}
-                                                </>
+                                                {/* if current day is monday diable the left button OR
+                                                    if it isn't monday enable the button */}
+                                                {dayChoice === 'Monday' ? (
+                                                    <>
+                                                        <button type="button" disabled={true} onClick={previousDay}><ArrowBackIcon /></button>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <button type="button" onClick={previousDay}><ArrowBackIcon /></button>
+                                                    </>
+                                                )}
+                                                {dayChoice}
+                                                {/* if current day is Sunday disable the right button OR
+                                                    if the current day isn't Sunday enable the button */}
+                                                {dayChoice === 'Sunday' ? (
+                                                    <>
+                                                        <button type="button" disabled={true} onClick={nextDay}><ArrowForwardIcon /></button>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <button type="button" disabled={false} onClick={nextDay}><ArrowForwardIcon /></button>
+                                                    </>
+                                                )}
+                                            </>
                                             ) : (
-                                                'Please choose a button'
+                                                <>
+                                                <button onClick={nextDay}>Select Day</button>
+                                                </>
                                             )}
-                                            <button onClick={nextDay}><ArrowForwardIcon/></button>
                                         </FormGroup>
 
                                         {/* Weight Range Segment */}
@@ -557,7 +554,7 @@ export default function UpdateCustomWorkout() {
                                 </Form>
                                 ) : (
                                     // or output a notice of missing form
-                                    'Form not Found :('
+                                    <BootstrapButton onClick={toggleForm}>Update Custom Workout</BootstrapButton>
                                 )}
                         </div>) : (
                         // or output an empty string on page
