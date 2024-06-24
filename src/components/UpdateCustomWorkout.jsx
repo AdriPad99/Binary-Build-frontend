@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import Card from '@mui/joy/Card';
+import SnackbarContent from '@mui/material/SnackbarContent';
 
 export default function UpdateCustomWorkout() {
 
@@ -31,10 +32,7 @@ export default function UpdateCustomWorkout() {
     const [updateForm, setUpdateForm] = useState(false)
 
     ////////////////////////////////////////////////////////
-    const[data, setData] = useState();
-
-    // state for workout data from api call
-    const [workoutData, setWorkoutData] = useState()
+    const [data, setData] = useState();
 
     // state for workout name
     const [variationName, setvariationName] = useState([])
@@ -61,9 +59,6 @@ export default function UpdateCustomWorkout() {
     /////////////////////////////////////////////////////////
 
     /////////////////////////////////////////////////////////
-    // state for equipment data from api call
-    const [equipmentData, setEquipmentData] = useState()
-
     // state for equipment Name
     const [equipmentName, setEquipmentName] = useState()
 
@@ -88,7 +83,7 @@ export default function UpdateCustomWorkout() {
     const [dayCounter, setDayCounter] = useState(-1)
     /////////////////////////////////////////////////////////
 
-    
+
 
     // calls the functions on initial page render
     useEffect(() => {
@@ -105,60 +100,48 @@ export default function UpdateCustomWorkout() {
             }
         }
 
-        // calls the api that has the workout equipment
-        const renderEquipment = async () => {
-            const res = await fetch('https://wger.de/api/v2/equipment/')
-            if (res.ok) {
-                const data = await res.json();
-                setEquipmentData(data);
-            }
-            // if not error out
-            else {
-                console.error("Couldn't get the products :(")
-            }
-        }
-
         renderMuscles();
-        renderEquipment();
     }, []);
 
     // Handle form submission for updating a workout
     const handleUpdate = async (event) => {
-        event.preventDefault(); // Prevent the default form submit behavior
+        event.preventDefault();
+        if (!updateEnd) {
+            console.error("Update ID is undefined.");
+            return; // Stop the function if `updateEnd` is undefined
+        }
         const response = await fetch(`https://capstone-db.onrender.com/workouts/${updateEnd}`, {
-            method: 'PUT', // sets method
+            method: 'PUT',
             headers: {
-                'Content-Type': 'application/json' // Indicates the content 
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "muscle_group": muscleChoice,
-                "equipment": equipmentChoice,
-                "rep_range": userInputs.rep_range,
-                "weight_range": userInputs.weight_range,
-                "workout_variation": variationChoice,
-                "day": dayChoice
+                muscle_group: muscleChoice,
+                equipment: equipmentChoice,
+                rep_range: userInputs.rep_range,
+                weight_range: userInputs.weight_range,
+                workout_variation: variationChoice,
+                day: dayChoice
             }),
         });
-        // if successful
         if (response.ok) {
-            console.log(`successfully updated workout ${updateEnd}!`)
+            console.log(`Successfully updated workout ${updateEnd}!`);
             refresh();
-            toast(`Successfully Updated workout ${updateEnd}!`)
+            toast(`Successfully Updated workout ${updateEnd}!`);
             setUserInputs({
-                "muscle_group": "",
-                "equipment": "",
-                "rep_range": '',
-                "weight_range": '',
-                "workout_variation": "",
-                "day": ""
-            })
-            // resets the user chosen workout number to delete
+                muscle_group: "",
+                equipment: "",
+                rep_range: '',
+                weight_range: '',
+                workout_variation: "",
+                day: ""
+            });
             setUpdateEnd(null);
         } else {
-            // handles the errors
             console.error('Failed to update the workout:', response.statusText);
         }
     }
+
 
     useEffect(() => {
         // Fetch the data from the public directory
@@ -177,23 +160,19 @@ export default function UpdateCustomWorkout() {
             .catch(error => {
                 console.error('Error fetching data:', error);
             });
-            let day = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-            setDayData(day);
+        let day = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        setDayData(day);
     }, []);
-
-    const test = () => {
-        console.log(dayChoice)
-    }
 
     const loadData = () => {
         // holds the workouts
-        let copy = {};
+        let copy = [];
 
         // creates entries in the object for an exercise and associated equipment number
         for (let i = 0; i < Object.values(data.results).length; i++) {
             if (data.results[i].language === 2 && data.results[i].muscles[0] && data.results[i].description.length > 0) {
                 if (data.results[i].equipment[0] > 0) {
-                    copy[data.results[i].name] = [data.results[i].muscles[0], data.results[i].equipment[0], data.results[i].description];
+                    copy.push(data.results[i].name);
                 }
             }
         }
@@ -344,8 +323,8 @@ export default function UpdateCustomWorkout() {
         }
     }
 
-     // controls moving left through days
-     const nextDay = () => {
+    // controls moving left through days
+    const nextDay = () => {
         if (dayCounter < dayName.length - 1) {
             setDayCounter(dayCounter + 1);
             setDayChoice(dayName[dayCounter + 1]);
@@ -375,7 +354,6 @@ export default function UpdateCustomWorkout() {
 
     return (
         <>
-        <button onClick={test}>test</button>
             {/* Update a Workout Segment */}
             {/* if user is logged in display the form
                 if not prompt them to log in */}
@@ -389,7 +367,7 @@ export default function UpdateCustomWorkout() {
 
                     {/* will continue to the next ternary operator if its deemed open OR
                         will display nothing on the page to the user if not open */}
-                    { dayData ? (
+                    {dayData ? (
                         <div>
                             {/* if the box is deemed open and all the api's are called correctly, the form is created for the user OR
                                 if the api calls didn't or haven't gone through the user is prompted the form wasn't found */}
@@ -414,7 +392,7 @@ export default function UpdateCustomWorkout() {
                                             <br />
                                             <Form.Label value={muscleChoice}>
                                                 {/* if they click on the button they go back in the created api array */}
-                                                <button onClick={previousMuscle}><ArrowBackIcon/></button>
+                                                <button onClick={previousMuscle}><ArrowBackIcon /></button>
                                                 {muscleChoice ? (
                                                     <>
                                                         {muscleChoice}
@@ -423,7 +401,7 @@ export default function UpdateCustomWorkout() {
                                                     'Please choose a button'
                                                 )}
 
-                                                <button onClick={nextMuscle}><ArrowForwardIcon/></button>
+                                                <button onClick={nextMuscle}><ArrowForwardIcon /></button>
                                             </Form.Label>
 
                                         </Form.Group>
@@ -435,7 +413,7 @@ export default function UpdateCustomWorkout() {
                                             <br />
                                             <Form.Label value={equipmentChoice} >
                                                 {/* if they click on the button they go back in the created api array */}
-                                                <button onClick={previousEquipment}><ArrowBackIcon/></button>
+                                                <button onClick={previousEquipment}><ArrowBackIcon /></button>
                                                 {equipmentChoice ? (
                                                     <>
                                                         {equipmentChoice}
@@ -444,7 +422,7 @@ export default function UpdateCustomWorkout() {
                                                     'Please choose a button'
                                                 )}
 
-                                                <button onClick={nextEquipment}><ArrowForwardIcon/></button>
+                                                <button onClick={nextEquipment}><ArrowForwardIcon /></button>
                                             </Form.Label>
 
                                         </Form.Group>
@@ -458,7 +436,7 @@ export default function UpdateCustomWorkout() {
                                             <br />
                                             <Form.Label value={variationChoice}>
                                                 {/* if they click on the button they go back in the created api array */}
-                                                <button onClick={previousWorkoutVariation}><ArrowBackIcon/></button>
+                                                <button onClick={previousWorkoutVariation}><ArrowBackIcon /></button>
                                                 {variationChoice ? (
                                                     <>
                                                         {variationChoice}
@@ -467,7 +445,7 @@ export default function UpdateCustomWorkout() {
                                                     'Please choose a button'
                                                 )}
 
-                                                <button onClick={nextWorkoutVariation}><ArrowForwardIcon/></button>
+                                                <button onClick={nextWorkoutVariation}><ArrowForwardIcon /></button>
                                             </Form.Label>
                                         </Form.Group>
                                         <br />
@@ -479,33 +457,33 @@ export default function UpdateCustomWorkout() {
                                             {/* if they click on the button they go back in the created api array */}
                                             {dayChoice ? (
                                                 <>
-                                                {/* if current day is monday diable the left button OR
+                                                    {/* if current day is monday diable the left button OR
                                                     if it isn't monday enable the button */}
-                                                {dayChoice === 'Monday' ? (
-                                                    <>
-                                                        <button type="button" disabled={true} onClick={previousDay}><ArrowBackIcon /></button>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <button type="button" onClick={previousDay}><ArrowBackIcon /></button>
-                                                    </>
-                                                )}
-                                                {dayChoice}
-                                                {/* if current day is Sunday disable the right button OR
+                                                    {dayChoice === 'Monday' ? (
+                                                        <>
+                                                            <button type="button" disabled={true} onClick={previousDay}><ArrowBackIcon /></button>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <button type="button" onClick={previousDay}><ArrowBackIcon /></button>
+                                                        </>
+                                                    )}
+                                                    {dayChoice}
+                                                    {/* if current day is Sunday disable the right button OR
                                                     if the current day isn't Sunday enable the button */}
-                                                {dayChoice === 'Sunday' ? (
-                                                    <>
-                                                        <button type="button" disabled={true} onClick={nextDay}><ArrowForwardIcon /></button>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <button type="button" disabled={false} onClick={nextDay}><ArrowForwardIcon /></button>
-                                                    </>
-                                                )}
-                                            </>
+                                                    {dayChoice === 'Sunday' ? (
+                                                        <>
+                                                            <button type="button" disabled={true} onClick={nextDay}><ArrowForwardIcon /></button>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <button type="button" disabled={false} onClick={nextDay}><ArrowForwardIcon /></button>
+                                                        </>
+                                                    )}
+                                                </>
                                             ) : (
                                                 <>
-                                                <button onClick={nextDay}>Select Day</button>
+                                                    <button onClick={nextDay}>Select Day</button>
                                                 </>
                                             )}
                                         </FormGroup>
@@ -543,7 +521,7 @@ export default function UpdateCustomWorkout() {
 
                                         {/* input box segment */}
                                         <Form.Label htmlFor="name">Workout ID:</Form.Label>
-                                        <input type="text" id="name" name="name" value={updateEnd} onChange={handleUpdateValue} />
+                                        <input type="text" id="name" name="name" value={updateEnd || ""} onChange={handleUpdateValue} />
                                         <br />
                                         <br />
                                         <BootstrapButton variant="primary" type="submit">
