@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { useState, useEffect, useContext } from "react";
 import Form from 'react-bootstrap/Form';
 import { FormGroup, FormLabel, FormControl } from "react-bootstrap";
@@ -8,9 +9,28 @@ import { toast } from 'react-toastify';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import Card from '@mui/joy/Card';
-import SnackbarContent from '@mui/material/SnackbarContent';
+
+// import SnackbarContent from '@mui/material/SnackbarContent';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 export default function UpdateCustomWorkout() {
+
+    //Snackbar Content////////////////////////////
+    const [open, setOpen] = React.useState(false);
+
+    const handleClick = () => {
+        setOpen(true);
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpen(false);
+    };
+    //////////////////////////////////////////////
 
     // grabs token from context
     const { token, refresh } = useContext(AuthContext);
@@ -27,6 +47,9 @@ export default function UpdateCustomWorkout() {
 
     // set the state to hold the endpoint to update
     const [updateEnd, setUpdateEnd] = useState()
+
+    // state to hold update end for future reference
+    const [lastEnd, setLastEnd] = useState();
 
     // set state for update form when on screen
     const [updateForm, setUpdateForm] = useState(false)
@@ -127,7 +150,7 @@ export default function UpdateCustomWorkout() {
         if (response.ok) {
             console.log(`Successfully updated workout ${updateEnd}!`);
             refresh();
-            toast(`Successfully Updated workout ${updateEnd}!`);
+            handleClick();
             setUserInputs({
                 muscle_group: "",
                 equipment: "",
@@ -345,6 +368,7 @@ export default function UpdateCustomWorkout() {
     // grabs user input to be placed into endpoint to update user
     const handleUpdateValue = (event) => {
         setUpdateEnd(event.target.value);
+        setLastEnd(event.target.value);
     }
 
     const toggleForm = () => {
@@ -527,6 +551,16 @@ export default function UpdateCustomWorkout() {
                                         <BootstrapButton variant="primary" type="submit">
                                             Update Workout
                                         </BootstrapButton>
+                                        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                                            <Alert
+                                                onClose={handleClose}
+                                                severity="success"
+                                                variant="filled"
+                                                sx={{ width: '100%' }}
+                                            >
+                                                Successfully updated workout {lastEnd}!
+                                            </Alert>
+                                        </Snackbar>
                                     </Card>
 
                                 </Form>
