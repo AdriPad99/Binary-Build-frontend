@@ -5,12 +5,10 @@ import { FormGroup, FormLabel, FormControl } from "react-bootstrap";
 import AuthContext from "../context/AuthContext";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { toast } from 'react-toastify';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import Card from '@mui/joy/Card';
 
-// import SnackbarContent from '@mui/material/SnackbarContent';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 

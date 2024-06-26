@@ -151,6 +151,27 @@ export default function CreateRandomWorkout() {
         renderDay();
     }, []);
 
+    useEffect(() => {
+        // Fetch the data from the public directory
+        fetch('/data.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // console.log('Fetched data:', data); // Verify the data structure
+                setData(data);
+                // set the array of names to the day state
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+        let day = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        setDayData(day);
+    }, []);
+
     // Handle form submission for adding a workout
     const handleSubmit = async () => {
 

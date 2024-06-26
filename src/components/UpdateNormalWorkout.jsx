@@ -7,12 +7,31 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
-
 import { FormControl } from "react-bootstrap";
 
-import { toast } from 'react-toastify';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 export default function UpdateNormalWorkout() {
+
+    //Snackbar Content////////////////////////////////
+    const [open, setOpen] = React.useState(false);
+
+    // state to hold update end for future reference
+    const [lastEnd, setLastEnd] = useState();
+
+    const handleClick = () => {
+        setOpen(true);
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpen(false);
+    };
+    //////////////////////////////////////////////////
 
     const { token, refresh } = useContext(AuthContext)
 
@@ -264,7 +283,6 @@ export default function UpdateNormalWorkout() {
                 return response.json();
             })
             .then(data => {
-                console.log('Fetched data:', data); // Verify the data structure
                 setData(data);
                 setIsOpen(true);
                 setWorkoutsReady(true);
@@ -308,7 +326,8 @@ export default function UpdateNormalWorkout() {
         // if successful
         if (response.ok) {
             console.log(`successfully updated workout ${updateEnd}`)
-            toast(`successfully updated workout ${updateEnd}!`)
+            // inform the user of a successful update
+            handleClick();
             refresh();
             setUserInputs({
                 "muscle_group": "",
@@ -338,7 +357,7 @@ export default function UpdateNormalWorkout() {
 
         const newCounter = variationCounter - 1;
         setVariationCounter(newCounter);
-        console.log(variationChoice)
+        
         if (Object.entries(copy)[newCounter]) {
             setVariationChoice(Object.entries(copy)[newCounter][0]);
             setEquipmentChoice(copy2[Object.values(copy)[newCounter][1]]);
@@ -351,7 +370,7 @@ export default function UpdateNormalWorkout() {
         let copy = variationName;
         let copy2 = equipmentName;
         let copy3 = muscleName;
-        console.log(variationChoice)
+        
         const newCounter = variationCounter;
         if (variationCounter === Object.entries(copy).length - 1) {
             setLimit(limit + 100)
@@ -396,7 +415,6 @@ export default function UpdateNormalWorkout() {
             setDayChoice(dayName[dayCounter + 1]);
         }
         loadData();
-        console.log(dayCounter);
     }
 
     // Handle changes in form inputs and displays them on screen as they happen
@@ -411,6 +429,7 @@ export default function UpdateNormalWorkout() {
     // grabs user input to be placed into endpoint to update user
     const handleUpdateValue = (event) => {
         setUpdateEnd(event.target.value);
+        setLastEnd(event.target.value);
     }
 
     return (
@@ -525,10 +544,10 @@ export default function UpdateNormalWorkout() {
                                                         </>
                                                     ) : (
                                                         <>
-                                                        <button type="button" onClick={previousWorkoutVariation}><ArrowBackIcon /></button>
+                                                            <button type="button" onClick={previousWorkoutVariation}><ArrowBackIcon /></button>
                                                         </>
                                                     )}
-                                                    
+
                                                     {/* if there is a choice selected, display it on screen OR
                                                         prompt the user to select a button */}
                                                     {variationChoice ? (
@@ -543,7 +562,7 @@ export default function UpdateNormalWorkout() {
                                                     {/* button to go to the next segment */}
                                                     {/* if current variation counter is at the end of all the variations diable the button OR
                                                         if current variation is not at the end of the variations enable the button */}
-                                                    {Object.values(variationName).length === variationCounter + 1? (
+                                                    {Object.values(variationName).length === variationCounter + 1 ? (
                                                         <>
                                                             <button type="button" disabled={true} onClick={nextWorkoutVariation}><ArrowForwardIcon /></button>
                                                         </>
@@ -664,6 +683,16 @@ export default function UpdateNormalWorkout() {
                                     <BootstrapButton variant="primary" type="submit">
                                         Submit
                                     </BootstrapButton>
+                                    <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                                        <Alert
+                                            onClose={handleClose}
+                                            severity="success"
+                                            variant="filled"
+                                            sx={{ width: '100%' }}
+                                        >
+                                            Successfully updated workout {lastEnd}!
+                                        </Alert>
+                                    </Snackbar>
                                 </Card>
                             </Form>
                             <br />
