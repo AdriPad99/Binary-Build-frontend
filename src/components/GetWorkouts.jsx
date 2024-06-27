@@ -5,10 +5,9 @@ import * as React from 'react';
 import { Dropdown } from '@mui/base/Dropdown';
 import { MenuButton as BaseMenuButton } from '@mui/base/MenuButton';
 import { MenuItem as BaseMenuItem, menuItemClasses } from '@mui/base/MenuItem';
-//import { styled } from '@mui/system';
 
-import { toast, ToastContainer } from 'react-toastify';
-import "react-toastify/dist/ReactToastify.css";
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 import Card from '@mui/joy/Card';
 
@@ -55,7 +54,8 @@ export default function GetWorkouts() {
         // if successful
         if (response.ok) {
             setUserData(prevUserData => prevUserData.filter(user => user.workout_id !== id));
-            console.log('successfully deleted')
+            // inform the user of a successful update
+            handleClick();
         } else {
             // handles the errors
             console.error('Failed to delete workout:', response.statusText);
@@ -70,21 +70,25 @@ export default function GetWorkouts() {
     // state for fetched data
     const [userData, setUserData] = useState([])
 
+    //Snackbar information///////////////////////////
+    const [open, setOpen] = React.useState(false);
+
+    const handleClick = () => {
+        handleDelete(user.workout_id);
+        setOpen(true);
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpen(false);
+    };
+    ///////////////////////////////////////////////////
+
     return (
         <>
-            {/* Details for the toast box */}
-            <ToastContainer
-                position="bottom-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="dark"
-            />
 
             {/* controls the workout sub menu on the bottom of the page */}
             <Dropdown onOpenChange={toggleNewWorkoutBox}>
@@ -117,9 +121,19 @@ export default function GetWorkouts() {
                                                 Weight range: {user.weight_range} lbs<br />
                                                 Workout variation: {user.workout_variation}
                                                 <br />
-                                                <BootstrapButton onClick={() => (handleDelete(user.workout_id), toast('Successfully deleted Workout!'))} variant="contained" disableRipple>
+                                                <BootstrapButton onClick={handleClick} variant="contained" disableRipple>
                                                     Delete Workout
                                                 </BootstrapButton>
+                                                <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                                                    <Alert
+                                                        onClose={handleClose}
+                                                        severity="success"
+                                                        variant="filled"
+                                                        sx={{ width: '100%' }}
+                                                    >
+                                                        Successfully deleted workout {user.workout_id}!
+                                                    </Alert>
+                                                </Snackbar>
                                             </Card>
                                         </h3>
                                     </div>

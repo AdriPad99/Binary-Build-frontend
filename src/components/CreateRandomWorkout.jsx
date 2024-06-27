@@ -1,9 +1,12 @@
+import * as React from 'react';
 import { useState, useEffect, useContext } from "react";
 import AuthContext from "../context/AuthContext";
-import { toast } from "react-toastify";
 
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
+
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 export default function CreateRandomWorkout() {
 
@@ -18,6 +21,24 @@ export default function CreateRandomWorkout() {
         "weight_range": '',
         "workout_variation": ""
     })
+
+    //Snackbar information/////////////////////////
+    const [open, setOpen] = React.useState(false);
+
+    const handleClick = () => {
+        setOpen(true);
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpen(false);
+    };
+    ///////////////////////////////////////////////
+
+    const [data, setData] = useState();
 
     ////////////////////////////////////////////////////////
     // controls all state for the ready status of the api
@@ -131,24 +152,9 @@ export default function CreateRandomWorkout() {
             }
         }
 
-        // calls the api that has the day data
-        const renderDay = async () => {
-            const res = await fetch('https://wger.de/api/v2/daysofweek/')
-            if (res.ok) {
-                const data = await res.json();
-                setDayData(data);
-                setDayReady(true);
-            }
-            // if not error out
-            else {
-                console.error("Couldn't get the products :(")
-            }
-        }
-
         renderVariations();
         renderMuscles();
         renderEquipment();
-        renderDay();
     }, []);
 
     useEffect(() => {
@@ -164,6 +170,10 @@ export default function CreateRandomWorkout() {
                 // console.log('Fetched data:', data); // Verify the data structure
                 setData(data);
                 // set the array of names to the day state
+                day = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
+                // set the array of names to the day state
+                setDayName(day);
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
@@ -196,7 +206,8 @@ export default function CreateRandomWorkout() {
         // if successful
         if (response.ok) {
             refresh();
-            toast('Successfully created random workout!');
+            // inform the user of a successful update
+            handleClick();
             setUserInputs({
                 "muscle_group": "",
                 "equipment": "",
@@ -211,21 +222,39 @@ export default function CreateRandomWorkout() {
         }
     };
 
+    // Use useEffect to call handleSubmit once all choices are set
+    useEffect(() => {
+        if (
+            muscleChoice &&
+            variationChoice &&
+            equipmentChoice &&
+            repAmnt &&
+            weightAmnt &&
+            dayChoice
+        ) {
+            handleSubmit();
+        }
+    }, [muscleChoice, variationChoice, equipmentChoice, repAmnt, weightAmnt, dayChoice]);
+
 
     // controls picking a random variation from an array of workout variations
     const randomWorkoutVariation = () => {
 
-        //////////WORKOUT VARIATION//////////
-        let filter = new Set();
-        for (let i = 0; i < workoutData.results.length; i++) {
-            if (workoutData.results[i].language === 2) {
-                filter.add(workoutData.results[i].name)
+        // holds the workouts
+        let copy = [];
+
+        // creates entries in the object for an exercise and associated equipment number
+        for (let i = 0; i < Object.values(data.results).length; i++) {
+            if (data.results[i].language === 2 && data.results[i].muscles[0] && data.results[i].description.length > 0) {
+                if (data.results[i].equipment[0] > 0) {
+                    copy.push(data.results[i].name);
+                }
             }
         }
 
 
-        // Convert Set to array before setting state
-        const copy = [...filter];
+        // sets variation name to copied array
+        setvariationName(copy);
         //////////////////////////////////////
 
         // sets the bounary of where the random number will be between
@@ -289,27 +318,16 @@ export default function CreateRandomWorkout() {
 
     const randomDay = () => {
 
-        // holds the data when going through the for loop
-        let copy = [];
-
-        // goes through the days of the week api and grabs the days
-        for (let i = 0; i < dayData.results.length; i++) {
-            copy.push(dayData.results[i].day_of_week)
-        }
-
-        // set the array of names to the day state
-        setDayName(copy);
-
         // sets the bounary of where the random number will be between
         const min = 0;
-        const max = copy.length - 1
+        const max = dayName.length - 1
 
         // picks random number
         const randomNumber = Math.floor(Math.random() * (max - min) + min);
 
         // set the choice of the user as the index at the current
         // value of the counter
-        setDayChoice(copy[randomNumber]);
+        setDayChoice(dayName[randomNumber]);
     }
 
     // controls setting random number for reps
@@ -355,8 +373,6 @@ export default function CreateRandomWorkout() {
         handleSubmit();
     }
 
-
-
     return (
         <>
 
@@ -370,14 +386,22 @@ export default function CreateRandomWorkout() {
                             <BootstrapButton onClick={generateRandomWorkout} variant="contained" disableRipple>
                                 Create Random Workout
                             </BootstrapButton>
+                            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                                <Alert
+                                    onClose={handleClose}
+                                    severity="success"
+                                    variant="filled"
+                                    sx={{ width: '100%' }}
+                                >
+                                    Successfully created random workout!
+                                </Alert>
+                            </Snackbar>
                         </>
                     ) : (
                         // if token is less equal to or less than 4 (logged out)
                         <h1>Please login to create a random workout</h1>
                     )
             }
-
-
 
         </>
     )
