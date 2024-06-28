@@ -22,6 +22,9 @@ export default function GetWorkouts() {
     // set state for whether or not the box is open
     const [isOpen, setIsOpen] = useState(false)
 
+    // keeps track of the workout ID that was selected
+    const [workoutId, setWorkoutId] = useState();
+
     useEffect(() => {
         // fetches the workout endpoint to grab all the workouts
         const getDBData = async () => {
@@ -74,7 +77,7 @@ export default function GetWorkouts() {
     const [open, setOpen] = React.useState(false);
 
     const handleClick = () => {
-        handleDelete(user.workout_id);
+        
         setOpen(true);
     };
 
@@ -89,7 +92,7 @@ export default function GetWorkouts() {
 
     return (
         <>
-
+            
             {/* controls the workout sub menu on the bottom of the page */}
             <Dropdown onOpenChange={toggleNewWorkoutBox}>
 
@@ -121,7 +124,7 @@ export default function GetWorkouts() {
                                                 Weight range: {user.weight_range} lbs<br />
                                                 Workout variation: {user.workout_variation}
                                                 <br />
-                                                <BootstrapButton onClick={handleClick} variant="contained" disableRipple>
+                                                <BootstrapButton onClick={() => {setWorkoutId(user.workout_id), setOpen(true), handleDelete(user.workout_id)}} variant="contained" disableRipple>
                                                     Delete Workout
                                                 </BootstrapButton>
                                                 <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
@@ -131,7 +134,7 @@ export default function GetWorkouts() {
                                                         variant="filled"
                                                         sx={{ width: '100%' }}
                                                     >
-                                                        Successfully deleted workout {user.workout_id}!
+                                                        Successfully deleted workout {workoutId}!
                                                     </Alert>
                                                 </Snackbar>
                                             </Card>

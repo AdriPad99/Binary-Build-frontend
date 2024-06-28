@@ -1,8 +1,11 @@
+import * as React from 'react';
 import { useState, useContext } from "react";
 import AuthContext from "../context/AuthContext";
-import { toast, ToastContainer } from "react-toastify";
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
+
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 export default function RecommendWorkouts() {
 
@@ -13,6 +16,9 @@ export default function RecommendWorkouts() {
 
     // state for opening the recommended workouts
     const [isOpen, setIsOpen] = useState(false)
+
+    // keeps track of the workout ID that was selected
+    const [workoutId, setWorkoutId] = useState();
 
     // fetches the workout endpoint to grab all the workouts
     const getDBData = async () => {
@@ -57,7 +63,8 @@ export default function RecommendWorkouts() {
         // if successful
         if (response.ok) {
             refresh();
-            console.log('successfully added to user workouts')
+            // inform the user of a successful update
+            handleClick();
         } else {
             // handles the errors
             console.error('Failed to create workout:', response.statusText);
@@ -72,22 +79,25 @@ export default function RecommendWorkouts() {
         getDBData();
     }
 
+    //Snackbar information//////////////////////////////
+    const [open, setOpen] = React.useState(false);
+
+    const handleClick = () => {
+        setOpen(true);
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpen(false);
+    };
+
+    ////////////////////////////////////////////////////
+
     return (
         <>
-
-            {/* styling for the toast containers */}
-            <ToastContainer
-                position="bottom-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="dark"
-            />
 
             <h1>Recommended Workouts</h1>
             {/* Ternary operator that either: */}
@@ -106,8 +116,18 @@ export default function RecommendWorkouts() {
                                 Workout variation: {user.workout_variation}
                                 <br />
                                 {/* event in onClick to prevent react from re-rendering it every time the button is clicked. */}
-                                <button onClick={() => { test(user.workout_id, user.equipment, user.muscle_group, user.rep_range, user.weight_range, user.workout_variation, user.day), toast('Added to Your workouts successfully!') }}>Add workout {user.workout_id}<br />to your workouts</button>
+                                <button onClick={() => { setWorkoutId(user.workout_id), test(user.workout_id, user.equipment, user.muscle_group, user.rep_range, user.weight_range, user.workout_variation, user.day) }}>Add workout {user.workout_id}<br />to your workouts</button>
                             </div>
+                            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                                <Alert
+                                    onClose={handleClose}
+                                    severity="success"
+                                    variant="filled"
+                                    sx={{ width: '100%' }}
+                                >
+                                    Successfully added workout {workoutId} to your workouts!
+                                </Alert>
+                            </Snackbar>
                         </h3>
                     )}
                 </div>
