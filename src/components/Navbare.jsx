@@ -91,7 +91,7 @@ function Navbare() {
             </Tooltip>
             {/* profile menu styling */}
             <Menu
-              sx={{ mt: "45px" }}
+              sx={{ mt: "45px", zIndex: 1500 }}
               id="menu-appbar"
               anchorEl={anchorElUser}
               anchorOrigin={{
