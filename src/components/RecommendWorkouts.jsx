@@ -126,24 +126,17 @@ export default function RecommendWorkouts() {
                   Workout variation: {user.workout_variation}
                   <br />
                   {/* event in onClick to prevent react from re-rendering it every time the button is clicked. */}
-                  <button
+                  <BootstrapButton
                     onClick={() => {
                       setWorkoutId(user.workout_id),
-                        test(
-                          user.workout_id,
-                          user.equipment,
-                          user.muscle_group,
-                          user.rep_range,
-                          user.weight_range,
-                          user.workout_variation,
-                          user.day
-                        );
+                        setOpen(true),
+                        handleDelete(user.workout_id);
                     }}
+                    variant="contained"
+                    disableRipple
                   >
-                    Add workout {user.workout_id}
-                    <br />
-                    to your workouts
-                  </button>
+                    Add workout {user.workout_id} to your workouts
+                  </BootstrapButton>
                 </div>
                 <Snackbar
                   open={open}
