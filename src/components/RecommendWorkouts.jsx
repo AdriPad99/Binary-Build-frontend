@@ -105,7 +105,7 @@ export default function RecommendWorkouts() {
       {isOpen ? (
         <div className="parent-container">
           {userData.map((user, i) => (
-            <h3 key={i}>
+            <h3 key={i} id="test">
               <Card
                 invertedColors={false}
                 orientation="vertical"
