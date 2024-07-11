@@ -313,7 +313,7 @@ export default function CreateNormalWorkout() {
         }));
     };
 
-    // WIP 2
+    // WIP 3
 
     return (
         <>
