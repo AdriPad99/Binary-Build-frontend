@@ -16,10 +16,31 @@ import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+
 export default function SignupComponent() {
 
   // assigns navigate function to variable
   const navigate = useNavigate();
+
+  const [errorText, setErrorText] = useState();
+
+  //Snackbar information/////////////////////////
+  const [open, setOpen] = React.useState(false);
+
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
+  ///////////////////////////////////////////////
 
   // holds empty state for each user input category
   const [userInfo, setUserInfo] = useState({
@@ -43,36 +64,69 @@ export default function SignupComponent() {
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent the default form submit behavior
     // fetches from server
-    const response = await fetch('https://capstone-db.onrender.com/signup', {
-      // sets the method
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json' // Indicates the content 
-      },
-      // takes the inputed values from the form and assigns them to the appropriate body detail
-      body: JSON.stringify({
-        "username": userInfo.username,
-        "email": userInfo.email,
-        "password": userInfo.password,
-        "first_name": userInfo.first_name,
-        "last_name": userInfo.last_name
-
-      })
-    });
-    // if successful request
-    if (response.ok) {
-      // log out it was successfully added
-      console.log('Sign up created successfully!')
-      navigate('/');
-    } else {
-      // Handle errors, such as displaying a message to the user
-      console.error('Failed to fetch:', response.statusText);
+    if (!userInfo['username'] && !userInfo['password'] && !userInfo['email']  && !userInfo['first_name'] && !userInfo['last_name']) {
+      setErrorText('fields')
+      handleClick();
+    }
+    else if(!userInfo['username'] || !userInfo['password']){
+      setErrorText('username or password')
+      handleClick();
+    }
+    else if (!userInfo['email']){
+      setErrorText('email')
+      handleClick();
+    }
+    else if (!userInfo['first_name']){
+      setErrorText('first name')
+      handleClick();
+    }
+    else if (!userInfo['last_name']){
+      setErrorText('last name')
+      handleClick();
+    }
+    else{
+      const response = await fetch('https://capstone-db.onrender.com/signup', {
+        
+        // sets the method
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json' // Indicates the content 
+        },
+        // takes the inputed values from the form and assigns them to the appropriate body detail
+        body: JSON.stringify({
+          "username": userInfo.username,
+          "email": userInfo.email,
+          "password": userInfo.password,
+          "first_name": userInfo.first_name,
+          "last_name": userInfo.last_name
+  
+        })
+      });
+      // if successful request
+      if (response.ok) {
+        // log out it was successfully added
+        console.log('Sign up created successfully!')
+        navigate('/');
+      } else {
+        // Handle errors, such as displaying a message to the user
+        handleClick()
+        console.error('Failed to fetch:', response.statusText);
+      }
     }
   };
 
-
   return (
     <>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert
+          onClose={handleClose}
+          severity='error'
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          Please enter/correct the {errorText}.
+        </Alert>
+      </Snackbar>
 
       <div className='id'>
 
@@ -136,7 +190,7 @@ export default function SignupComponent() {
 
               {/* username segment */}
               <FormControl sx={{ gridColumn: '1/-1' }}>
-                <FormLabel>Username: </FormLabel>
+                <FormLabel>Last Name: </FormLabel>
                 <Input onChange={handleChange} type='text' value={userInfo.last_name} name="last_name" placeholder="Enter Your last name" />
               </FormControl>
 
