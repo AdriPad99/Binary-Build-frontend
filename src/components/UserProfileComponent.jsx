@@ -4,7 +4,7 @@ import { Form } from "react-bootstrap";
 import AuthContext from "../context/AuthContext";
 import Avatar from "@mui/joy/Avatar";
 import Box from "@mui/joy/Box";
-import Button from '@mui/joy/Button';
+import Button from "@mui/joy/Button";
 import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
 import CardOverflow from "@mui/joy/CardOverflow";
@@ -18,7 +18,11 @@ export default function UserProfileComponent() {
 
   const [userInfo, setUserInfo] = useState();
 
+  const [user, setUser] = useState();
+
   const [editProfileIsOpen, setEditProfileIsOpen] = useState(false);
+
+  const [userText, setUserText] = useState('');
 
   //Snackbar Content////////////////////////////
   const [open, setOpen] = React.useState(false);
@@ -57,6 +61,7 @@ export default function UserProfileComponent() {
         if (response.ok) {
           const data = await response.json();
           setUserInfo(data);
+          setUser(data.user_id);
           setUserData({
             email: data.email || "",
             firstName: data.first_name || "",
@@ -93,12 +98,8 @@ export default function UserProfileComponent() {
   // Handle form submission for updating a workout
   const handleUpdate = async (event) => {
     event.preventDefault();
-    if (!updateEnd) {
-      console.error("Update ID is undefined.");
-      return; // Stop the function if `updateEnd` is undefined
-    }
     const response = await fetch(
-      `https://capstone-db.onrender.com/workouts/${updateEnd}`,
+      `https://capstone-db.onrender.com/signup/${user}`,
       {
         method: "PUT",
         headers: {
@@ -106,29 +107,15 @@ export default function UserProfileComponent() {
         },
         body: JSON.stringify({
           muscle_group: muscleChoice,
-          equipment: equipmentChoice,
-          rep_range: userInputs.rep_range,
-          weight_range: userInputs.weight_range,
-          workout_variation: variationChoice,
-          day: dayChoice,
         }),
       }
     );
     if (response.ok) {
-      console.log(`Successfully updated workout ${updateEnd}!`);
+      console.log(`Successfully updated profile!`);
       refresh();
       handleClick();
-      setUserInputs({
-        muscle_group: "",
-        equipment: "",
-        rep_range: "",
-        weight_range: "",
-        workout_variation: "",
-        day: "",
-      });
-      setUpdateEnd(null);
     } else {
-      console.error("Failed to update the workout:", response.statusText);
+      console.error("Failed to update profile:", response.statusText);
     }
   };
 
@@ -136,14 +123,20 @@ export default function UserProfileComponent() {
     setEditProfileIsOpen(!editProfileIsOpen);
   };
 
+  // Handle changes in form inputs and displays them on screen as they happen
+  const handleChange = (event) => {
+    setUserText(event.target.value);
+  };
+
   const test = () => {
-    //console.log(userInfo)
+    // console.log(userInfo)
     console.log(userData);
+    console.log(user);
   };
 
   return (
     <>
-      {/* <button onClick={test}>test</button> */}
+      <button onClick={test}>test</button>
       <div className="id">
         <Card
           sx={{
@@ -166,7 +159,9 @@ export default function UserProfileComponent() {
               <hr />
               Contact Me: {userData.email}
             </Typography>
-            <BootstrapButton onClick={toggleEditProfileMenu}>Edit Profile</BootstrapButton>
+            <BootstrapButton onClick={toggleEditProfileMenu}>
+              Edit Profile
+            </BootstrapButton>
             <Box
               sx={{
                 display: "flex",
@@ -198,6 +193,12 @@ export default function UserProfileComponent() {
                     <br />
                     <Form.Label>Muscle Group</Form.Label>
                     <br />
+                    <Form.Control
+                      type="text"
+                      value={userText}
+                      onChange={handleChange}
+                      placeholder="Weight Range"
+                    />
                     {/* <Form.Label value={muscleChoice}> */}
                     <Form.Label></Form.Label>
                   </Form.Group>
