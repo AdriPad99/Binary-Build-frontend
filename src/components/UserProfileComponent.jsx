@@ -22,7 +22,7 @@ export default function UserProfileComponent() {
 
   const [editProfileIsOpen, setEditProfileIsOpen] = useState(false);
 
-  const [userText, setUserText] = useState('');
+  const [userText, setUserText] = useState("");
 
   //edit button(s) states///////////////////////
   const [editAge, setEditAge] = useState(false);
@@ -146,9 +146,112 @@ export default function UserProfileComponent() {
     setUserText(event.target.value);
   };
 
+  const handleButtonToggle = (buttonName) => {
+    switch (buttonName) {
+      case buttonName === "age":
+        setEditAge(true);
+        setEditGender(false);
+        setEditHeight(false);
+        setEditWeight(false);
+        setEditTargetWeight(false);
+        setEditBodyFatPercentage(false);
+        setEditDailyActivityLevel(false);
+        setEditWaistMeasurement(false);
+        break;
+
+      case buttonName === "gender":
+        setEditAge(false);
+        setEditGender(true);
+        setEditHeight(false);
+        setEditWeight(false);
+        setEditTargetWeight(false);
+        setEditBodyFatPercentage(false);
+        setEditDailyActivityLevel(false);
+        setEditWaistMeasurement(false);
+        break;
+
+      case buttonName === "height":
+        setEditAge(false);
+        setEditGender(false);
+        setEditHeight(true);
+        setEditWeight(false);
+        setEditTargetWeight(false);
+        setEditBodyFatPercentage(false);
+        setEditDailyActivityLevel(false);
+        setEditWaistMeasurement(false);
+        break;
+
+      case buttonName === "weight":
+        setEditAge(false);
+        setEditGender(false);
+        setEditHeight(false);
+        setEditWeight(true);
+        setEditTargetWeight(false);
+        setEditBodyFatPercentage(false);
+        setEditDailyActivityLevel(false);
+        setEditWaistMeasurement(false);
+        break;
+
+      case buttonName === "tw":
+        setEditAge(false);
+        setEditGender(false);
+        setEditHeight(false);
+        setEditWeight(false);
+        setEditTargetWeight(true);
+        setEditBodyFatPercentage(false);
+        setEditDailyActivityLevel(false);
+        setEditWaistMeasurement(false);
+        break;
+
+      case buttonName === "bf%":
+        setEditAge(false);
+        setEditGender(false);
+        setEditHeight(false);
+        setEditWeight(false);
+        setEditTargetWeight(false);
+        setEditBodyFatPercentage(true);
+        setEditDailyActivityLevel(false);
+        setEditWaistMeasurement(false);
+        break;
+
+      case buttonName === "al":
+        setEditAge(false);
+        setEditGender(false);
+        setEditHeight(false);
+        setEditWeight(false);
+        setEditTargetWeight(false);
+        setEditBodyFatPercentage(false);
+        setEditDailyActivityLevel(true);
+        setEditWaistMeasurement(false);
+        break;
+
+      case buttonName === "wm":
+        setEditAge(false);
+        setEditGender(false);
+        setEditHeight(false);
+        setEditWeight(false);
+        setEditTargetWeight(false);
+        setEditBodyFatPercentage(false);
+        setEditDailyActivityLevel(false);
+        setEditWaistMeasurement(true);
+        break;
+
+      default:
+        setEditAge(false);
+        setEditGender(false);
+        setEditHeight(false);
+        setEditWeight(false);
+        setEditTargetWeight(false);
+        setEditBodyFatPercentage(false);
+        setEditDailyActivityLevel(false);
+        setEditWaistMeasurement(false);
+    }
+  };
+
   const test = () => {
     // console.log(userInfo)
-    console.log(userData);
+    // console.log(userData);
+    console.log(editAge, editGender, editHeight,editWeight,editTargetWeight,editBodyFatPercentage,editDailyActivityLevel,editWaistMeasurement)
   };
 
   return (
@@ -176,9 +279,9 @@ export default function UserProfileComponent() {
               <hr />
               Contact Me: {userData.email}
             </Typography>
-            <BootstrapButton onClick={toggleEditProfileMenu}>
+            {/* <BootstrapButton onClick={toggleEditProfileMenu}>
               Edit Profile
-            </BootstrapButton>
+            </BootstrapButton> */}
             <Box
               sx={{
                 display: "flex",
@@ -208,13 +311,21 @@ export default function UserProfileComponent() {
                   {/* <Form.Label></Form.Label> */}
                   {/* Age segment */}
                   <Form.Group>
-                    <BootstrapButton>Change Age</BootstrapButton>
-                    <Form.Control
-                      type="text"
-                      value={userText}
-                      onChange={handleChange}
-                      placeholder="Enter your current Age"
-                    />
+                    {editAge ? (
+                      <>
+                        <Form.Control
+                          type="text"
+                          value={userText}
+                          onChange={handleChange}
+                          placeholder="Enter your current Age"
+                        />
+                        <BootstrapButton onClick={handleUpdate}>Change Age</BootstrapButton>
+                      </>
+                    ) : (
+                      <>
+                        <BootstrapButton onClick={() => {handleButtonToggle('age')}}>Change Age</BootstrapButton>
+                      </>
+                    )}
                   </Form.Group>
 
                   {/* Gender Segment */}
@@ -263,7 +374,9 @@ export default function UserProfileComponent() {
 
                   {/* Target Body Fat % Segment */}
                   <Form.Group>
-                    <BootstrapButton>Change Body Fat percentage</BootstrapButton>
+                    <BootstrapButton>
+                      Change Body Fat percentage
+                    </BootstrapButton>
                     <Form.Control
                       type="text"
                       value={userText}
@@ -274,7 +387,9 @@ export default function UserProfileComponent() {
 
                   {/* Daily Activity Level segment */}
                   <Form.Group>
-                    <BootstrapButton>Change Daily Activity Level</BootstrapButton>
+                    <BootstrapButton>
+                      Change Daily Activity Level
+                    </BootstrapButton>
                     <Form.Control
                       type="text"
                       value={userText}
