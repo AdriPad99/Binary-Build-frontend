@@ -24,6 +24,24 @@ export default function UserProfileComponent() {
 
   const [userText, setUserText] = useState('');
 
+  //edit button(s) states///////////////////////
+  const [editAge, setEditAge] = useState(false);
+
+  const [editGender, setEditGender] = useState(false);
+
+  const [editHeight, setEditHeight] = useState(false);
+
+  const [editWeight, setEditWeight] = useState(false);
+
+  const [editTargetWeight, setEditTargetWeight] = useState(false);
+
+  const [editBodyFatPercentage, setEditBodyFatPercentage] = useState(false);
+
+  const [editDailyActivityLevel, setEditDailyActivityLevel] = useState(false);
+
+  const [editWaistMeasurement, setEditWaistMeasurement] = useState(false);
+  //////////////////////////////////////////////
+
   //Snackbar Content////////////////////////////
   const [open, setOpen] = React.useState(false);
 
@@ -131,12 +149,11 @@ export default function UserProfileComponent() {
   const test = () => {
     // console.log(userInfo)
     console.log(userData);
-    console.log(user);
   };
 
   return (
     <>
-      <button onClick={test}>test</button>
+      {/* <button onClick={test}>test</button> */}
       <div className="id">
         <Card
           sx={{
@@ -188,81 +205,95 @@ export default function UserProfileComponent() {
                     resize: "horizontal",
                   }}
                 >
-                  {/* muscle Group segment */}
+                  {/* <Form.Label></Form.Label> */}
+                  {/* Age segment */}
                   <Form.Group>
-                    <br />
-                    <Form.Label>Muscle Group</Form.Label>
-                    <br />
+                    <BootstrapButton>Change Age</BootstrapButton>
                     <Form.Control
                       type="text"
                       value={userText}
                       onChange={handleChange}
-                      placeholder="Weight Range"
+                      placeholder="Enter your current Age"
                     />
-                    {/* <Form.Label value={muscleChoice}> */}
-                    <Form.Label></Form.Label>
                   </Form.Group>
-                  <br />
 
-                  {/* Equipment Segment */}
+                  {/* Gender Segment */}
                   <Form.Group>
-                    <br />
-                    <Form.Label>Muscle Group</Form.Label>
-                    <br />
-                    {/* <Form.Label value={muscleChoice}> */}
-                    <Form.Label></Form.Label>
+                    <BootstrapButton>Change Gender</BootstrapButton>
+                    <Form.Control
+                      type="text"
+                      value={userText}
+                      onChange={handleChange}
+                      placeholder="Select your gender"
+                    />
                   </Form.Group>
-                  <br />
 
-                  {/* Workout Variation segment */}
+                  {/* Height segment */}
                   <Form.Group>
-                    <br />
-                    <Form.Label>Muscle Group</Form.Label>
-                    <br />
-                    {/* <Form.Label value={muscleChoice}> */}
-                    <Form.Label></Form.Label>
+                    <BootstrapButton>Change Height</BootstrapButton>
+                    <Form.Control
+                      type="text"
+                      value={userText}
+                      onChange={handleChange}
+                      placeholder="Enter your height"
+                    />
                   </Form.Group>
-                  <br />
 
-                  {/* Day of the Week Segment */}
+                  {/* Weight Segment */}
                   <Form.Group>
-                    <br />
-                    <Form.Label>Muscle Group</Form.Label>
-                    <br />
-                    {/* <Form.Label value={muscleChoice}> */}
-                    <Form.Label></Form.Label>
+                    <BootstrapButton>Change Weight</BootstrapButton>
+                    <Form.Control
+                      type="text"
+                      value={userText}
+                      onChange={handleChange}
+                      placeholder="Enter your current weight"
+                    />
                   </Form.Group>
-                  <br />
 
-                  {/* Weight Range Segment */}
+                  {/* Target Weight Segment */}
                   <Form.Group>
-                    <br />
-                    <Form.Label>Muscle Group</Form.Label>
-                    <br />
-                    {/* <Form.Label value={muscleChoice}> */}
-                    <Form.Label></Form.Label>
+                    <BootstrapButton>Change Target Weight</BootstrapButton>
+                    <Form.Control
+                      type="text"
+                      value={userText}
+                      onChange={handleChange}
+                      placeholder="Enter your target weight"
+                    />
                   </Form.Group>
-                  <br />
 
-                  {/* Rep Range Segment */}
+                  {/* Target Body Fat % Segment */}
                   <Form.Group>
-                    <br />
-                    <Form.Label>Muscle Group</Form.Label>
-                    <br />
-                    {/* <Form.Label value={muscleChoice}> */}
-                    <Form.Label></Form.Label>
+                    <BootstrapButton>Change Body Fat percentage</BootstrapButton>
+                    <Form.Control
+                      type="text"
+                      value={userText}
+                      onChange={handleChange}
+                      placeholder="Enter your current body fat %"
+                    />
                   </Form.Group>
-                  <br />
 
-                  {/* input box segment */}
+                  {/* Daily Activity Level segment */}
                   <Form.Group>
-                    <br />
-                    <Form.Label>Muscle Group</Form.Label>
-                    <br />
-                    {/* <Form.Label value={muscleChoice}> */}
-                    <Form.Label></Form.Label>
+                    <BootstrapButton>Change Daily Activity Level</BootstrapButton>
+                    <Form.Control
+                      type="text"
+                      value={userText}
+                      onChange={handleChange}
+                      placeholder="Select your current activity level"
+                    />
                   </Form.Group>
-                  <br />
+
+                  {/* Waist measurement segment */}
+                  <Form.Group>
+                    <BootstrapButton>Change waist measurement</BootstrapButton>
+                    <Form.Control
+                      type="text"
+                      value={userText}
+                      onChange={handleChange}
+                      placeholder="Enter your current waist size"
+                    />
+                  </Form.Group>
+
                   <Snackbar
                     open={open}
                     autoHideDuration={6000}
