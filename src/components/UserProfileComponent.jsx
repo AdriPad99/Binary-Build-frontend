@@ -147,7 +147,7 @@ export default function UserProfileComponent() {
   };
 
   const handleButtonToggle = (buttonName) => {
-    switch (buttonName) {
+    switch (true) {
       case buttonName === "age":
         setEditAge(true);
         setEditGender(false);
@@ -256,7 +256,7 @@ export default function UserProfileComponent() {
 
   return (
     <>
-      {/* <button onClick={test}>test</button> */}
+      <button onClick={test}>test</button>
       <div className="id">
         <Card
           sx={{
@@ -279,9 +279,9 @@ export default function UserProfileComponent() {
               <hr />
               Contact Me: {userData.email}
             </Typography>
-            {/* <BootstrapButton onClick={toggleEditProfileMenu}>
+            <BootstrapButton onClick={toggleEditProfileMenu}>
               Edit Profile
-            </BootstrapButton> */}
+            </BootstrapButton>
             <Box
               sx={{
                 display: "flex",
@@ -302,7 +302,7 @@ export default function UserProfileComponent() {
                   variant="outlined"
                   sx={{
                     maxHeight: "max-content",
-                    maxWidth: "60%",
+                    maxWidth: "max-content",
                     mx: "auto",
                     overflow: "auto",
                     resize: "horizontal",
@@ -317,96 +317,151 @@ export default function UserProfileComponent() {
                           type="text"
                           value={userText}
                           onChange={handleChange}
-                          placeholder="Enter your current Age"
-                        />
-                        <BootstrapButton onClick={handleUpdate}>Change Age</BootstrapButton>
+                          placeholder="Enter your current age"
+                          />
+                          
+                        <BootstrapButton  onClick={handleUpdate}>
+                          Confirm
+                          </BootstrapButton>
                       </>
                     ) : (
                       <>
-                        <BootstrapButton onClick={() => {handleButtonToggle('age')}}>Change Age</BootstrapButton>
+                        <BootstrapButton onClick={() => handleButtonToggle('age')}>Change Age</BootstrapButton>
                       </>
                     )}
                   </Form.Group>
 
                   {/* Gender Segment */}
                   <Form.Group>
-                    <BootstrapButton>Change Gender</BootstrapButton>
-                    <Form.Control
-                      type="text"
-                      value={userText}
-                      onChange={handleChange}
-                      placeholder="Select your gender"
-                    />
+                  {editGender ? (
+                      <>
+                        <Form.Control
+                          type="text"
+                          value={userText}
+                          onChange={handleChange}
+                          placeholder="Enter your gender"
+                        />
+                        <BootstrapButton onClick={handleUpdate}>Confirm</BootstrapButton>
+                      </>
+                    ) : (
+                      <>
+                        <BootstrapButton onClick={() => handleButtonToggle('gender')}>Change Gender</BootstrapButton>
+                      </>
+                    )}
                   </Form.Group>
 
                   {/* Height segment */}
                   <Form.Group>
-                    <BootstrapButton>Change Height</BootstrapButton>
-                    <Form.Control
-                      type="text"
-                      value={userText}
-                      onChange={handleChange}
-                      placeholder="Enter your height"
-                    />
+                  {editHeight ? (
+                      <>
+                        <Form.Control
+                          type="text"
+                          value={userText}
+                          onChange={handleChange}
+                          placeholder="Enter your current current height"
+                        />
+                        <BootstrapButton onClick={handleUpdate}>Confirm</BootstrapButton>
+                      </>
+                    ) : (
+                      <>
+                        <BootstrapButton onClick={() => handleButtonToggle('height')}>Change Height</BootstrapButton>
+                      </>
+                    )}
                   </Form.Group>
 
                   {/* Weight Segment */}
                   <Form.Group>
-                    <BootstrapButton>Change Weight</BootstrapButton>
-                    <Form.Control
-                      type="text"
-                      value={userText}
-                      onChange={handleChange}
-                      placeholder="Enter your current weight"
-                    />
+                  {editWeight ? (
+                      <>
+                        <Form.Control
+                          type="text"
+                          value={userText}
+                          onChange={handleChange}
+                          placeholder="Enter your current weight"
+                        />
+                        <BootstrapButton onClick={handleUpdate}>Confirm</BootstrapButton>
+                      </>
+                    ) : (
+                      <>
+                        <BootstrapButton onClick={() => handleButtonToggle('weight')}>Change Weight</BootstrapButton>
+                      </>
+                    )}
                   </Form.Group>
 
                   {/* Target Weight Segment */}
                   <Form.Group>
-                    <BootstrapButton>Change Target Weight</BootstrapButton>
-                    <Form.Control
-                      type="text"
-                      value={userText}
-                      onChange={handleChange}
-                      placeholder="Enter your target weight"
-                    />
+                  {editTargetWeight ? (
+                      <>
+                        <Form.Control
+                          type="text"
+                          value={userText}
+                          onChange={handleChange}
+                          placeholder="Enter your current target weight"
+                        />
+                        <BootstrapButton onClick={handleUpdate}>Confirm</BootstrapButton>
+                      </>
+                    ) : (
+                      <>
+                        <BootstrapButton onClick={() => handleButtonToggle('tw')}>Change Target Weight</BootstrapButton>
+                      </>
+                    )}
                   </Form.Group>
 
                   {/* Target Body Fat % Segment */}
                   <Form.Group>
-                    <BootstrapButton>
-                      Change Body Fat percentage
-                    </BootstrapButton>
-                    <Form.Control
-                      type="text"
-                      value={userText}
-                      onChange={handleChange}
-                      placeholder="Enter your current body fat %"
-                    />
+                  {editBodyFatPercentage ? (
+                      <>
+                        <Form.Control
+                          type="text"
+                          value={userText}
+                          onChange={handleChange}
+                          placeholder="Enter your current body fat percentage"
+                        />
+                        <BootstrapButton onClick={handleUpdate}>Confirm</BootstrapButton>
+                      </>
+                    ) : (
+                      <>
+                        <BootstrapButton onClick={() => handleButtonToggle('bf%')}>Change Body Fat Percentage</BootstrapButton>
+                      </>
+                    )}
                   </Form.Group>
 
                   {/* Daily Activity Level segment */}
                   <Form.Group>
-                    <BootstrapButton>
-                      Change Daily Activity Level
-                    </BootstrapButton>
-                    <Form.Control
-                      type="text"
-                      value={userText}
-                      onChange={handleChange}
-                      placeholder="Select your current activity level"
-                    />
+                  {editDailyActivityLevel ? (
+                      <>
+                        <Form.Control
+                          type="text"
+                          value={userText}
+                          onChange={handleChange}
+                          placeholder="Select your current daily activity level"
+                        />
+                        <BootstrapButton onClick={handleUpdate}>Confirm</BootstrapButton>
+                      </>
+                    ) : (
+                      <>
+                        <BootstrapButton onClick={() => handleButtonToggle('al')}>Change Daily Activity Level</BootstrapButton>
+                      </>
+                    )}
                   </Form.Group>
 
                   {/* Waist measurement segment */}
                   <Form.Group>
-                    <BootstrapButton>Change waist measurement</BootstrapButton>
-                    <Form.Control
-                      type="text"
-                      value={userText}
-                      onChange={handleChange}
-                      placeholder="Enter your current waist size"
-                    />
+                  {editWaistMeasurement ? (
+                      <>
+                        <Form.Control
+                          type="text"
+                          value={userText}
+                          onChange={handleChange}
+                          placeholder="Enter your current waist size"
+                        />
+                        <BootstrapButton onClick={handleUpdate}>Confirm</BootstrapButton>
+                      </>
+                    ) : (
+                      <>
+                        <BootstrapButton onClick={() => handleButtonToggle('wm')}>Change Waist Size</BootstrapButton>
+                      </>
+                    )}
                   </Form.Group>
 
                   <Snackbar
