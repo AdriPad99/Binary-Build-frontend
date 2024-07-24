@@ -256,7 +256,7 @@ export default function UserProfileComponent() {
 
   return (
     <>
-      <button onClick={test}>test</button>
+      {/* <button onClick={test}>test</button> */}
       <div className="id">
         <Card
           sx={{
@@ -279,9 +279,9 @@ export default function UserProfileComponent() {
               <hr />
               Contact Me: {userData.email}
             </Typography>
-            <BootstrapButton onClick={toggleEditProfileMenu}>
+            {/* <BootstrapButton onClick={toggleEditProfileMenu}>
               Edit Profile
-            </BootstrapButton>
+            </BootstrapButton> */}
             <Box
               sx={{
                 display: "flex",
