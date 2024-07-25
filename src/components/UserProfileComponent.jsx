@@ -42,6 +42,9 @@ export default function UserProfileComponent() {
   const [editWaistMeasurement, setEditWaistMeasurement] = useState(false);
   //////////////////////////////////////////////
 
+  // keeps track of what button is open for update
+  const [updateKey, setUpdateKey] = useState('');
+
   //Snackbar Content////////////////////////////
   const [open, setOpen] = React.useState(false);
 
@@ -74,7 +77,7 @@ export default function UserProfileComponent() {
     const getUserData = async () => {
       try {
         const response = await fetch(
-          "https://capstone-db.onrender.com/signup/1"
+          `https://capstone-db.onrender.com/signup/${user}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -116,6 +119,7 @@ export default function UserProfileComponent() {
   // Handle form submission for updating a workout
   const handleUpdate = async (event) => {
     event.preventDefault();
+    const body = `"${updateKey}" : "${userText}"`;
     const response = await fetch(
       `https://capstone-db.onrender.com/signup/${user}`,
       {
@@ -124,7 +128,7 @@ export default function UserProfileComponent() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          muscle_group: muscleChoice,
+          [updateKey]: userText
         }),
       }
     );
@@ -157,6 +161,8 @@ export default function UserProfileComponent() {
         setEditBodyFatPercentage(false);
         setEditDailyActivityLevel(false);
         setEditWaistMeasurement(false);
+        setUserText('');
+        setUpdateKey('age');
         break;
 
       case buttonName === "gender":
@@ -168,6 +174,8 @@ export default function UserProfileComponent() {
         setEditBodyFatPercentage(false);
         setEditDailyActivityLevel(false);
         setEditWaistMeasurement(false);
+        setUserText('');
+        setUpdateKey('gender');
         break;
 
       case buttonName === "height":
@@ -179,6 +187,8 @@ export default function UserProfileComponent() {
         setEditBodyFatPercentage(false);
         setEditDailyActivityLevel(false);
         setEditWaistMeasurement(false);
+        setUserText('');
+        setUpdateKey('height');
         break;
 
       case buttonName === "weight":
@@ -190,6 +200,8 @@ export default function UserProfileComponent() {
         setEditBodyFatPercentage(false);
         setEditDailyActivityLevel(false);
         setEditWaistMeasurement(false);
+        setUserText('');
+        setUpdateKey('weight');
         break;
 
       case buttonName === "tw":
@@ -201,6 +213,8 @@ export default function UserProfileComponent() {
         setEditBodyFatPercentage(false);
         setEditDailyActivityLevel(false);
         setEditWaistMeasurement(false);
+        setUserText('');
+        setUpdateKey('target_weight');
         break;
 
       case buttonName === "bf%":
@@ -212,6 +226,8 @@ export default function UserProfileComponent() {
         setEditBodyFatPercentage(true);
         setEditDailyActivityLevel(false);
         setEditWaistMeasurement(false);
+        setUserText('');
+        setUpdateKey('target_body_fat_percentage');
         break;
 
       case buttonName === "al":
@@ -223,6 +239,8 @@ export default function UserProfileComponent() {
         setEditBodyFatPercentage(false);
         setEditDailyActivityLevel(true);
         setEditWaistMeasurement(false);
+        setUserText('');
+        setUpdateKey('daily_activity_level');
         break;
 
       case buttonName === "wm":
@@ -234,6 +252,8 @@ export default function UserProfileComponent() {
         setEditBodyFatPercentage(false);
         setEditDailyActivityLevel(false);
         setEditWaistMeasurement(true);
+        setUserText('');
+        setUpdateKey('waist');
         break;
 
       default:
@@ -249,9 +269,9 @@ export default function UserProfileComponent() {
   };
 
   const test = () => {
-    // console.log(userInfo)
-    // console.log(userData);
-    console.log(editAge, editGender, editHeight,editWeight,editTargetWeight,editBodyFatPercentage,editDailyActivityLevel,editWaistMeasurement)
+     console.log(userInfo)
+    //  console.log(userData);
+    console.log(updateKey, userText)
   };
 
   return (
