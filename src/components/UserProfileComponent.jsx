@@ -14,7 +14,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
 export default function UserProfileComponent() {
-  const { token } = useContext(AuthContext);
+  const { token, refresh } = useContext(AuthContext);
 
   const [userInfo, setUserInfo] = useState();
 
@@ -44,6 +44,11 @@ export default function UserProfileComponent() {
 
   // keeps track of what button is open for update
   const [updateKey, setUpdateKey] = useState('');
+
+  // controls the snackbar result based on user inputs
+  const [userError, setUserError] = useState(false);
+
+  const [currButtonOpen, setCurrButtonOpen] = useState('');
 
   //Snackbar Content////////////////////////////
   const [open, setOpen] = React.useState(false);
@@ -77,7 +82,7 @@ export default function UserProfileComponent() {
     const getUserData = async () => {
       try {
         const response = await fetch(
-          `https://capstone-db.onrender.com/signup/${user}`
+          `https://capstone-db.onrender.com/signup/1`
         );
         if (response.ok) {
           const data = await response.json();
@@ -119,7 +124,6 @@ export default function UserProfileComponent() {
   // Handle form submission for updating a workout
   const handleUpdate = async (event) => {
     event.preventDefault();
-    const body = `"${updateKey}" : "${userText}"`;
     const response = await fetch(
       `https://capstone-db.onrender.com/signup/${user}`,
       {
@@ -145,6 +149,21 @@ export default function UserProfileComponent() {
     setEditProfileIsOpen(!editProfileIsOpen);
   };
 
+  // Handle the inputs of the user to ensure nothing gets through
+  const handleUserInputs = (event) => {
+    event.preventDefault();
+    const ageTest = parseInt(userText);
+    if (currButtonOpen === 'age'){
+      if(Number.isInteger(ageTest)){
+        handleUpdate(event);
+      }
+      else{
+        setUserError(true);
+        handleUpdate(event);
+      }
+    }
+  }
+
   // Handle changes in form inputs and displays them on screen as they happen
   const handleChange = (event) => {
     setUserText(event.target.value);
@@ -153,6 +172,7 @@ export default function UserProfileComponent() {
   const handleButtonToggle = (buttonName) => {
     switch (true) {
       case buttonName === "age":
+        setCurrButtonOpen('age');
         setEditAge(true);
         setEditGender(false);
         setEditHeight(false);
@@ -166,6 +186,7 @@ export default function UserProfileComponent() {
         break;
 
       case buttonName === "gender":
+        setCurrButtonOpen('gender');
         setEditAge(false);
         setEditGender(true);
         setEditHeight(false);
@@ -179,6 +200,7 @@ export default function UserProfileComponent() {
         break;
 
       case buttonName === "height":
+        setCurrButtonOpen('height');
         setEditAge(false);
         setEditGender(false);
         setEditHeight(true);
@@ -192,6 +214,7 @@ export default function UserProfileComponent() {
         break;
 
       case buttonName === "weight":
+        setCurrButtonOpen('weight');
         setEditAge(false);
         setEditGender(false);
         setEditHeight(false);
@@ -205,6 +228,7 @@ export default function UserProfileComponent() {
         break;
 
       case buttonName === "tw":
+        setCurrButtonOpen('tw');
         setEditAge(false);
         setEditGender(false);
         setEditHeight(false);
@@ -218,6 +242,7 @@ export default function UserProfileComponent() {
         break;
 
       case buttonName === "bf%":
+        setCurrButtonOpen('bf%');
         setEditAge(false);
         setEditGender(false);
         setEditHeight(false);
@@ -231,6 +256,7 @@ export default function UserProfileComponent() {
         break;
 
       case buttonName === "al":
+        setCurrButtonOpen('al');
         setEditAge(false);
         setEditGender(false);
         setEditHeight(false);
@@ -244,6 +270,7 @@ export default function UserProfileComponent() {
         break;
 
       case buttonName === "wm":
+        setCurrButtonOpen('wm');
         setEditAge(false);
         setEditGender(false);
         setEditHeight(false);
@@ -340,7 +367,7 @@ export default function UserProfileComponent() {
                           placeholder="Enter your current age"
                           />
                           
-                        <BootstrapButton  onClick={handleUpdate}>
+                        <BootstrapButton  onClick={(event) => handleUserInputs(event)}>
                           Confirm
                           </BootstrapButton>
                       </>
@@ -489,6 +516,19 @@ export default function UserProfileComponent() {
                     autoHideDuration={6000}
                     onClose={handleClose}
                   >
+                    {userError ? (
+                    <>
+                    <Alert
+                      onClose={handleClose}
+                      severity="failed"
+                      variant="filled"
+                      sx={{ width: "100%" }}
+                    >
+                      Something went wrong. Please enter correct information.
+                    </Alert>
+                    </>
+                    ) : (
+                      <>
                     <Alert
                       onClose={handleClose}
                       severity="success"
@@ -497,6 +537,8 @@ export default function UserProfileComponent() {
                     >
                       Successfully updated workout!
                     </Alert>
+                      </>
+                    )}
                   </Snackbar>
                 </Card>
               </Form>
