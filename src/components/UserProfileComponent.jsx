@@ -11,6 +11,8 @@ import CardOverflow from "@mui/joy/CardOverflow";
 import Typography from "@mui/joy/Typography";
 import { styled } from "@mui/material/styles";
 import Snackbar from "@mui/material/Snackbar";
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 import Alert from "@mui/material/Alert";
 
 export default function UserProfileComponent() {
@@ -43,12 +45,21 @@ export default function UserProfileComponent() {
   //////////////////////////////////////////////
 
   // keeps track of what button is open for update
-  const [updateKey, setUpdateKey] = useState('');
+  const [updateKey, setUpdateKey] = useState("");
 
   // controls the snackbar result based on user inputs
-  const [userError, setUserError] = useState(false);
+  const [userError, setUserError] = useState();
 
-  const [currButtonOpen, setCurrButtonOpen] = useState('');
+  const [currButtonOpen, setCurrButtonOpen] = useState("");
+
+  // controls the snackbar text to show the appropriate update name
+  const [currentButtonName, setCurrentButtonName] = useState();
+
+  // controls the error message
+  let errorMessage = `Error. Please check your ${currentButtonName} field and try again.`;
+
+  // controls the success message
+  let successMessage = `Successfully updated your ${currentButtonName}.`;
 
   //Snackbar Content////////////////////////////
   const [open, setOpen] = React.useState(false);
@@ -132,7 +143,7 @@ export default function UserProfileComponent() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          [updateKey]: userText
+          [updateKey]: userText,
         }),
       }
     );
@@ -153,16 +164,20 @@ export default function UserProfileComponent() {
   const handleUserInputs = (event) => {
     event.preventDefault();
     const ageTest = parseInt(userText);
-    if (currButtonOpen === 'age'){
-      if(Number.isInteger(ageTest)){
+    if (currButtonOpen === "age") {
+      if (Number.isInteger(ageTest)) {
+        setUserError(false)
         handleUpdate(event);
-      }
-      else{
+        handleClick();
+        setUserText("");
+        refresh();
+      } else {
         setUserError(true);
+        handleClick();
         handleUpdate(event);
       }
     }
-  }
+  };
 
   // Handle changes in form inputs and displays them on screen as they happen
   const handleChange = (event) => {
@@ -172,7 +187,8 @@ export default function UserProfileComponent() {
   const handleButtonToggle = (buttonName) => {
     switch (true) {
       case buttonName === "age":
-        setCurrButtonOpen('age');
+        setCurrentButtonName('age');
+        setCurrButtonOpen("age");
         setEditAge(true);
         setEditGender(false);
         setEditHeight(false);
@@ -181,12 +197,13 @@ export default function UserProfileComponent() {
         setEditBodyFatPercentage(false);
         setEditDailyActivityLevel(false);
         setEditWaistMeasurement(false);
-        setUserText('');
-        setUpdateKey('age');
+        setUserText("");
+        setUpdateKey("age");
         break;
 
       case buttonName === "gender":
-        setCurrButtonOpen('gender');
+        setCurrentButtonName('gender');
+        setCurrButtonOpen("gender");
         setEditAge(false);
         setEditGender(true);
         setEditHeight(false);
@@ -195,12 +212,13 @@ export default function UserProfileComponent() {
         setEditBodyFatPercentage(false);
         setEditDailyActivityLevel(false);
         setEditWaistMeasurement(false);
-        setUserText('');
-        setUpdateKey('gender');
+        setUserText("");
+        setUpdateKey("gender");
         break;
 
       case buttonName === "height":
-        setCurrButtonOpen('height');
+        setCurrentButtonName('height');
+        setCurrButtonOpen("height");
         setEditAge(false);
         setEditGender(false);
         setEditHeight(true);
@@ -209,12 +227,13 @@ export default function UserProfileComponent() {
         setEditBodyFatPercentage(false);
         setEditDailyActivityLevel(false);
         setEditWaistMeasurement(false);
-        setUserText('');
-        setUpdateKey('height');
+        setUserText("");
+        setUpdateKey("height");
         break;
 
       case buttonName === "weight":
-        setCurrButtonOpen('weight');
+        setCurrentButtonName('weight');
+        setCurrButtonOpen("weight");
         setEditAge(false);
         setEditGender(false);
         setEditHeight(false);
@@ -223,12 +242,13 @@ export default function UserProfileComponent() {
         setEditBodyFatPercentage(false);
         setEditDailyActivityLevel(false);
         setEditWaistMeasurement(false);
-        setUserText('');
-        setUpdateKey('weight');
+        setUserText("");
+        setUpdateKey("weight");
         break;
 
       case buttonName === "tw":
-        setCurrButtonOpen('tw');
+        setCurrentButtonName('target weight');
+        setCurrButtonOpen("tw");
         setEditAge(false);
         setEditGender(false);
         setEditHeight(false);
@@ -237,12 +257,13 @@ export default function UserProfileComponent() {
         setEditBodyFatPercentage(false);
         setEditDailyActivityLevel(false);
         setEditWaistMeasurement(false);
-        setUserText('');
-        setUpdateKey('target_weight');
+        setUserText("");
+        setUpdateKey("target_weight");
         break;
 
       case buttonName === "bf%":
-        setCurrButtonOpen('bf%');
+        setCurrentButtonName('body fat percentage');
+        setCurrButtonOpen("bf%");
         setEditAge(false);
         setEditGender(false);
         setEditHeight(false);
@@ -251,12 +272,13 @@ export default function UserProfileComponent() {
         setEditBodyFatPercentage(true);
         setEditDailyActivityLevel(false);
         setEditWaistMeasurement(false);
-        setUserText('');
-        setUpdateKey('target_body_fat_percentage');
+        setUserText("");
+        setUpdateKey("target_body_fat_percentage");
         break;
 
       case buttonName === "al":
-        setCurrButtonOpen('al');
+        setCurrentButtonName('activity level');
+        setCurrButtonOpen("al");
         setEditAge(false);
         setEditGender(false);
         setEditHeight(false);
@@ -265,12 +287,13 @@ export default function UserProfileComponent() {
         setEditBodyFatPercentage(false);
         setEditDailyActivityLevel(true);
         setEditWaistMeasurement(false);
-        setUserText('');
-        setUpdateKey('daily_activity_level');
+        setUserText("");
+        setUpdateKey("daily_activity_level");
         break;
 
       case buttonName === "wm":
-        setCurrButtonOpen('wm');
+        setCurrentButtonName('waist size');
+        setCurrButtonOpen("wm");
         setEditAge(false);
         setEditGender(false);
         setEditHeight(false);
@@ -279,8 +302,8 @@ export default function UserProfileComponent() {
         setEditBodyFatPercentage(false);
         setEditDailyActivityLevel(false);
         setEditWaistMeasurement(true);
-        setUserText('');
-        setUpdateKey('waist');
+        setUserText("");
+        setUpdateKey("waist");
         break;
 
       default:
@@ -295,15 +318,41 @@ export default function UserProfileComponent() {
     }
   };
 
+  // details for the snackbar
+  const action = (
+    <React.Fragment>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleClose}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </React.Fragment>
+  );
+
   const test = () => {
-     console.log(userInfo)
+    console.log(userInfo);
     //  console.log(userData);
-    console.log(updateKey, userText)
+    console.log(updateKey, userText);
   };
 
   return (
     <>
-      {/* <button onClick={test}>test</button> */}
+      {/* <button onClick={test}>test</button>
+      <div>
+        <ul>
+          <li>age: {userData.age}</li>
+          <li>gender: {userData.gender}</li>
+          <li>height: {userData.height}</li>
+          <li>weight: {userData.weight}</li>
+          <li>target: {userData.target_weight}</li>
+          <li>body fat percentage: {userData.target_body_fat_percentage}</li>
+          <li>activity level: {userData.daily_activity_level}</li>
+          <li>waist size: {userData.waist}</li>
+        </ul>
+      </div> */}
       <div className="id">
         <Card
           sx={{
@@ -365,22 +414,28 @@ export default function UserProfileComponent() {
                           value={userText}
                           onChange={handleChange}
                           placeholder="Enter your current age"
-                          />
-                          
-                        <BootstrapButton  onClick={(event) => handleUserInputs(event)}>
+                        />
+
+                        <BootstrapButton
+                          onClick={(event) => handleUserInputs(event)}
+                        >
                           Confirm
-                          </BootstrapButton>
+                        </BootstrapButton>
                       </>
                     ) : (
                       <>
-                        <BootstrapButton onClick={() => handleButtonToggle('age')}>Change Age</BootstrapButton>
+                        <BootstrapButton
+                          onClick={() => handleButtonToggle("age")}
+                        >
+                          Change Age
+                        </BootstrapButton>
                       </>
                     )}
                   </Form.Group>
 
                   {/* Gender Segment */}
                   <Form.Group>
-                  {editGender ? (
+                    {editGender ? (
                       <>
                         <Form.Control
                           type="text"
@@ -388,18 +443,24 @@ export default function UserProfileComponent() {
                           onChange={handleChange}
                           placeholder="Enter your gender"
                         />
-                        <BootstrapButton onClick={handleUpdate}>Confirm</BootstrapButton>
+                        <BootstrapButton onClick={handleUpdate}>
+                          Confirm
+                        </BootstrapButton>
                       </>
                     ) : (
                       <>
-                        <BootstrapButton onClick={() => handleButtonToggle('gender')}>Change Gender</BootstrapButton>
+                        <BootstrapButton
+                          onClick={() => handleButtonToggle("gender")}
+                        >
+                          Change Gender
+                        </BootstrapButton>
                       </>
                     )}
                   </Form.Group>
 
                   {/* Height segment */}
                   <Form.Group>
-                  {editHeight ? (
+                    {editHeight ? (
                       <>
                         <Form.Control
                           type="text"
@@ -407,18 +468,24 @@ export default function UserProfileComponent() {
                           onChange={handleChange}
                           placeholder="Enter your current current height"
                         />
-                        <BootstrapButton onClick={handleUpdate}>Confirm</BootstrapButton>
+                        <BootstrapButton onClick={handleUpdate}>
+                          Confirm
+                        </BootstrapButton>
                       </>
                     ) : (
                       <>
-                        <BootstrapButton onClick={() => handleButtonToggle('height')}>Change Height</BootstrapButton>
+                        <BootstrapButton
+                          onClick={() => handleButtonToggle("height")}
+                        >
+                          Change Height
+                        </BootstrapButton>
                       </>
                     )}
                   </Form.Group>
 
                   {/* Weight Segment */}
                   <Form.Group>
-                  {editWeight ? (
+                    {editWeight ? (
                       <>
                         <Form.Control
                           type="text"
@@ -426,18 +493,24 @@ export default function UserProfileComponent() {
                           onChange={handleChange}
                           placeholder="Enter your current weight"
                         />
-                        <BootstrapButton onClick={handleUpdate}>Confirm</BootstrapButton>
+                        <BootstrapButton onClick={handleUpdate}>
+                          Confirm
+                        </BootstrapButton>
                       </>
                     ) : (
                       <>
-                        <BootstrapButton onClick={() => handleButtonToggle('weight')}>Change Weight</BootstrapButton>
+                        <BootstrapButton
+                          onClick={() => handleButtonToggle("weight")}
+                        >
+                          Change Weight
+                        </BootstrapButton>
                       </>
                     )}
                   </Form.Group>
 
                   {/* Target Weight Segment */}
                   <Form.Group>
-                  {editTargetWeight ? (
+                    {editTargetWeight ? (
                       <>
                         <Form.Control
                           type="text"
@@ -445,18 +518,24 @@ export default function UserProfileComponent() {
                           onChange={handleChange}
                           placeholder="Enter your current target weight"
                         />
-                        <BootstrapButton onClick={handleUpdate}>Confirm</BootstrapButton>
+                        <BootstrapButton onClick={handleUpdate}>
+                          Confirm
+                        </BootstrapButton>
                       </>
                     ) : (
                       <>
-                        <BootstrapButton onClick={() => handleButtonToggle('tw')}>Change Target Weight</BootstrapButton>
+                        <BootstrapButton
+                          onClick={() => handleButtonToggle("tw")}
+                        >
+                          Change Target Weight
+                        </BootstrapButton>
                       </>
                     )}
                   </Form.Group>
 
                   {/* Target Body Fat % Segment */}
                   <Form.Group>
-                  {editBodyFatPercentage ? (
+                    {editBodyFatPercentage ? (
                       <>
                         <Form.Control
                           type="text"
@@ -464,18 +543,24 @@ export default function UserProfileComponent() {
                           onChange={handleChange}
                           placeholder="Enter your current body fat percentage"
                         />
-                        <BootstrapButton onClick={handleUpdate}>Confirm</BootstrapButton>
+                        <BootstrapButton onClick={handleUpdate}>
+                          Confirm
+                        </BootstrapButton>
                       </>
                     ) : (
                       <>
-                        <BootstrapButton onClick={() => handleButtonToggle('bf%')}>Change Body Fat Percentage</BootstrapButton>
+                        <BootstrapButton
+                          onClick={() => handleButtonToggle("bf%")}
+                        >
+                          Change Body Fat Percentage
+                        </BootstrapButton>
                       </>
                     )}
                   </Form.Group>
 
                   {/* Daily Activity Level segment */}
                   <Form.Group>
-                  {editDailyActivityLevel ? (
+                    {editDailyActivityLevel ? (
                       <>
                         <Form.Control
                           type="text"
@@ -483,18 +568,24 @@ export default function UserProfileComponent() {
                           onChange={handleChange}
                           placeholder="Select your current daily activity level"
                         />
-                        <BootstrapButton onClick={handleUpdate}>Confirm</BootstrapButton>
+                        <BootstrapButton onClick={handleUpdate}>
+                          Confirm
+                        </BootstrapButton>
                       </>
                     ) : (
                       <>
-                        <BootstrapButton onClick={() => handleButtonToggle('al')}>Change Daily Activity Level</BootstrapButton>
+                        <BootstrapButton
+                          onClick={() => handleButtonToggle("al")}
+                        >
+                          Change Daily Activity Level
+                        </BootstrapButton>
                       </>
                     )}
                   </Form.Group>
 
                   {/* Waist measurement segment */}
                   <Form.Group>
-                  {editWaistMeasurement ? (
+                    {editWaistMeasurement ? (
                       <>
                         <Form.Control
                           type="text"
@@ -502,47 +593,48 @@ export default function UserProfileComponent() {
                           onChange={handleChange}
                           placeholder="Enter your current waist size"
                         />
-                        <BootstrapButton onClick={handleUpdate}>Confirm</BootstrapButton>
+                        <BootstrapButton onClick={handleUpdate}>
+                          Confirm
+                        </BootstrapButton>
                       </>
                     ) : (
                       <>
-                        <BootstrapButton onClick={() => handleButtonToggle('wm')}>Change Waist Size</BootstrapButton>
+                        <BootstrapButton
+                          onClick={() => handleButtonToggle("wm")}
+                        >
+                          Change Waist Size
+                        </BootstrapButton>
                       </>
                     )}
                   </Form.Group>
-
+                </Card>
+              </Form>
+            </div>
+            {userError ? (
+              <>
+                <div>
                   <Snackbar
                     open={open}
                     autoHideDuration={6000}
                     onClose={handleClose}
-                  >
-                    {userError ? (
-                    <>
-                    <Alert
-                      onClose={handleClose}
-                      severity="failed"
-                      variant="filled"
-                      sx={{ width: "100%" }}
-                    >
-                      Something went wrong. Please enter correct information.
-                    </Alert>
-                    </>
-                    ) : (
-                      <>
-                    <Alert
-                      onClose={handleClose}
-                      severity="success"
-                      variant="filled"
-                      sx={{ width: "100%" }}
-                    >
-                      Successfully updated workout!
-                    </Alert>
-                      </>
-                    )}
-                  </Snackbar>
-                </Card>
-              </Form>
-            </div>
+                    message={errorMessage}
+                    action={action}
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <Snackbar
+                    open={open}
+                    autoHideDuration={6000}
+                    onClose={handleClose}
+                    message={successMessage}
+                    action={action}
+                  />
+                </div>
+              </>
+            )}
           </div>
         ) : (
           ""
