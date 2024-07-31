@@ -57,6 +57,9 @@ export default function UserProfileComponent() {
   // keeps track of the currently open button
   const [currButtonOpen, setCurrButtonOpen] = useState("");
 
+  // updates the page
+  let [updatePage, setUpdatePage] = useState(0)
+
   // controls the snackbar text to show the appropriate update name
   const [currentButtonName, setCurrentButtonName] = useState();
 
@@ -148,7 +151,7 @@ export default function UserProfileComponent() {
     };
 
     getUserData();
-  }, [token]); // Assuming token is correctly triggering useEffect when it changes
+  }, [token, updatePage]); // Assuming token is correctly triggering useEffect when it changes
 
   // Handle form submission for updating a workout
   const handleUpdate = async (event) => {
@@ -164,14 +167,15 @@ export default function UserProfileComponent() {
           [updateKey]: userText,
         }),
       }
-    );
-    if (response.ok) {
-      console.log(`Successfully updated profile!`);
-      refresh();
-      handleClick();
-    } else {
-      console.error("Failed to update profile:", response.statusText);
-    }
+      );
+      if (response.ok) {
+        console.log(`Successfully updated profile!`);
+        refresh();
+        handleClick();
+      } else {
+        console.error("Failed to update profile:", response.statusText);
+      }
+      setUpdatePage(updatePage += 1);
   };
 
   const toggleEditProfileMenu = () => {
@@ -371,13 +375,7 @@ export default function UserProfileComponent() {
           <li>activity level: {userData.daily_activity_level}</li>
           <li>waist size: {userData.waist}</li>
         </ul>
-      </div>
-
-      <Select defaultValue={userText}>
-        <Option onClick={() => setUserText('Male')} value={'Male'} >Male</Option>
-        <Option onClick={() => setUserText('Female')} value={'Female'}>Female</Option>
-        <Option onClick={() => setUserText('Other')} value={"Other"}>Other</Option>
-      </Select> */}
+      </div> */}
 
       <div className="id">
         <Card
@@ -463,12 +461,34 @@ export default function UserProfileComponent() {
                   <Form.Group>
                     {editGender ? (
                       <>
-                        <Form.Control
+                        {/* <Form.Control
                           type="text"
                           value={userText}
                           onChange={handleChange}
                           placeholder="Enter your gender"
-                        />
+                        /> */}
+
+                        <Select defaultValue={userText}>
+                          <Option
+                            onClick={() => setUserText("Male")}
+                            value={"Male"}
+                          >
+                            Male
+                          </Option>
+                          <Option
+                            onClick={() => setUserText("Female")}
+                            value={"Female"}
+                          >
+                            Female
+                          </Option>
+                          <Option
+                            onClick={() => setUserText("Other")}
+                            value={"Other"}
+                          >
+                            Other
+                          </Option>
+                        </Select>
+
                         <BootstrapButton onClick={handleUpdate}>
                           Confirm
                         </BootstrapButton>
@@ -672,26 +692,26 @@ export default function UserProfileComponent() {
 
 // dropdown details
 const blue = {
-  100: '#DAECFF',
-  200: '#99CCF3',
-  400: '#3399FF',
-  500: '#007FFF',
-  600: '#0072E5',
-  700: '#0059B2',
-  900: '#003A75',
+  100: "#DAECFF",
+  200: "#99CCF3",
+  400: "#3399FF",
+  500: "#007FFF",
+  600: "#0072E5",
+  700: "#0059B2",
+  900: "#003A75",
 };
 
 const grey = {
-  50: '#F3F6F9',
-  100: '#E5EAF2',
-  200: '#DAE2ED',
-  300: '#C7D0DD',
-  400: '#B0B8C4',
-  500: '#9DA8B7',
-  600: '#6B7A90',
-  700: '#434D5B',
-  800: '#303740',
-  900: '#1C2025',
+  50: "#F3F6F9",
+  100: "#E5EAF2",
+  200: "#DAE2ED",
+  300: "#C7D0DD",
+  400: "#B0B8C4",
+  500: "#9DA8B7",
+  600: "#6B7A90",
+  700: "#434D5B",
+  800: "#303740",
+  900: "#1C2025",
 };
 
 const CustomButton = React.forwardRef(function CustomButton(props, ref) {
@@ -709,7 +729,7 @@ CustomButton.propTypes = {
   ownerState: PropTypes.object.isRequired,
 };
 
-const StyledButton = styled('button', { shouldForwardProp: () => true })(
+const StyledButton = styled("button", { shouldForwardProp: () => true })(
   ({ theme }) => `
   position: relative;
   font-family: 'IBM Plex Sans', sans-serif;
@@ -720,11 +740,11 @@ const StyledButton = styled('button', { shouldForwardProp: () => true })(
   border-radius: 8px;
   text-align: left;
   line-height: 1.5;
-  background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
-  border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
-  color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
+  background: ${theme.palette.mode === "dark" ? grey[900] : "#fff"};
+  border: 1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]};
+  color: ${theme.palette.mode === "dark" ? grey[300] : grey[900]};
   box-shadow: 0px 2px 4px ${
-    theme.palette.mode === 'dark' ? 'rgba(0,0,0, 0.5)' : 'rgba(0,0,0, 0.05)'
+    theme.palette.mode === "dark" ? "rgba(0,0,0, 0.5)" : "rgba(0,0,0, 0.05)"
   };
 
   transition-property: all;
@@ -732,14 +752,16 @@ const StyledButton = styled('button', { shouldForwardProp: () => true })(
   transition-duration: 120ms;
 
   &:hover {
-    background: ${theme.palette.mode === 'dark' ? grey[800] : grey[50]};
-    border-color: ${theme.palette.mode === 'dark' ? grey[600] : grey[300]};
+    background: ${theme.palette.mode === "dark" ? grey[800] : grey[50]};
+    border-color: ${theme.palette.mode === "dark" ? grey[600] : grey[300]};
   }
 
   &.${selectClasses.focusVisible} {
     outline: 0;
     border-color: ${blue[400]};
-    box-shadow: 0 0 0 3px ${theme.palette.mode === 'dark' ? blue[700] : blue[200]};
+    box-shadow: 0 0 0 3px ${
+      theme.palette.mode === "dark" ? blue[700] : blue[200]
+    };
   }
 
   & > svg {
@@ -749,10 +771,10 @@ const StyledButton = styled('button', { shouldForwardProp: () => true })(
     top: 0;
     right: 10px;
   }
-  `,
+  `
 );
 
-const Listbox = styled('ul')(
+const Listbox = styled("ul")(
   ({ theme }) => `
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 0.875rem;
@@ -763,13 +785,13 @@ const Listbox = styled('ul')(
   border-radius: 12px;
   overflow: auto;
   outline: 0px;
-  background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
-  border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
-  color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
+  background: ${theme.palette.mode === "dark" ? grey[900] : "#fff"};
+  border: 1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]};
+  color: ${theme.palette.mode === "dark" ? grey[300] : grey[900]};
   box-shadow: 0px 2px 4px ${
-    theme.palette.mode === 'dark' ? 'rgba(0,0,0, 0.5)' : 'rgba(0,0,0, 0.05)'
+    theme.palette.mode === "dark" ? "rgba(0,0,0, 0.5)" : "rgba(0,0,0, 0.05)"
   };
-  `,
+  `
 );
 
 const Option = styled(BaseOption)(
@@ -784,36 +806,36 @@ const Option = styled(BaseOption)(
   }
 
   &.${optionClasses.selected} {
-    background-color: ${theme.palette.mode === 'dark' ? blue[900] : blue[100]};
-    color: ${theme.palette.mode === 'dark' ? blue[100] : blue[900]};
+    background-color: ${theme.palette.mode === "dark" ? blue[900] : blue[100]};
+    color: ${theme.palette.mode === "dark" ? blue[100] : blue[900]};
   }
 
   &.${optionClasses.highlighted} {
-    background-color: ${theme.palette.mode === 'dark' ? grey[800] : grey[100]};
-    color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
+    background-color: ${theme.palette.mode === "dark" ? grey[800] : grey[100]};
+    color: ${theme.palette.mode === "dark" ? grey[300] : grey[900]};
   }
 
   &:focus-visible {
-    outline: 3px solid ${theme.palette.mode === 'dark' ? blue[600] : blue[200]};
+    outline: 3px solid ${theme.palette.mode === "dark" ? blue[600] : blue[200]};
   }
 
   &.${optionClasses.highlighted}.${optionClasses.selected} {
-    background-color: ${theme.palette.mode === 'dark' ? blue[900] : blue[100]};
-    color: ${theme.palette.mode === 'dark' ? blue[100] : blue[900]};
+    background-color: ${theme.palette.mode === "dark" ? blue[900] : blue[100]};
+    color: ${theme.palette.mode === "dark" ? blue[100] : blue[900]};
   }
 
   &.${optionClasses.disabled} {
-    color: ${theme.palette.mode === 'dark' ? grey[700] : grey[400]};
+    color: ${theme.palette.mode === "dark" ? grey[700] : grey[400]};
   }
 
   &:hover:not(.${optionClasses.disabled}) {
-    background-color: ${theme.palette.mode === 'dark' ? grey[800] : grey[100]};
-    color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
+    background-color: ${theme.palette.mode === "dark" ? grey[800] : grey[100]};
+    color: ${theme.palette.mode === "dark" ? grey[300] : grey[900]};
   }
-  `,
+  `
 );
 
-const Popup = styled('div')`
+const Popup = styled("div")`
   z-index: 1;
 `;
 
