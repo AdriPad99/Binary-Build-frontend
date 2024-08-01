@@ -30,6 +30,8 @@ export default function UserProfileComponent() {
 
   const [userText, setUserText] = useState("");
 
+  const [userText2, setUserText2] = useState("");
+
   //edit button(s) states///////////////////////
   const [editAge, setEditAge] = useState(false);
 
@@ -58,10 +60,16 @@ export default function UserProfileComponent() {
   const [currButtonOpen, setCurrButtonOpen] = useState("");
 
   // updates the page
-  let [updatePage, setUpdatePage] = useState(0)
+  let [updatePage, setUpdatePage] = useState(0);
 
   // controls the snackbar text to show the appropriate update name
   const [currentButtonName, setCurrentButtonName] = useState();
+
+  // controlls the what measurement box is selected in the height section
+  const [userEditingHeight, setUserEditingHeight] = useState();
+
+  // controls the sent height
+  let [userHeight, setUserHeight] = useState();
 
   // controls the error message
   let errorMessage = `Error. Please check your ${currentButtonName} field and try again.`;
@@ -164,18 +172,19 @@ export default function UserProfileComponent() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          // [updateKey]: updateKey === 'height' ? userHeight : userText
           [updateKey]: userText,
         }),
       }
-      );
-      if (response.ok) {
-        console.log(`Successfully updated profile!`);
-        refresh();
-        handleClick();
-      } else {
-        console.error("Failed to update profile:", response.statusText);
-      }
-      setUpdatePage(updatePage += 1);
+    );
+    if (response.ok) {
+      console.log(`Successfully updated profile!`);
+      refresh();
+      handleClick();
+    } else {
+      console.error("Failed to update profile:", response.statusText);
+    }
+    setUpdatePage((updatePage += 1));
   };
 
   const toggleEditProfileMenu = () => {
@@ -205,6 +214,20 @@ export default function UserProfileComponent() {
   const handleChange = (event) => {
     setUserText(event.target.value);
   };
+
+  // Handle changes in form inputs for the height section and displays them on screen as they happen
+  const handleHeightChange = (event) => {
+    if (userEditingHeight === true) {
+      setUserText(event.target.value);
+    } else if (userEditingHeight === false) {
+      setUserText2(event.target.value);
+    }
+  };
+  
+  // useEffect to control the contents of the user height
+  useEffect(() => {
+    setUserHeight(`${userText} ft ${userText2} in`);
+  }, [userText, userText2]);
 
   const handleButtonToggle = (buttonName) => {
     switch (true) {
@@ -356,8 +379,9 @@ export default function UserProfileComponent() {
 
   const test = () => {
     console.log(userInfo);
-    //  console.log(userData);
     console.log(updateKey, userText);
+    console.log("user text: ", userText, "user text 2: ", userText2);
+    console.log(userHeight);
   };
 
   return (
@@ -395,10 +419,9 @@ export default function UserProfileComponent() {
             </Typography>
             <Typography level="body-sm" sx={{ maxWidth: "24ch" }}>
               Hello, this is my bio and I am a Student currently attending the
-              Coding Temple program.
-              <hr />
-              Contact Me: {userData.email}
+              Coding Temple program. Contact Me: {userData.email}
             </Typography>
+            <hr />
             {/* <BootstrapButton onClick={toggleEditProfileMenu}>
               Edit Profile
             </BootstrapButton> */}
@@ -439,7 +462,7 @@ export default function UserProfileComponent() {
                           onChange={handleChange}
                           placeholder="Enter your current age"
                         />
-
+                        {"\t"}
                         <BootstrapButton
                           onClick={(event) => handleUserInputs(event)}
                         >
@@ -488,7 +511,7 @@ export default function UserProfileComponent() {
                             Other
                           </Option>
                         </Select>
-
+                        {"\t"}
                         <BootstrapButton onClick={handleUpdate}>
                           Confirm
                         </BootstrapButton>
@@ -508,11 +531,21 @@ export default function UserProfileComponent() {
                   <Form.Group>
                     {editHeight ? (
                       <>
+                        ft {"\t"}
                         <Form.Control
+                          onClick={() => setUserEditingHeight(true)}
                           type="text"
                           value={userText}
-                          onChange={handleChange}
-                          placeholder="Enter your current current height"
+                          onChange={handleHeightChange}
+                          placeholder="feet"
+                        />
+                        {"\t"}in {"\t"}
+                        <Form.Control
+                          onClick={() => setUserEditingHeight(false)}
+                          type="text"
+                          value={userText2}
+                          onChange={handleHeightChange}
+                          placeholder="inches"
                         />
                         <BootstrapButton onClick={handleUpdate}>
                           Confirm
