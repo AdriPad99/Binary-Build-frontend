@@ -119,23 +119,3 @@ body {
 #btn-space {
   padding-left: 20px;
 }
-
-/* email: data.email || "",
-            firstName: data.first_name || "",
-            lastName: data.last_name || "",
-            username: data.username || "",
-            age: data.age || "",
-            gender: data.gender || "",
-            height: data.height || "",
-            weight: data.weight || "",
-            target_weight: data.target_weight || "",
-            target_body_fat_percentage: data.target_body_fat_percentage || "",
-            fitness_level: data.fitness_level || "",
-            daily_activity_level: data.daily_activity_level || "",
-            pref_workout_types: data.pref_workout_types || "",
-            pref_workout_duration: data.pref_workout_duration || "",
-            available_equipment: data.available_equipment || "",
-            chest: data.chest || "",
-            waist: data.waist || "",
-            hips: data.hips || "",
-            amnt_workouts_completed: data.amnt_workouts_completed || "", */

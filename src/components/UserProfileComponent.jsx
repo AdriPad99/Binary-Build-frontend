@@ -172,7 +172,6 @@ export default function UserProfileComponent() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          // [updateKey]: updateKey === 'height' ? userHeight : userText
           [updateKey]: userText,
         }),
       }
@@ -210,9 +209,29 @@ export default function UserProfileComponent() {
     }
   };
 
-  // Handle changes in form inputs and displays them on screen as they happen
-  const handleChange = (event) => {
-    setUserText(event.target.value);
+  // controls the update settings for the height
+  const handeHeightUpdate = async (event) => {
+    event.preventDefault();
+    const response = await fetch(
+      `https://capstone-db.onrender.com/signup/${user}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          [updateKey]: userHeight,
+        }),
+      }
+    );
+    if (response.ok) {
+      console.log(`Successfully updated profile!`);
+      refresh();
+      handleClick();
+    } else {
+      console.error("Failed to update profile:", response.statusText);
+    }
+    setUpdatePage((updatePage += 1));
   };
 
   // Handle changes in form inputs for the height section and displays them on screen as they happen
@@ -228,6 +247,12 @@ export default function UserProfileComponent() {
   useEffect(() => {
     setUserHeight(`${userText} ft ${userText2} in`);
   }, [userText, userText2]);
+
+  // Handle changes in form inputs and displays them on screen as they happen
+  const handleChange = (event) => {
+    setUserText(event.target.value);
+  };
+
 
   const handleButtonToggle = (buttonName) => {
     switch (true) {
@@ -382,6 +407,7 @@ export default function UserProfileComponent() {
     console.log(updateKey, userText);
     console.log("user text: ", userText, "user text 2: ", userText2);
     console.log(userHeight);
+    handeHeightUpdate();
   };
 
   return (
@@ -484,13 +510,6 @@ export default function UserProfileComponent() {
                   <Form.Group>
                     {editGender ? (
                       <>
-                        {/* <Form.Control
-                          type="text"
-                          value={userText}
-                          onChange={handleChange}
-                          placeholder="Enter your gender"
-                        /> */}
-
                         <Select defaultValue={userText}>
                           <Option
                             onClick={() => setUserText("Male")}
@@ -547,7 +566,7 @@ export default function UserProfileComponent() {
                           onChange={handleHeightChange}
                           placeholder="inches"
                         />
-                        <BootstrapButton onClick={handleUpdate}>
+                        <BootstrapButton onClick={handeHeightUpdate}>
                           Confirm
                         </BootstrapButton>
                       </>
