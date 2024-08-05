@@ -178,9 +178,13 @@ export default function UserProfileComponent() {
     );
     if (response.ok) {
       console.log(`Successfully updated profile!`);
+      setUserError(false);
+      setUserText('');
       refresh();
       handleClick();
     } else {
+      setUserError(true);
+      handleClick();
       console.error("Failed to update profile:", response.statusText);
     }
     setUpdatePage((updatePage += 1));
@@ -220,7 +224,7 @@ export default function UserProfileComponent() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          [updateKey]: userHeight,
+          [updateKey]: `${userText} ft ${userText2} in`,
         }),
       }
     );
@@ -405,9 +409,7 @@ export default function UserProfileComponent() {
   const test = () => {
     console.log(userInfo);
     console.log(updateKey, userText);
-    console.log("user text: ", userText, "user text 2: ", userText2);
-    console.log(userHeight);
-    handeHeightUpdate();
+    console.log(user)
   };
 
   return (
@@ -419,8 +421,8 @@ export default function UserProfileComponent() {
           <li>age: {userData.age}</li>
           <li>gender: {userData.gender}</li>
           <li>height: {userData.height}</li>
-          <li>weight: {userData.weight}</li>
-          <li>target: {userData.target_weight}</li>
+          <li>weight: {userData.weight} lbs</li>
+          <li>target: {userData.target_weight} lbs</li>
           <li>body fat percentage: {userData.target_body_fat_percentage}</li>
           <li>activity level: {userData.daily_activity_level}</li>
           <li>waist size: {userData.waist}</li>
@@ -566,6 +568,7 @@ export default function UserProfileComponent() {
                           onChange={handleHeightChange}
                           placeholder="inches"
                         />
+                        {"\t"}
                         <BootstrapButton onClick={handeHeightUpdate}>
                           Confirm
                         </BootstrapButton>
@@ -591,6 +594,7 @@ export default function UserProfileComponent() {
                           onChange={handleChange}
                           placeholder="Enter your current weight"
                         />
+                        {"\t"}
                         <BootstrapButton onClick={handleUpdate}>
                           Confirm
                         </BootstrapButton>
@@ -616,6 +620,7 @@ export default function UserProfileComponent() {
                           onChange={handleChange}
                           placeholder="Enter your current target weight"
                         />
+                        {"\t"}
                         <BootstrapButton onClick={handleUpdate}>
                           Confirm
                         </BootstrapButton>
