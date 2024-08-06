@@ -116,6 +116,17 @@ export default function UserProfileComponent() {
     firstName: "",
     lastName: "",
     username: "",
+    target_weight: "",
+    target_body_fat_percentage: "",
+    fitness_level: "",
+    daily_activity_level: "",
+    pref_workout_types:  "",
+    pref_workout_duration: "",
+    available_equipment: "",
+    chest:  "",
+    waist:  "",
+    hips:  "",
+    amnt_workouts_completed: "",
   });
 
   useEffect(() => {
@@ -179,7 +190,7 @@ export default function UserProfileComponent() {
     if (response.ok) {
       console.log(`Successfully updated profile!`);
       setUserError(false);
-      setUserText('');
+      setUserText("");
       refresh();
       handleClick();
     } else {
@@ -246,7 +257,7 @@ export default function UserProfileComponent() {
       setUserText2(event.target.value);
     }
   };
-  
+
   // useEffect to control the contents of the user height
   useEffect(() => {
     setUserHeight(`${userText} ft ${userText2} in`);
@@ -256,7 +267,6 @@ export default function UserProfileComponent() {
   const handleChange = (event) => {
     setUserText(event.target.value);
   };
-
 
   const handleButtonToggle = (buttonName) => {
     switch (true) {
@@ -407,9 +417,10 @@ export default function UserProfileComponent() {
   );
 
   const test = () => {
-    console.log(userInfo);
+    console.log(userData);
     console.log(updateKey, userText);
-    console.log(user)
+    // console.log(user);
+    // console.log("target weight: ", userData.target_weight);
   };
 
   return (
@@ -646,7 +657,7 @@ export default function UserProfileComponent() {
                           onChange={handleChange}
                           placeholder="Enter your current body fat percentage"
                         />
-                        <BootstrapButton onClick={handleUpdate}>
+                        <BootstrapButton onClick={() => {setUserText(Number(userText)), handleUpdate}}>
                           Confirm
                         </BootstrapButton>
                       </>

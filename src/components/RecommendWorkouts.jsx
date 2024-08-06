@@ -42,6 +42,35 @@ export default function RecommendWorkouts() {
     }
   };
 
+  // Handle form submission for adding a workout
+  const handleSubmit = async (id, equipment, muscle, rep, weight, workout, day) => {
+
+    // uncomment to add to user workouts
+    const response = await fetch('https://capstone-db.onrender.com/workouts', {
+        method: 'POST', // sets method
+        headers: {
+            'Content-Type': 'application/json' // Indicates the content 
+        },
+        body: JSON.stringify({  // uses these values in the body
+            "muscle_group": muscle,
+            "equipment": equipment,
+            "rep_range": rep,
+            "weight_range": weight,
+            "workout_variation": workout,
+            "day": day
+        }) //send data in JSON format
+    });
+    // if successful
+    if (response.ok) {
+        refresh();
+        // inform the user of a successful update
+        handleClick();
+    } else {
+        // handles the errors
+        console.error('Failed to create workout:', response.statusText);
+    }
+};
+
   // takes in the arguments from the specified recommended workout
   // and passes in the body contents to be added to the users workouts
   const test = async (id, equipment, muscle, rep, weight, workout, day) => {
@@ -130,7 +159,7 @@ export default function RecommendWorkouts() {
                     onClick={() => {
                       setWorkoutId(user.workout_id),
                         setOpen(true),
-                        handleDelete(user.workout_id);
+                        handleSubmit(user.workout_id, user.equipment, user.muscle_group, user.rep_range, user.weight_range, user.workout_variation, user.day)
                     }}
                     variant="contained"
                     disableRipple
