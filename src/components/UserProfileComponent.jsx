@@ -120,12 +120,12 @@ export default function UserProfileComponent() {
     target_body_fat_percentage: "",
     fitness_level: "",
     daily_activity_level: "",
-    pref_workout_types:  "",
+    pref_workout_types: "",
     pref_workout_duration: "",
     available_equipment: "",
-    chest:  "",
-    waist:  "",
-    hips:  "",
+    chest: "",
+    waist: "",
+    hips: "",
     amnt_workouts_completed: "",
   });
 
@@ -137,17 +137,18 @@ export default function UserProfileComponent() {
         );
         if (response.ok) {
           const data = await response.json();
+          // console.log(data);
           setUserInfo(data);
           setUser(data.user_id);
           setUserData({
-            email: data.email || "",
-            firstName: data.first_name || "",
-            lastName: data.last_name || "",
-            username: data.username || "",
-            age: data.age || "",
-            gender: data.gender || "",
-            height: data.height || "",
-            weight: data.weight || "",
+            email: data.email || "", //
+            firstName: data.first_name || "", //
+            lastName: data.last_name || "", //
+            username: data.username || "", //
+            age: data.age || "", //
+            gender: data.gender || "", //
+            height: data.height || "", //
+            weight: data.weight || "", //
             target_weight: data.target_weight || "",
             target_body_fat_percentage: data.target_body_fat_percentage || "",
             fitness_level: data.fitness_level || "",
@@ -191,6 +192,7 @@ export default function UserProfileComponent() {
       console.log(`Successfully updated profile!`);
       setUserError(false);
       setUserText("");
+      setUpdatePage((prevPage) => prevPage + 1);
       refresh();
       handleClick();
     } else {
@@ -209,18 +211,33 @@ export default function UserProfileComponent() {
   const handleUserInputs = (event) => {
     event.preventDefault();
     const ageTest = parseInt(userText);
-    if (currButtonOpen === "age") {
-      if (Number.isInteger(ageTest)) {
-        setUserError(false);
-        handleUpdate(event);
-        handleClick();
-        setUserText("");
-        refresh();
-      } else {
-        setUserError(true);
-        handleClick();
-        handleUpdate(event);
-      }
+    const targetWeightTest = parseInt(userText);
+    if (currButtonOpen === "age" && Number.isInteger(ageTest)) {
+      setUserError(false);
+      handleUpdate(event);
+      handleClick();
+      setUserText("");
+      refresh();
+    } else {
+      setUserError(true);
+      handleClick();
+      handleUpdate(event);
+    }
+
+    if (
+      currButtonOpen === "target_weight" &&
+      Number.isInteger(targetWeightTest)
+    ) {
+      setUserError(false);
+      handleUpdate(event);
+      handleClick();
+      setUserText("");
+      refresh();
+    } else {
+      setUserText(targetWeightTest);
+      setUserError(true);
+      handleClick();
+      handleUpdate(event);
     }
   };
 
@@ -657,7 +674,11 @@ export default function UserProfileComponent() {
                           onChange={handleChange}
                           placeholder="Enter your current body fat percentage"
                         />
-                        <BootstrapButton onClick={() => {setUserText(Number(userText)), handleUpdate}}>
+                        <BootstrapButton
+                          onClick={() => {
+                            setUserText(Number(userText)), handleUpdate;
+                          }}
+                        >
                           Confirm
                         </BootstrapButton>
                       </>
