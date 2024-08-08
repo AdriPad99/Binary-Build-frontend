@@ -207,11 +207,13 @@ export default function UserProfileComponent() {
     setEditProfileIsOpen(!editProfileIsOpen);
   };
 
-  // Handle the inputs of the user to ensure nothing gets through
+  // Handle the inputs of the user to ensure correct field entries
   const handleUserInputs = (event) => {
     event.preventDefault();
     const ageTest = parseInt(userText);
     const targetWeightTest = parseInt(userText);
+    const weightTest = parseInt(userText);
+    const bFPTest = parseInt(userText);
     if (currButtonOpen === "age" && Number.isInteger(ageTest)) {
       setUserError(false);
       handleUpdate(event);
@@ -224,10 +226,19 @@ export default function UserProfileComponent() {
       handleUpdate(event);
     }
 
-    if (
-      currButtonOpen === "target_weight" &&
-      Number.isInteger(targetWeightTest)
-    ) {
+    if (currButtonOpen === "weight" && Number.isInteger(weightTest)) {
+      setUserError(false);
+      handleUpdate(event);
+      handleClick();
+      setUserText("");
+      refresh();
+    } else {
+      setUserError(true);
+      handleClick();
+      handleUpdate(event);
+    }
+
+    if (currButtonOpen === "target_weight" && Number.isInteger(targetWeightTest)) {
       setUserError(false);
       handleUpdate(event);
       handleClick();
@@ -235,6 +246,18 @@ export default function UserProfileComponent() {
       refresh();
     } else {
       setUserText(targetWeightTest);
+      setUserError(true);
+      handleClick();
+      handleUpdate(event);
+    }
+
+    if (currButtonOpen === "target_body_fat_percentage" && Number.isInteger(bFPTest)) {
+      setUserError(false);
+      handleUpdate(event);
+      handleClick();
+      setUserText("");
+      refresh();
+    } else {
       setUserError(true);
       handleClick();
       handleUpdate(event);
@@ -258,6 +281,8 @@ export default function UserProfileComponent() {
     );
     if (response.ok) {
       console.log(`Successfully updated profile!`);
+      setUserText('');
+      setUserText2('');
       refresh();
       handleClick();
     } else {
@@ -436,8 +461,6 @@ export default function UserProfileComponent() {
   const test = () => {
     console.log(userData);
     console.log(updateKey, userText);
-    // console.log(user);
-    // console.log("target weight: ", userData.target_weight);
   };
 
   return (
@@ -451,7 +474,7 @@ export default function UserProfileComponent() {
           <li>height: {userData.height}</li>
           <li>weight: {userData.weight} lbs</li>
           <li>target: {userData.target_weight} lbs</li>
-          <li>body fat percentage: {userData.target_body_fat_percentage}</li>
+          <li>body fat percentage: {userData.target_body_fat_percentage}%</li>
           <li>activity level: {userData.daily_activity_level}</li>
           <li>waist size: {userData.waist}</li>
         </ul>
@@ -672,12 +695,11 @@ export default function UserProfileComponent() {
                           type="text"
                           value={userText}
                           onChange={handleChange}
-                          placeholder="Enter your current body fat percentage"
+                          placeholder="Enter your target body fat percentage"
                         />
+                        {"\t"}
                         <BootstrapButton
-                          onClick={() => {
-                            setUserText(Number(userText)), handleUpdate;
-                          }}
+                          onClick={handleUpdate}
                         >
                           Confirm
                         </BootstrapButton>
@@ -687,7 +709,7 @@ export default function UserProfileComponent() {
                         <BootstrapButton
                           onClick={() => handleButtonToggle("bf%")}
                         >
-                          Change Body Fat Percentage
+                          Change Target Body Fat Percentage
                         </BootstrapButton>
                       </>
                     )}
@@ -695,14 +717,29 @@ export default function UserProfileComponent() {
 
                   {/* Daily Activity Level segment */}
                   <Form.Group>
-                    {editDailyActivityLevel ? (
+                  {editDailyActivityLevel ? (
                       <>
-                        <Form.Control
-                          type="text"
-                          value={userText}
-                          onChange={handleChange}
-                          placeholder="Select your current daily activity level"
-                        />
+                        <Select defaultValue={userText}>
+                          <Option
+                            onClick={() => setUserText("Not Active")}
+                            value={"Not Active"}
+                          >
+                            Not Active
+                          </Option>
+                          <Option
+                            onClick={() => setUserText("Active")}
+                            value={"Active"}
+                          >
+                            Active
+                          </Option>
+                          <Option
+                            onClick={() => setUserText("Very Active")}
+                            value={"Very Active"}
+                          >
+                            Very Active
+                          </Option>
+                        </Select>
+                        {"\t"}
                         <BootstrapButton onClick={handleUpdate}>
                           Confirm
                         </BootstrapButton>
