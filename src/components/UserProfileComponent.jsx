@@ -9,7 +9,6 @@ import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
 import CardOverflow from "@mui/joy/CardOverflow";
 import Typography from "@mui/joy/Typography";
-// import { styled } from "@mui/material/styles";
 import Snackbar from "@mui/material/Snackbar";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
@@ -196,9 +195,10 @@ export default function UserProfileComponent() {
       refresh();
       handleClick();
     } else {
+      setUserText("");
       setUserError(true);
       handleClick();
-      console.error("Failed to update profile:", response.statusText);
+      // console.error("Failed to update profile:", response.statusText);
     }
     setUpdatePage((updatePage += 1));
   };
@@ -218,12 +218,10 @@ export default function UserProfileComponent() {
       setUserError(false);
       handleUpdate(event);
       handleClick();
-      setUserText("");
       refresh();
     } else {
       setUserError(true);
       handleClick();
-      handleUpdate(event);
     }
 
     if (currButtonOpen === "weight" && Number.isInteger(weightTest)) {
@@ -238,7 +236,10 @@ export default function UserProfileComponent() {
       handleUpdate(event);
     }
 
-    if (currButtonOpen === "target_weight" && Number.isInteger(targetWeightTest)) {
+    if (
+      currButtonOpen === "target_weight" &&
+      Number.isInteger(targetWeightTest)
+    ) {
       setUserError(false);
       handleUpdate(event);
       handleClick();
@@ -251,7 +252,10 @@ export default function UserProfileComponent() {
       handleUpdate(event);
     }
 
-    if (currButtonOpen === "target_body_fat_percentage" && Number.isInteger(bFPTest)) {
+    if (
+      currButtonOpen === "target_body_fat_percentage" &&
+      Number.isInteger(bFPTest)
+    ) {
       setUserError(false);
       handleUpdate(event);
       handleClick();
@@ -266,29 +270,39 @@ export default function UserProfileComponent() {
 
   // controls the update settings for the height
   const handeHeightUpdate = async (event) => {
-    event.preventDefault();
-    const response = await fetch(
-      `https://capstone-db.onrender.com/signup/${user}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          [updateKey]: `${userText} ft ${userText2} in`,
-        }),
+    const feetCheck = parseInt(userText);
+    const inchesCheck = parseInt(userText2);
+
+    if (Number.isInteger(feetCheck) && Number.isInteger(inchesCheck)) {
+      event.preventDefault();
+      const response = await fetch(
+        `https://capstone-db.onrender.com/signup/${user}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            [updateKey]: `${userText} ft ${userText2} in`,
+          }),
+        }
+      );
+      if (response.ok) {
+        setUserError(false);
+        console.log(`Successfully updated profile!`);
+        setUserText("");
+        setUserText2("");
+        refresh();
+        handleClick();
+      } else {
+        setUserError(true);
+        handleClick();
       }
-    );
-    if (response.ok) {
-      console.log(`Successfully updated profile!`);
-      setUserText('');
-      setUserText2('');
-      refresh();
-      handleClick();
+      setUpdatePage((updatePage += 1));
     } else {
-      console.error("Failed to update profile:", response.statusText);
+      setUserError(true);
+      handleClick();
     }
-    setUpdatePage((updatePage += 1));
   };
 
   // Handle changes in form inputs for the height section and displays them on screen as they happen
@@ -698,9 +712,7 @@ export default function UserProfileComponent() {
                           placeholder="Enter your target body fat percentage"
                         />
                         {"\t"}
-                        <BootstrapButton
-                          onClick={handleUpdate}
-                        >
+                        <BootstrapButton onClick={handleUpdate}>
                           Confirm
                         </BootstrapButton>
                       </>
@@ -717,7 +729,7 @@ export default function UserProfileComponent() {
 
                   {/* Daily Activity Level segment */}
                   <Form.Group>
-                  {editDailyActivityLevel ? (
+                    {editDailyActivityLevel ? (
                       <>
                         <Select defaultValue={userText}>
                           <Option
@@ -765,6 +777,7 @@ export default function UserProfileComponent() {
                           onChange={handleChange}
                           placeholder="Enter your current waist size"
                         />
+                        {"\t"}
                         <BootstrapButton onClick={handleUpdate}>
                           Confirm
                         </BootstrapButton>
@@ -782,6 +795,8 @@ export default function UserProfileComponent() {
                 </Card>
               </Form>
             </div>
+
+            {/* changes the snackbar text depending on if the user makes an error */}
             {userError ? (
               <>
                 <div>
