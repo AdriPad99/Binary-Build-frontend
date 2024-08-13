@@ -70,6 +70,12 @@ export default function UserProfileComponent() {
   // controls the sent height
   let [userHeight, setUserHeight] = useState();
 
+  // confirms if the input field is empty
+  const [isInputFieldEmpty, setIsInputFieldEmpty] = useState(true);
+
+  // controlls the empty field message
+  const emptyFieldMessage = "Please enter something into the form field.";
+
   // controls the error message
   let errorMessage = `Error. Please check your ${currentButtonName} field and try again.`;
 
@@ -175,6 +181,7 @@ export default function UserProfileComponent() {
   // Handle form submission for updating a workout
   const handleUpdate = async (event) => {
     event.preventDefault();
+
     const response = await fetch(
       `https://capstone-db.onrender.com/signup/${user}`,
       {
@@ -195,7 +202,6 @@ export default function UserProfileComponent() {
       refresh();
       handleClick();
     } else {
-      setUserText("");
       setUserError(true);
       handleClick();
       // console.error("Failed to update profile:", response.statusText);
@@ -210,11 +216,26 @@ export default function UserProfileComponent() {
   // Handle the inputs of the user to ensure correct field entries
   const handleUserInputs = (event) => {
     event.preventDefault();
-    const ageTest = parseInt(userText);
+    const textIsNaN = isNaN(userText);
+    // checks for inappropriate NaN entries
+    if (textIsNaN) {
+      setIsInputFieldEmpty(false);
+      return handleClick();
+    }
+    // checks for empty inputs
+    else if (userText.length === 0) {
+      setIsInputFieldEmpty(true);
+      setUserError(true);
+      return handleClick();
+    } else {
+      setIsInputFieldEmpty(false);
+    }
+
+    // const ageTest = parseInt(userText);
     const targetWeightTest = parseInt(userText);
     const weightTest = parseInt(userText);
     const bFPTest = parseInt(userText);
-    if (currButtonOpen === "age" && Number.isInteger(ageTest)) {
+    if (currButtonOpen === "age" && Number.isInteger(userText)) {
       setUserError(false);
       handleUpdate(event);
       handleClick();
@@ -515,9 +536,9 @@ export default function UserProfileComponent() {
               Coding Temple program. Contact Me: {userData.email}
             </Typography>
             <hr />
-            {/* <BootstrapButton onClick={toggleEditProfileMenu}>
+            <BootstrapButton onClick={toggleEditProfileMenu}>
               Edit Profile
-            </BootstrapButton> */}
+            </BootstrapButton>
             <Box
               sx={{
                 display: "flex",
@@ -799,15 +820,34 @@ export default function UserProfileComponent() {
             {/* changes the snackbar text depending on if the user makes an error */}
             {userError ? (
               <>
-                <div>
-                  <Snackbar
-                    open={open}
-                    autoHideDuration={6000}
-                    onClose={handleClose}
-                    message={errorMessage}
-                    action={action}
-                  />
-                </div>
+                {/* if the user errored out and the input field is confirmed as empty */}
+                {isInputFieldEmpty ? (
+                  <>
+                    {/* inform of an empty field */}
+                    <div>
+                      <Snackbar
+                        open={open}
+                        autoHideDuration={6000}
+                        onClose={handleClose}
+                        message={emptyFieldMessage}
+                        action={action}
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {/* inform of an error in the field */}
+                    <div>
+                      <Snackbar
+                        open={open}
+                        autoHideDuration={6000}
+                        onClose={handleClose}
+                        message={errorMessage}
+                        action={action}
+                      />
+                    </div>
+                  </>
+                )}
               </>
             ) : (
               <>
