@@ -125,6 +125,7 @@ export default function SignupComponent() {
 
   return (
     <>
+    {/* test segment */}
     {/* <button onClick={() => console.log(userInfo.summary, userInfo.username, userInfo.email, userInfo.first_name, userInfo.last_name)}>test</button> */}
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
         <Alert
