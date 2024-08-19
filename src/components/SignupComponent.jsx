@@ -26,6 +26,8 @@ export default function SignupComponent() {
 
   const [errorText, setErrorText] = useState();
 
+  const [isUsernameCorrect, setIsUsernameCorrect] = useState();
+
   const defaultSummary = 'Hello! welcome to my profile!';
 
   //Snackbar information/////////////////////////
@@ -62,6 +64,16 @@ export default function SignupComponent() {
       [name]: value
     }));
   };
+
+  const handleUsername = () => {
+    if (userInfo['username'].length < 8){
+      setIsUsernameCorrect(false);
+      console.log('test')
+    }
+    else{
+      setIsUsernameCorrect(true);
+    }
+  }
 
   // Handle form submission
   const handleSubmit = async (event) => {
@@ -126,7 +138,7 @@ export default function SignupComponent() {
   return (
     <>
     {/* test segment  */}
-    {/* <button onClick={() => console.log(userInfo.summary, userInfo.username, userInfo.email, userInfo.first_name, userInfo.last_name)}>test</button> */}
+    <button onClick={() => console.log(userInfo.summary, userInfo.username, userInfo.email, userInfo.first_name, userInfo.last_name)}>test</button>
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
         <Alert
           onClose={handleClose}
@@ -156,8 +168,76 @@ export default function SignupComponent() {
               resize: 'horizontal',
             }}
           >
+            {/* this is the text at the top of the window */}
+            <Typography level="title-lg" startDecorator={<InfoOutlined />}>
+              Sign Up Binary Build
+            </Typography>
 
-            <h1>Temporarily Unavailable</h1>
+            {/* the divider between the above title and input boxes of the form */}
+            <Divider inset="none" />
+
+            {/* controls the positioning of the window contents */}
+            <CardContent
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2, minmax(80px, 1fr))',
+                gap: 1.5,
+              }}
+            >
+
+              {/* Username segment */}
+              <FormControl sx={{ gridColumn: '1/-1' }}>
+                <FormLabel>Username: </FormLabel>
+                {isUsernameCorrect ? (
+                <>
+                </>
+                ):(
+                  <>
+                  <div>
+                  <h6 style={{margin:0}}>Username must be 8 or more characters</h6>
+
+                  </div>
+                  
+                  </>
+                )}
+                <Input onChange={() => {handleChange(event); handleUsername()}} type='text' value={userInfo.username} name="username" placeholder="Enter Your username" />
+              </FormControl>
+
+              {/* email segment */}
+              <FormControl sx={{ gridColumn: '1/-1' }}>
+                <FormLabel>Email: </FormLabel>
+                <Input onChange={handleChange} type='text' value={userInfo.email} name="email" placeholder="Enter Your email" />
+              </FormControl>
+
+              {/* password segment */}
+              <FormControl sx={{ gridColumn: '1/-1' }}>
+                <FormLabel>Password: </FormLabel>
+                <Input onChange={handleChange} type='password' name='password' value={userInfo.password} placeholder="Enter your password" />
+              </FormControl>
+
+              {/* first name segment */}
+              <FormControl sx={{ gridColumn: '1/-1' }}>
+                <FormLabel>First Name: </FormLabel>
+                <Input onChange={handleChange} type='text' value={userInfo.first_name} name="first_name" placeholder="Enter Your first name" />
+              </FormControl>
+
+              {/* username segment */}
+              <FormControl sx={{ gridColumn: '1/-1' }}>
+                <FormLabel>Last Name: </FormLabel>
+                <Input onChange={handleChange} type='text' value={userInfo.last_name} name="last_name" placeholder="Enter Your last name" />
+              </FormControl>
+
+              {/* controls the positioning for the form button */}
+              <CardActions sx={{ gridColumn: '1/-1' }}>
+
+                {/* this is the button on the bottom of the window */}
+                <BootstrapButton type='submit' variant="contained" disableRipple>
+                  Sign-In
+                </BootstrapButton>
+              </CardActions>
+            </CardContent>
+
+            {/* <h1>Temporarily Unavailable</h1> */}
           </Card>
         </Form>
       </div>
