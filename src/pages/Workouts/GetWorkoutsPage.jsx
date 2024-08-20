@@ -10,24 +10,25 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 
 export default function GetWorkoutsPage() {
-  // useEffect(() => {
-  //   // fetches the workout endpoint to grab all the workouts
-  //   const getDBData = async () => {
-  //     // fetches the server api that has all the workouts
-  //     const res = await fetch("https://capstone-db.onrender.com/workouts");
-  //     if (res.ok) {
-  //       const data = await res.json();
-  //       setUserData(data);
-  //     }
-  //     // if not error out
-  //     else {
-  //       console.error("Couldn't get the workouts :(");
-  //       console.log(user);
-  //     }
-  //   };
+  useEffect(() => {
+    // fetches the workout endpoint to grab all the workouts
+    const getDBData = async () => {
+      // fetches the server api that has all the workouts
+      const res = await fetch("https://capstone-db.onrender.com/workouts");
+      if (res.ok) {
+        console.log(res)
+        const data = await res.json();
+        setUserData(data);
+      }
+      // if not error out
+      else {
+        console.error("Couldn't get the workouts :(");
+        console.log(user);
+      }
+    };
 
-  //   getDBData();
-  // }, []);
+    getDBData();
+  }, []);
 
   // Handle form submission for deleting a workout
   const handleDelete = async (id) => {
@@ -98,7 +99,7 @@ export default function GetWorkoutsPage() {
               <CircularProgress />
             </Box>
 
-            <h3>Loading Workouts. Please wait...</h3>
+            <h3 className="spinnerPadding">Loading Workouts. Please wait...</h3>
           </>
         )}
       </div>
