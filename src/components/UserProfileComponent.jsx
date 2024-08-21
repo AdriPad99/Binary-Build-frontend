@@ -32,6 +32,8 @@ export default function UserProfileComponent() {
   const [userText2, setUserText2] = useState("");
 
   //edit button(s) states///////////////////////
+  const [editSummary, setEditSummary] = useState(false);
+
   const [editAge, setEditAge] = useState(false);
 
   const [editGender, setEditGender] = useState(false);
@@ -132,6 +134,7 @@ export default function UserProfileComponent() {
     waist: "",
     hips: "",
     amnt_workouts_completed: "",
+    summary: ""
   });
 
   useEffect(() => {
@@ -165,6 +168,7 @@ export default function UserProfileComponent() {
             waist: data.waist || "",
             hips: data.hips || "",
             amnt_workouts_completed: data.amnt_workouts_completed || "",
+            summary: data.summary || "",
           });
         } else {
           console.error("Failed to fetch user data:", response.statusText);
@@ -176,14 +180,14 @@ export default function UserProfileComponent() {
     };
 
     getUserData();
-  }, [token, updatePage]); // Assuming token is correctly triggering useEffect when it changes
+  }, [token, updatePage, currButtonOpen]); // Assuming token is correctly triggering useEffect when it changes
 
   // Handle form submission for updating a workout
   const handleUpdate = async (event) => {
     event.preventDefault();
 
     const response = await fetch(
-      `https://capstone-db.onrender.com/signup/${user}`,
+      `https://capstone-db.onrender.com/signup/1`,
       {
         method: "PUT",
         headers: {
@@ -235,6 +239,17 @@ export default function UserProfileComponent() {
     const targetWeightTest = parseInt(userText);
     const weightTest = parseInt(userText);
     const bFPTest = parseInt(userText);
+
+    if (currButtonOpen === "summary") {
+      setUserError(false);
+      handleUpdate(event);
+      handleClick();
+      refresh();
+    } else {
+      setUserError(true);
+      handleClick();
+    }
+
     if (currButtonOpen === "age" && Number.isInteger(userText)) {
       setUserError(false);
       handleUpdate(event);
@@ -347,9 +362,27 @@ export default function UserProfileComponent() {
 
   const handleButtonToggle = (buttonName) => {
     switch (true) {
+
+      case buttonName === "summary":
+        setCurrentButtonName("summary");
+        setCurrButtonOpen("summary");
+        setEditSummary(true);
+        setEditAge(false);
+        setEditGender(false);
+        setEditHeight(false);
+        setEditWeight(false);
+        setEditTargetWeight(false);
+        setEditBodyFatPercentage(false);
+        setEditDailyActivityLevel(false);
+        setEditWaistMeasurement(false);
+        setUserText(userData.summary);
+        setUpdateKey("summary");
+        break;
+
       case buttonName === "age":
         setCurrentButtonName("age");
         setCurrButtonOpen("age");
+        setEditSummary(false);
         setEditAge(true);
         setEditGender(false);
         setEditHeight(false);
@@ -365,6 +398,7 @@ export default function UserProfileComponent() {
       case buttonName === "gender":
         setCurrentButtonName("gender");
         setCurrButtonOpen("gender");
+        setEditSummary(false);
         setEditAge(false);
         setEditGender(true);
         setEditHeight(false);
@@ -380,6 +414,7 @@ export default function UserProfileComponent() {
       case buttonName === "height":
         setCurrentButtonName("height");
         setCurrButtonOpen("height");
+        setEditSummary(false);
         setEditAge(false);
         setEditGender(false);
         setEditHeight(true);
@@ -395,6 +430,7 @@ export default function UserProfileComponent() {
       case buttonName === "weight":
         setCurrentButtonName("weight");
         setCurrButtonOpen("weight");
+        setEditSummary(false);
         setEditAge(false);
         setEditGender(false);
         setEditHeight(false);
@@ -410,6 +446,7 @@ export default function UserProfileComponent() {
       case buttonName === "tw":
         setCurrentButtonName("target weight");
         setCurrButtonOpen("tw");
+        setEditSummary(false);
         setEditAge(false);
         setEditGender(false);
         setEditHeight(false);
@@ -425,6 +462,7 @@ export default function UserProfileComponent() {
       case buttonName === "bf%":
         setCurrentButtonName("body fat percentage");
         setCurrButtonOpen("bf%");
+        setEditSummary(false);
         setEditAge(false);
         setEditGender(false);
         setEditHeight(false);
@@ -440,6 +478,7 @@ export default function UserProfileComponent() {
       case buttonName === "al":
         setCurrentButtonName("activity level");
         setCurrButtonOpen("al");
+        setEditSummary(false);
         setEditAge(false);
         setEditGender(false);
         setEditHeight(false);
@@ -455,6 +494,7 @@ export default function UserProfileComponent() {
       case buttonName === "wm":
         setCurrentButtonName("waist size");
         setCurrButtonOpen("wm");
+        setEditSummary(false);
         setEditAge(false);
         setEditGender(false);
         setEditHeight(false);
@@ -468,6 +508,7 @@ export default function UserProfileComponent() {
         break;
 
       default:
+        setEditSummary(false);
         setEditAge(false);
         setEditGender(false);
         setEditHeight(false);
@@ -512,6 +553,7 @@ export default function UserProfileComponent() {
           <li>body fat percentage: {userData.target_body_fat_percentage}%</li>
           <li>activity level: {userData.daily_activity_level}</li>
           <li>waist size: {userData.waist}</li>
+          <li>summary: {userData.summary}</li>
         </ul>
       </div> */}
 
@@ -532,8 +574,7 @@ export default function UserProfileComponent() {
               {userData.firstName} {userData.lastName} ({userData.username})
             </Typography>
             <Typography level="body-sm" sx={{ maxWidth: "24ch" }}>
-              Hello, this is my bio and I am a Student currently attending the
-              Coding Temple program. Contact Me: {userData.email}
+              {userData.summary}
             </Typography>
             <hr />
             <BootstrapButton onClick={toggleEditProfileMenu}>
@@ -593,6 +634,34 @@ export default function UserProfileComponent() {
                       </>
                     )}
                   </Form.Group>
+
+                  {/* Summary segment */}
+                  {/* <Form.Group>
+                    {editSummary ? (
+                      <>
+                        <Form.Control
+                          type="text"
+                          value={userText}
+                          onChange={handleChange}
+                          placeholder="Enter your summary"
+                        />
+                        {"\t"}
+                        <BootstrapButton
+                          onClick={(event) => handleUserInputs(event)}
+                        >
+                          Confirm
+                        </BootstrapButton>
+                      </>
+                    ) : (
+                      <>
+                        <BootstrapButton
+                          onClick={() => handleButtonToggle("summary")}
+                        >
+                          Change Summary
+                        </BootstrapButton>
+                      </>
+                    )}
+                  </Form.Group> */}
 
                   {/* Gender Segment */}
                   <Form.Group>
