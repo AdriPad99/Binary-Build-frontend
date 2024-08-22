@@ -341,6 +341,33 @@ export default function UserProfileComponent() {
     }
   };
 
+  // controls the update settings for the summary
+  const handleSummaryUpdate = async (event) => {
+    event.preventDefault();
+    const response = await fetch(
+      `https://capstone-db.onrender.com/signup/${user}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          "summary" : userText,
+        }),
+      }
+    );
+    if (response.ok) {
+      setUserError(false);
+      console.log(`Successfully updated profile!`);
+      refresh();
+      handleClick();
+    } else {
+      setUserError(true);
+      handleClick();
+    }
+    setUpdatePage((updatePage += 1));
+  };
+
   // Handle changes in form inputs for the height section and displays them on screen as they happen
   const handleHeightChange = (event) => {
     if (userEditingHeight === true) {
@@ -636,7 +663,7 @@ export default function UserProfileComponent() {
                   </Form.Group>
 
                   {/* Summary segment */}
-                  {/* <Form.Group>
+                  <Form.Group>
                     {editSummary ? (
                       <>
                         <Form.Control
@@ -647,7 +674,7 @@ export default function UserProfileComponent() {
                         />
                         {"\t"}
                         <BootstrapButton
-                          onClick={(event) => handleUserInputs(event)}
+                          onClick={(event) => handleSummaryUpdate(event)}
                         >
                           Confirm
                         </BootstrapButton>
@@ -661,7 +688,7 @@ export default function UserProfileComponent() {
                         </BootstrapButton>
                       </>
                     )}
-                  </Form.Group> */}
+                  </Form.Group>
 
                   {/* Gender Segment */}
                   <Form.Group>

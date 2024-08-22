@@ -16,7 +16,7 @@ export default function GetWorkoutsPage() {
       // fetches the server api that has all the workouts
       const res = await fetch("https://capstone-db.onrender.com/workouts");
       if (res.ok) {
-        console.log(res)
+        // console.log(res)
         const data = await res.json();
         setUserData(data);
       }

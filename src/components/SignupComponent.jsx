@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
 import { useNavigate } from 'react-router-dom';
 
@@ -26,7 +26,7 @@ export default function SignupComponent() {
 
   const [errorText, setErrorText] = useState();
 
-  const [isUsernameCorrect, setIsUsernameCorrect] = useState();
+  const [isUsernameIncorrect, setIsUsernameIncorrect] = useState(false);
 
   const defaultSummary = 'Hello! welcome to my profile!';
 
@@ -65,15 +65,15 @@ export default function SignupComponent() {
     }));
   };
 
-  const handleUsername = () => {
-    if (userInfo['username'].length < 8){
-      setIsUsernameCorrect(false);
-      console.log('test')
-    }
-    else{
-      setIsUsernameCorrect(true);
-    }
-  }
+  // useEffect(() =>{
+  //   if (userInfo['username'] > 8){
+  //     setIsUsernameIncorrect(false);
+  //   }
+  //   else if (userInfo['username'].length < 8){
+  //     setIsUsernameIncorrect(true);
+  //   }
+  //   console.log('test')
+  // },[userInfo])
 
   // Handle form submission
   const handleSubmit = async (event) => {
@@ -137,6 +137,7 @@ export default function SignupComponent() {
 
   return (
     <>
+    {/* Is the username correct?: {`${isUsernameIncorrect}`} */}
     {/* test segment  */}
     {/* <button onClick={() => console.log(userInfo.summary, userInfo.username, userInfo.email, userInfo.first_name, userInfo.last_name)}>test</button> */}
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
@@ -188,19 +189,19 @@ export default function SignupComponent() {
               {/* Username segment */}
               <FormControl sx={{ gridColumn: '1/-1' }}>
                 <FormLabel>Username: </FormLabel>
-                {isUsernameCorrect ? (
+                {isUsernameIncorrect && userInfo.username.length > 0 ? (
                 <>
+                  {/* <div>
+                  <h6 style={{margin:0}}>Username must be 8 or more characters</h6>
+
+                  </div> */}
                 </>
                 ):(
                   <>
-                  <div>
-                  <h6 style={{margin:0}}>Username must be 8 or more characters</h6>
-
-                  </div>
-                  
+                  {/* test */}
                   </>
                 )}
-                <Input onChange={() => {handleChange(event); handleUsername()}} type='text' value={userInfo.username} name="username" placeholder="Enter Your username" />
+                <Input onChange={() => { handleChange(event);}} type='text' value={userInfo.username} name="username" placeholder="Enter Your username" />
               </FormControl>
 
               {/* email segment */}
