@@ -635,7 +635,7 @@ export default function UserProfileComponent() {
                 >
                   {/* <Form.Label></Form.Label> */}
                   {/* Age segment */}
-                  <Form.Group>
+                  {/* <Form.Group>
                     {editAge ? (
                       <>
                         <Form.Control
@@ -660,7 +660,7 @@ export default function UserProfileComponent() {
                         </BootstrapButton>
                       </>
                     )}
-                  </Form.Group>
+                  </Form.Group> */}
 
                   {/* Summary segment */}
                   <Form.Group>
