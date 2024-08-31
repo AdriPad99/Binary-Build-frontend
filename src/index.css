@@ -26,7 +26,6 @@ body {
   overflow-x: scroll;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
-
   padding: 4px;
   width: auto;
   /* overflow: auto; */
