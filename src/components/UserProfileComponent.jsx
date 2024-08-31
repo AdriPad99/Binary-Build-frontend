@@ -663,7 +663,7 @@ export default function UserProfileComponent() {
                   </Form.Group>
 
                   {/* Summary segment */}
-                  {/* <Form.Group>
+                  <Form.Group>
                     {editSummary ? (
                       <>
                         <Form.Control
@@ -688,7 +688,7 @@ export default function UserProfileComponent() {
                         </BootstrapButton>
                       </>
                     )}
-                  </Form.Group> */}
+                  </Form.Group>
 
                   {/* Gender Segment */}
                   <Form.Group>
