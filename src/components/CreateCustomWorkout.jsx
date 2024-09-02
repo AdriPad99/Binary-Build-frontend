@@ -175,6 +175,11 @@ export default function CreateCustomWorkout() {
     }));
   };
 
+  // function in charge of the progress tracker
+  const progTracker = () => {
+    // add decision functionality here to let user pick their progression
+  }
+
   return (
     <>
       <br />
