@@ -180,6 +180,8 @@ export default function CreateCustomWorkout() {
     // add decision functionality here to let user pick their progression
 
     // add a metrics / timestamp for the users here
+
+    // add organized data for the user to view here
   }
 
   return (
