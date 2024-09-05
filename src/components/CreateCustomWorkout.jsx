@@ -182,6 +182,8 @@ export default function CreateCustomWorkout() {
     // add a metrics / timestamp for the users here
 
     // add organized data for the user to view here
+
+    // add the visual choice selecter here for the user to decide
   }
 
   return (
