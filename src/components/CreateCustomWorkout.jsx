@@ -184,6 +184,9 @@ export default function CreateCustomWorkout() {
     // add organized data for the user to view here
 
     // add the visual choice selecter here for the user to decide
+
+    // add the UI here for the users to view and interact with
+    
   }
 
   return (
