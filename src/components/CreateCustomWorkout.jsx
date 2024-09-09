@@ -186,7 +186,12 @@ export default function CreateCustomWorkout() {
     // add the visual choice selecter here for the user to decide
 
     // add the UI here for the users to view and interact with
-    
+
+  }
+
+  // function in charge for the workout history log
+  const wktHistory = () => {
+    // add the log structure here for the workout history log to keep track of workout structure
   }
 
   return (
