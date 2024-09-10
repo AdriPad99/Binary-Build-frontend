@@ -192,6 +192,8 @@ export default function CreateCustomWorkout() {
   // function in charge for the workout history log
   const wktHistory = () => {
     // add the log structure here for the workout history log to keep track of workout structure
+
+    // add the time organization here for the users to view
   }
 
   return (
