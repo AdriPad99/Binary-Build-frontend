@@ -194,6 +194,8 @@ export default function CreateCustomWorkout() {
     // add the log structure here for the workout history log to keep track of workout structure
 
     // add the time organization here for the users to view
+
+    // add the UI implementatioon here for user to view and interact with
   }
 
   return (
