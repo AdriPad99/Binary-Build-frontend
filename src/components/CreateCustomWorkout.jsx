@@ -198,6 +198,9 @@ export default function CreateCustomWorkout() {
     // add the UI implementatioon here for user to view and interact with
 
     // add a filter/search feature here for user to look for past workouts
+
+    // add a workout breakdown here for user to view workout stats
+
   }
 
   return (
