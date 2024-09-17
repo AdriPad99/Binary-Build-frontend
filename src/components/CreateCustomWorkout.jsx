@@ -206,6 +206,8 @@ export default function CreateCustomWorkout() {
   // function in charge of the timer and rest countdown
   const rest = () => {
     // add the timer trigger here and determine what will trigger it
+
+    // add a duration configuation option here to let user alter the timer
   }
 
   return (
