@@ -210,6 +210,8 @@ export default function CreateCustomWorkout() {
     // add a duration configuation option here to let user alter the timer
 
     // add the logic for the countdown here
+
+    // add the timer UI for the user to look at and interact with
   }
 
   return (
