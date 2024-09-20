@@ -212,6 +212,9 @@ export default function CreateCustomWorkout() {
     // add the logic for the countdown here
 
     // add the timer UI for the user to look at and interact with
+
+    // add the notifications here for the user to recieve
+    
   }
 
   return (
