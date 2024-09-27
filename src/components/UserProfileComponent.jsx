@@ -134,7 +134,14 @@ export default function UserProfileComponent() {
     waist: "",
     hips: "",
     amnt_workouts_completed: "",
-    summary: ""
+    summary: "",
+    calories: "",
+    weight_loss: "",
+    max_weight_lifted: "",
+    fastest_mile: "",
+    total_workout_time: "",
+    total_calories_burned: "",
+    total_workouts_completed: "",
   });
 
   useEffect(() => {
@@ -169,7 +176,22 @@ export default function UserProfileComponent() {
             hips: data.hips || "",
             amnt_workouts_completed: data.amnt_workouts_completed || "",
             summary: data.summary || "",
+            calories: data.calories || "",
+            weight_loss: data.weight_loss || "",
+            max_weight_lifted: data.max_weight_lifted || "",
+            fastest_mile: data.fastest_mile || "",
+            total_workout_time: data.total_workout_time || "",
+            total_calories_burned: data.total_calories_burned || "",
+            total_workouts_completed: data.total_workouts_completed || "",
           });
+
+              // calories = fields.Int(required=False)
+  // weight_loss = fields.Int(required=False)
+  // max_weight_lifted = fields.Int(required=False)
+  // fastest_mile = fields.Int(required=False)
+  // total_workout_time = fields.Int(required=False)
+  // total_calories_burned = fields.Int(required=False)
+  // total_workouts_completed = fields.Int(required=False)
         } else {
           console.error("Failed to fetch user data:", response.statusText);
           // Handle errors or set default values here
