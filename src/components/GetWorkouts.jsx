@@ -28,24 +28,23 @@ export default function GetWorkouts() {
   const [workoutId, setWorkoutId] = useState();
 
   useEffect(() => {
-      // fetches the workout endpoint to grab all the workouts
-      const getDBData = async () => {
-
-          // fetches the server api that has all the workouts
-          const res = await fetch('https://capstone-db.onrender.com/workouts')
-          if (res.ok) {
-              const data = await res.json();
-              setUserData(data)
-          }
-          // if not error out
-          else {
-              console.error("Couldn't get the workouts :(")
-              console.log(user)
-          }
+    // fetches the workout endpoint to grab all the workouts
+    const getDBData = async () => {
+      // fetches the server api that has all the workouts
+      const res = await fetch("https://capstone-db.onrender.com/workouts");
+      if (res.ok) {
+        const data = await res.json();
+        setUserData(data);
       }
+      // if not error out
+      else {
+        console.error("Couldn't get the workouts :(");
+        console.log(user);
+      }
+    };
 
-      getDBData();
-  }, [counter]) // anytime the counter is interacted with this will get ran again
+    getDBData();
+  }, [counter]); // anytime the counter is interacted with this will get ran again
 
   // Handle form submission for deleting a workout
   const handleDelete = async (id) => {
@@ -98,7 +97,6 @@ export default function GetWorkouts() {
 
   return (
     <>
-    
       {/* controls the workout sub menu on the bottom of the page */}
       <Dropdown onOpenChange={toggleNewWorkoutBox}>
         {/* if the box is considered as open, switch the text of the dropdown and display all the workouts OR
@@ -120,6 +118,9 @@ export default function GetWorkouts() {
                         variant="outlined"
                         color="neutral"
                       >
+                        {/* <div className="deleteBtn">
+                          <button className="deleteBtn">Delete workout</button>
+                        </div> */}
                         Workout Id: {user.workout_id} <br />
                         Day: {user.day} <br />
                         Equipment: {user.equipment}
@@ -131,6 +132,19 @@ export default function GetWorkouts() {
                         <br />
                         Workout variation: {user.workout_variation}
                         <br />
+                        {/* button to confirm workout */}
+                        {/* <BootstrapButton
+                          onClick={() => {
+                            setWorkoutId(user.workout_id),
+                              setOpen(true),
+                              handleDelete(user.workout_id);
+                          }}
+                          variant="contained"
+                          disableRipple
+                        >
+                          Complete Workout
+                        </BootstrapButton> */}
+                        {/* button for deleting a workout */}
                         <BootstrapButton
                           onClick={() => {
                             setWorkoutId(user.workout_id),
@@ -165,7 +179,7 @@ export default function GetWorkouts() {
                   <Box sx={{ display: "flex" }}>
                     <CircularProgress />
                   </Box>
-                  
+
                   <h3>Loading Workouts. Please wait...</h3>
                 </>
               )}
@@ -179,7 +193,6 @@ export default function GetWorkouts() {
           </>
         )}
       </Dropdown>
-
     </>
   );
 }

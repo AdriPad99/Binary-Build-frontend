@@ -20,7 +20,7 @@ body {
 .parent-container {
   display: flex;
   width: 500px;
-  height: 350px;
+  height: 400px;
   white-space: nowrap;
   position: relative;
   overflow-x: scroll;
@@ -119,6 +119,10 @@ body {
   padding-left: 20px;
 }
 
-.spinnerPadding{
+.spinnerPadding {
   padding-left: 20px;
+}
+
+.deleteBtn {
+  text-align: right;
 }
