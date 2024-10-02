@@ -8,6 +8,8 @@ export const AuthProvider = ({ children }) => {
 
     const [counter, setCounter] = useState(() => parseInt(localStorage.getItem('counter'), 10) || 0)
 
+    const [confirmDelete, setConfirmDelete] = useState(() => () => localStorage.getItem('deleteWO'))
+
     // logs the user in by setting a token with login
     const login = (userData) => {
         setToken(userData); //sets the access token to userdata
@@ -28,6 +30,11 @@ export const AuthProvider = ({ children }) => {
         });
     }
 
+    const deleteWO = (decision) => {
+        setConfirmDelete(decision); // sets the decision of wether or not the user want to delete
+        localStorage.setItem('deleteWO', decision); // save user decision to localStorage
+    }
+
 
     // syncs the token if it changes
     useEffect(() => {
@@ -36,7 +43,7 @@ export const AuthProvider = ({ children }) => {
 
     return (
         // now set whats avaialbe through auth provider
-        <AuthContext.Provider value={{ token, login, logout, counter, refresh }}>
+        <AuthContext.Provider value={{ token, login, logout, counter, refresh, deleteWO, confirmDelete }}>
             {children}
         </AuthContext.Provider>
     );

@@ -148,14 +148,15 @@ export default function GetWorkouts() {
                         <BootstrapButton
                           onClick={() => {
                             setWorkoutId(user.workout_id),
-                              setOpen(true),
-                              handleDelete(user.workout_id);
+                            setOpen(true),
+                            handleDelete(user.workout_id);
                           }}
                           variant="contained"
                           disableRipple
                         >
                           Delete Workout
                         </BootstrapButton>
+                        {/* snackbar notification */}
                         <Snackbar
                           open={open}
                           autoHideDuration={6000}

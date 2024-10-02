@@ -125,4 +125,5 @@ body {
 
 .deleteBtn {
   text-align: right;
+  border: none;
 }
