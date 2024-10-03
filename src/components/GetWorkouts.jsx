@@ -17,15 +17,23 @@ import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
+
 export default function GetWorkouts() {
   // grabs token from context
-  const { counter } = useContext(AuthContext);
+  const { counter, deleteWO, confirmDelete } = useContext(AuthContext);
 
   // set state for whether or not the box is open
   const [isOpen, setIsOpen] = useState(false);
 
   // keeps track of the workout ID that was selected
   const [workoutId, setWorkoutId] = useState();
+
+  // State/Functions for the modal
+  const [openModal, setOpenModal] = React.useState(false);
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
 
   useEffect(() => {
     // fetches the workout endpoint to grab all the workouts
@@ -97,6 +105,13 @@ export default function GetWorkouts() {
 
   return (
     <>
+      {/* <button
+        onClick={() => {
+          deleteWO(null), console.log(confirmDelete);
+        }}
+      >
+        Confirm Delete?: {confirmDelete}
+      </button> */}
       {/* controls the workout sub menu on the bottom of the page */}
       <Dropdown onOpenChange={toggleNewWorkoutBox}>
         {/* if the box is considered as open, switch the text of the dropdown and display all the workouts OR
@@ -118,8 +133,51 @@ export default function GetWorkouts() {
                         variant="outlined"
                         color="neutral"
                       >
+                        {/* delete workout button */}
                         {/* <div className="deleteBtn">
-                          <button className="deleteBtn">Delete workout</button>
+                          <button
+                            className="deleteBtn"
+                            onClick={handleOpenModal}
+                          >
+                            Delete workout
+                          </button>
+                          <Modal
+                            open={openModal}
+                            onClose={handleCloseModal}
+                            aria-labelledby="modal-modal-title"
+                            aria-describedby="modal-modal-description"
+                          >
+                            <Box sx={style}>
+                              <Typography
+                                id="modal-modal-title"
+                                variant="h6"
+                                component="h2"
+                              >
+                                Are you sure you want to delete workout{" "}
+                                {user.workout_id}?
+                              </Typography>
+                              <BootstrapButton
+                                onClick={() => {
+                                  setWorkoutId(user.workout_id),
+                                  setOpen(true),
+                                  handleDelete(user.workout_id);
+                                }}
+                                variant="contained"
+                                disableRipple
+                              >
+                                Delete Workout
+                              </BootstrapButton>
+                              <BootstrapButton
+                                onClick={() => {
+                                  handleCloseModal()
+                                }}
+                                variant="contained"
+                                disableRipple
+                              >
+                                Cancel
+                              </BootstrapButton>
+                            </Box>
+                          </Modal>
                         </div> */}
                         Workout Id: {user.workout_id} <br />
                         Day: {user.day} <br />
@@ -148,8 +206,8 @@ export default function GetWorkouts() {
                         <BootstrapButton
                           onClick={() => {
                             setWorkoutId(user.workout_id),
-                            setOpen(true),
-                            handleDelete(user.workout_id);
+                              setOpen(true),
+                              handleDelete(user.workout_id);
                           }}
                           variant="contained"
                           disableRipple
@@ -344,3 +402,16 @@ const BootstrapButton = styled(Button)({
     boxShadow: "0 0 0 0.2rem rgba(0,123,255,.5)",
   },
 });
+
+// Styling for the modal
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
