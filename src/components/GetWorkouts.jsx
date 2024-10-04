@@ -141,6 +141,7 @@ export default function GetWorkouts() {
                           >
                             Delete workout
                           </button>
+                        </div>
                           <Modal
                             open={openModal}
                             onClose={handleCloseModal}
@@ -153,32 +154,34 @@ export default function GetWorkouts() {
                                 variant="h6"
                                 component="h2"
                               >
-                                Are you sure you want to delete workout{" "}
-                                {user.workout_id}?
+                                Are you sure you want to delete workout {user.workout_id}?
                               </Typography>
-                              <BootstrapButton
-                                onClick={() => {
-                                  setWorkoutId(user.workout_id),
-                                  setOpen(true),
-                                  handleDelete(user.workout_id);
-                                }}
-                                variant="contained"
-                                disableRipple
-                              >
-                                Delete Workout
-                              </BootstrapButton>
-                              <BootstrapButton
-                                onClick={() => {
-                                  handleCloseModal()
-                                }}
-                                variant="contained"
-                                disableRipple
-                              >
-                                Cancel
-                              </BootstrapButton>
+                              <div style={{display: 'flex', gap: '170px'}}>
+                                <BootstrapButton
+                                  onClick={() => {
+                                    setWorkoutId(user.workout_id),
+                                      setOpen(true),
+                                      handleDelete(user.workout_id);
+                                      handleCloseModal();
+                                  }}
+                                  variant="contained"
+                                  disableRipple
+                                >
+                                  Delete Workout
+                                </BootstrapButton>
+                                <BootstrapButton
+                                  onClick={() => {
+                                    handleCloseModal();
+                                    console.log(user.workout_id)
+                                  }}
+                                  variant="contained"
+                                  disableRipple
+                                >
+                                  Cancel
+                                </BootstrapButton>
+                              </div>
                             </Box>
-                          </Modal>
-                        </div> */}
+                          </Modal> */}
                         Workout Id: {user.workout_id} <br />
                         Day: {user.day} <br />
                         Equipment: {user.equipment}
