@@ -35,6 +35,9 @@ export default function GetWorkouts() {
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
 
+  // state for the calorie/time menu being open
+  const [completeMenuOpen, setCompleteMenuOpen] = useState(false);
+
   useEffect(() => {
     // fetches the workout endpoint to grab all the workouts
     const getDBData = async () => {
@@ -103,15 +106,12 @@ export default function GetWorkouts() {
   };
   ///////////////////////////////////////////////////
 
+  // const toggleCompleteMenu = () => {
+  //   setCompleteMenuOpen(!completeMenuOpen);
+  // }
+
   return (
     <>
-      {/* <button
-        onClick={() => {
-          deleteWO(null), console.log(confirmDelete);
-        }}
-      >
-        Confirm Delete?: {confirmDelete}
-      </button> */}
       {/* controls the workout sub menu on the bottom of the page */}
       <Dropdown onOpenChange={toggleNewWorkoutBox}>
         {/* if the box is considered as open, switch the text of the dropdown and display all the workouts OR
@@ -137,7 +137,7 @@ export default function GetWorkouts() {
                         {/* <div className="deleteBtn">
                           <button
                             className="deleteBtn"
-                            onClick={handleOpenModal}
+                            onClick={() => {setWorkoutId(user.workout_id), handleOpenModal()}}
                           >
                             Delete workout
                           </button>
@@ -154,14 +154,13 @@ export default function GetWorkouts() {
                                 variant="h6"
                                 component="h2"
                               >
-                                Are you sure you want to delete workout {user.workout_id}?
+                                Are you sure you want to delete workout {workoutId}?
                               </Typography>
                               <div style={{display: 'flex', gap: '170px'}}>
                                 <BootstrapButton
                                   onClick={() => {
-                                    setWorkoutId(user.workout_id),
                                       setOpen(true),
-                                      handleDelete(user.workout_id);
+                                      handleDelete(workoutId);
                                       handleCloseModal();
                                   }}
                                   variant="contained"
@@ -172,7 +171,6 @@ export default function GetWorkouts() {
                                 <BootstrapButton
                                   onClick={() => {
                                     handleCloseModal();
-                                    console.log(user.workout_id)
                                   }}
                                   variant="contained"
                                   disableRipple
@@ -196,15 +194,13 @@ export default function GetWorkouts() {
                         {/* button to confirm workout */}
                         {/* <BootstrapButton
                           onClick={() => {
-                            setWorkoutId(user.workout_id),
-                              setOpen(true),
-                              handleDelete(user.workout_id);
+                            
                           }}
                           variant="contained"
                           disableRipple
                         >
                           Complete Workout
-                        </BootstrapButton> */}
+                        </BootstrapButton>  */}
                         {/* button for deleting a workout */}
                         <BootstrapButton
                           onClick={() => {
@@ -217,7 +213,7 @@ export default function GetWorkouts() {
                         >
                           Delete Workout
                         </BootstrapButton>
-                        {/* snackbar notification */}
+                        {/* snackbar notification*/}
                         <Snackbar
                           open={open}
                           autoHideDuration={6000}
