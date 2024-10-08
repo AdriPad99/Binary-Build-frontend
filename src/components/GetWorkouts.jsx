@@ -106,9 +106,9 @@ export default function GetWorkouts() {
   };
   ///////////////////////////////////////////////////
 
-  // const toggleCompleteMenu = () => {
-  //   setCompleteMenuOpen(!completeMenuOpen);
-  // }
+  const toggleCompleteMenu = () => {
+    setCompleteMenuOpen(!completeMenuOpen);
+  };
 
   return (
     <>
@@ -137,49 +137,53 @@ export default function GetWorkouts() {
                         {/* <div className="deleteBtn">
                           <button
                             className="deleteBtn"
-                            onClick={() => {setWorkoutId(user.workout_id), handleOpenModal()}}
+                            onClick={() => {
+                              setWorkoutId(user.workout_id), handleOpenModal();
+                            }}
                           >
                             Delete workout
                           </button>
-                        </div>
-                          <Modal
-                            open={openModal}
-                            onClose={handleCloseModal}
-                            aria-labelledby="modal-modal-title"
-                            aria-describedby="modal-modal-description"
-                          >
-                            <Box sx={style}>
-                              <Typography
-                                id="modal-modal-title"
-                                variant="h6"
-                                component="h2"
+                        </div> */}
+                        {/* Contents of the Modal */}
+                        <Modal
+                          open={openModal}
+                          onClose={handleCloseModal}
+                          aria-labelledby="modal-modal-title"
+                          aria-describedby="modal-modal-description"
+                        >
+                          <Box sx={style}>
+                            <Typography
+                              id="modal-modal-title"
+                              variant="h6"
+                              component="h2"
+                            ></Typography>
+                            <div style={{ display: "flex", gap: "170px" }}>
+                              {/* shows different modal depending on whether delete or complete was selected */}
+                              {/* modal logic */}
+                              Are you sure you want to delete workout{" "}
+                              {workoutId}?
+                              <BootstrapButton
+                                onClick={() => {
+                                  setOpen(true), handleDelete(workoutId);
+                                  handleCloseModal();
+                                }}
+                                variant="contained"
+                                disableRipple
                               >
-                                Are you sure you want to delete workout {workoutId}?
-                              </Typography>
-                              <div style={{display: 'flex', gap: '170px'}}>
-                                <BootstrapButton
-                                  onClick={() => {
-                                      setOpen(true),
-                                      handleDelete(workoutId);
-                                      handleCloseModal();
-                                  }}
-                                  variant="contained"
-                                  disableRipple
-                                >
-                                  Delete Workout
-                                </BootstrapButton>
-                                <BootstrapButton
-                                  onClick={() => {
-                                    handleCloseModal();
-                                  }}
-                                  variant="contained"
-                                  disableRipple
-                                >
-                                  Cancel
-                                </BootstrapButton>
-                              </div>
-                            </Box>
-                          </Modal> */}
+                                Delete Workout
+                              </BootstrapButton>
+                              <BootstrapButton
+                                onClick={() => {
+                                  handleCloseModal();
+                                }}
+                                variant="contained"
+                                disableRipple
+                              >
+                                Cancel
+                              </BootstrapButton>
+                            </div>
+                          </Box>
+                        </Modal>
                         Workout Id: {user.workout_id} <br />
                         Day: {user.day} <br />
                         Equipment: {user.equipment}
@@ -193,14 +197,12 @@ export default function GetWorkouts() {
                         <br />
                         {/* button to confirm workout */}
                         {/* <BootstrapButton
-                          onClick={() => {
-                            
-                          }}
+                          onClick={() => {}}
                           variant="contained"
                           disableRipple
                         >
                           Complete Workout
-                        </BootstrapButton>  */}
+                        </BootstrapButton> */}
                         {/* button for deleting a workout */}
                         <BootstrapButton
                           onClick={() => {
