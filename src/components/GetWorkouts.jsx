@@ -20,6 +20,8 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 
+import { Form } from "react-bootstrap";
+
 export default function GetWorkouts() {
   // grabs token from context
   const { counter, deleteWO, confirmDelete } = useContext(AuthContext);
@@ -37,6 +39,10 @@ export default function GetWorkouts() {
 
   // state for the calorie/time menu being open
   const [completeMenuOpen, setCompleteMenuOpen] = useState(false);
+
+  // state for the calories and time prompted from the user
+  const [calories, setCalories] = useState(0);
+  const [time, setTime] = useState(0);
 
   useEffect(() => {
     // fetches the workout endpoint to grab all the workouts
@@ -110,6 +116,16 @@ export default function GetWorkouts() {
     setCompleteMenuOpen(!completeMenuOpen);
   };
 
+   // Handle changes in calorie form
+   const handleCalorieChange = (event) => {
+    setCalories(event.target.value);
+  };
+
+   // Handle changes in Time form
+   const handleTimeChange = (event) => {
+    setT(event.target.value);
+  };
+
   return (
     <>
       {/* controls the workout sub menu on the bottom of the page */}
@@ -160,27 +176,9 @@ export default function GetWorkouts() {
                             <div style={{ display: "flex", gap: "170px" }}>
                               {/* shows different modal depending on whether delete or complete was selected */}
                               {/* modal logic */}
-                              Are you sure you want to delete workout{" "}
-                              {workoutId}?
-                              <BootstrapButton
-                                onClick={() => {
-                                  setOpen(true), handleDelete(workoutId);
-                                  handleCloseModal();
-                                }}
-                                variant="contained"
-                                disableRipple
-                              >
-                                Delete Workout
-                              </BootstrapButton>
-                              <BootstrapButton
-                                onClick={() => {
-                                  handleCloseModal();
-                                }}
-                                variant="contained"
-                                disableRipple
-                              >
-                                Cancel
-                              </BootstrapButton>
+
+                              
+
                             </div>
                           </Box>
                         </Modal>
@@ -197,7 +195,7 @@ export default function GetWorkouts() {
                         <br />
                         {/* button to confirm workout */}
                         {/* <BootstrapButton
-                          onClick={() => {}}
+                          onClick={() => {handleOpenModal(), toggleCompleteMenu()}}
                           variant="contained"
                           disableRipple
                         >
