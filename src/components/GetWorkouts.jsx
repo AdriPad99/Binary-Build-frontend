@@ -41,8 +41,8 @@ export default function GetWorkouts() {
   const [completeMenuOpen, setCompleteMenuOpen] = useState(false);
 
   // state for the calories and time prompted from the user
-  const [calories, setCalories] = useState(0);
-  const [time, setTime] = useState(0);
+  const [calories, setCalories] = useState();
+  const [time, setTime] = useState();
 
   useEffect(() => {
     // fetches the workout endpoint to grab all the workouts
@@ -116,13 +116,13 @@ export default function GetWorkouts() {
     setCompleteMenuOpen(!completeMenuOpen);
   };
 
-   // Handle changes in calorie form
-   const handleCalorieChange = (event) => {
+  // Handle changes in calorie form
+  const handleCalorieChange = (event) => {
     setCalories(event.target.value);
   };
 
-   // Handle changes in Time form
-   const handleTimeChange = (event) => {
+  // Handle changes in Time form
+  const handleTimeChange = (event) => {
     setT(event.target.value);
   };
 
@@ -163,7 +163,9 @@ export default function GetWorkouts() {
                         {/* Contents of the Modal */}
                         <Modal
                           open={openModal}
-                          onClose={handleCloseModal}
+                          onClose={() => {
+                            handleCloseModal(), setCompleteMenuOpen(false);
+                          }}
                           aria-labelledby="modal-modal-title"
                           aria-describedby="modal-modal-description"
                         >
@@ -173,12 +175,93 @@ export default function GetWorkouts() {
                               variant="h6"
                               component="h2"
                             ></Typography>
-                            <div style={{ display: "flex", gap: "170px" }}>
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                gap: "10px",
+                              }}
+                            >
                               {/* shows different modal depending on whether delete or complete was selected */}
                               {/* modal logic */}
 
-                              
-
+                              {completeMenuOpen ? (
+                                <>
+                                  {/* <Form>
+                                    How many Calories Burned?{"\t"}
+                                    <Form.Control
+                                      type="text"
+                                      value={calories}
+                                      onChange={handleCalorieChange}
+                                      placeholder="Calories Burned"
+                                    />
+                                    <br />
+                                    <br />
+                                    How much time elapsed?{"\t"}
+                                    <Form.Control
+                                      type="text"
+                                      value={time}
+                                      onChange={handleTimeChange}
+                                      placeholder="Time Elapsed"
+                                    />
+                                  </Form>
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      flexDirection: "row",
+                                      gap: "10px",
+                                      justifyContent: "center",
+                                    }}
+                                  >
+                                    <BootstrapButton
+                                      variant="contained"
+                                      disableRipple
+                                    >
+                                      Confirm
+                                    </BootstrapButton>
+                                    <BootstrapButton
+                                      variant="contained"
+                                      disableRipple
+                                    >
+                                      Cancel
+                                    </BootstrapButton>
+                                  </div> */}
+                                </>
+                              ) : (
+                                <>
+                                  {/* Are you sure you want to delete workout{" "}
+                                  {workoutId}?
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      flexDirection: "row",
+                                      gap: "10px",
+                                      justifyContent: "center",
+                                    }}
+                                  >
+                                    <BootstrapButton
+                                      onClick={() => {
+                                        setOpen(true), handleDelete(workoutId);
+                                        handleCloseModal();
+                                      }}
+                                      variant="contained"
+                                      disableRipple
+                                    >
+                                      Delete Workout
+                                    </BootstrapButton>
+                                    <BootstrapButton
+                                      onClick={() => {
+                                        handleCloseModal();
+                                      }}
+                                      variant="contained"
+                                      disableRipple
+                                    >
+                                      Cancel
+                                    </BootstrapButton>
+                                  </div> */}
+                                </>
+                              )}
                             </div>
                           </Box>
                         </Modal>
@@ -195,7 +278,9 @@ export default function GetWorkouts() {
                         <br />
                         {/* button to confirm workout */}
                         {/* <BootstrapButton
-                          onClick={() => {handleOpenModal(), toggleCompleteMenu()}}
+                          onClick={() => {
+                            handleOpenModal(), toggleCompleteMenu();
+                          }}
                           variant="contained"
                           disableRipple
                         >
