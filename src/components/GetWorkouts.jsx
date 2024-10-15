@@ -24,7 +24,7 @@ import { Form } from "react-bootstrap";
 
 export default function GetWorkouts() {
   // grabs token from context
-  const { counter, deleteWO, confirmDelete } = useContext(AuthContext);
+  const { counter, refresh } = useContext(AuthContext);
 
   // set state for whether or not the box is open
   const [isOpen, setIsOpen] = useState(false);
@@ -44,6 +44,12 @@ export default function GetWorkouts() {
   const [calories, setCalories] = useState();
   const [time, setTime] = useState();
 
+  // state for the user data that will be altered
+  const [userInfo, setUserInfo] = useState({
+    calories: "",
+    total_workout_time: "",
+  })
+
   useEffect(() => {
     // fetches the workout endpoint to grab all the workouts
     const getDBData = async () => {
@@ -62,6 +68,31 @@ export default function GetWorkouts() {
 
     getDBData();
   }, [counter]); // anytime the counter is interacted with this will get ran again
+
+  useEffect(() => {
+    const getUserData = async () => {
+      try {
+        const response = await fetch(
+          `https://capstone-db.onrender.com/signup/1`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          // console.log(data);
+          setUserInfo({
+            calories: data.calories,
+            total_workout_time: data.total_workout_time
+          });
+        } else {
+          console.error("Failed to fetch user data:", response.statusText);
+          // Handle errors or set default values here
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    getUserData();
+  }, [counter]); // Assuming token is correctly triggering useEffect when it changes
 
   // Handle form submission for deleting a workout
   const handleDelete = async (id) => {

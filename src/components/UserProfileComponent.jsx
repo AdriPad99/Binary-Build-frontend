@@ -184,14 +184,6 @@ export default function UserProfileComponent() {
             total_calories_burned: data.total_calories_burned || "",
             total_workouts_completed: data.total_workouts_completed || "",
           });
-
-              // calories = fields.Int(required=False)
-  // weight_loss = fields.Int(required=False)
-  // max_weight_lifted = fields.Int(required=False)
-  // fastest_mile = fields.Int(required=False)
-  // total_workout_time = fields.Int(required=False)
-  // total_calories_burned = fields.Int(required=False)
-  // total_workouts_completed = fields.Int(required=False)
         } else {
           console.error("Failed to fetch user data:", response.statusText);
           // Handle errors or set default values here
