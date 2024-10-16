@@ -45,11 +45,9 @@ export default function GetWorkouts() {
   const [time, setTime] = useState();
 
   // state for the user data that will be altered
-  const [userInfo, setUserInfo] = useState({
-    calories: "",
-    total_workout_time: "",
-  })
+  const [userInfo, setUserInfo] = useState({})
 
+  // useEffect for the workout info
   useEffect(() => {
     // fetches the workout endpoint to grab all the workouts
     const getDBData = async () => {
@@ -69,6 +67,7 @@ export default function GetWorkouts() {
     getDBData();
   }, [counter]); // anytime the counter is interacted with this will get ran again
 
+  //useEffect for the user info
   useEffect(() => {
     const getUserData = async () => {
       try {
@@ -77,7 +76,9 @@ export default function GetWorkouts() {
         );
         if (response.ok) {
           const data = await response.json();
-          // console.log(data);
+          console.log(data.total_workout_time);
+          // sets the current calories and total workout time of the current user
+          // to the ones in the response
           setUserInfo({
             calories: data.calories,
             total_workout_time: data.total_workout_time
@@ -119,6 +120,33 @@ export default function GetWorkouts() {
     }
   };
 
+  // Handle form submission for updating a workout
+  const handleUpdate = async (event) => {
+    event.preventDefault();
+
+    const response = await fetch(
+      `https://capstone-db.onrender.com/signup/1`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          "calories": userInfo.calories,
+          "total_workout_time": userInfo.total_workout_time,
+        }),
+      }
+    );
+    if (response.ok) {
+      console.log(`Successfully updated profile!`);
+      setCalories('');
+      setTime('');
+    } else {
+      console.error("Failed to update profile:", response.statusText);
+    }
+    setUpdatePage((updatePage += 1));
+  };
+
   // controls toggling open the box
   const toggleNewWorkoutBox = async () => {
     setIsOpen(!isOpen);
@@ -154,11 +182,15 @@ export default function GetWorkouts() {
 
   // Handle changes in Time form
   const handleTimeChange = (event) => {
-    setT(event.target.value);
+    setTime(event.target.value);
   };
 
   return (
     <>
+    {/* <button onClick={() => {console.log(`calories: ${userInfo.calories}`)}}>test</button> */}
+    {/* <div>
+    {userInfo}
+    </div> */}
       {/* controls the workout sub menu on the bottom of the page */}
       <Dropdown onOpenChange={toggleNewWorkoutBox}>
         {/* if the box is considered as open, switch the text of the dropdown and display all the workouts OR
