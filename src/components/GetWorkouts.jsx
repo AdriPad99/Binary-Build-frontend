@@ -76,9 +76,11 @@ export default function GetWorkouts() {
         );
         if (response.ok) {
           const data = await response.json();
-          console.log(data.total_workout_time);
+          // console.log(data.total_workout_time);
           // sets the current calories and total workout time of the current user
           // to the ones in the response
+          setCalories(+data.calories);
+          setTime(+data.total_workout_time);
           setUserInfo({
             calories: data.calories,
             total_workout_time: data.total_workout_time
@@ -121,9 +123,7 @@ export default function GetWorkouts() {
   };
 
   // Handle form submission for updating a workout
-  const handleUpdate = async (event) => {
-    event.preventDefault();
-
+  const handleUpdate = async () => {
     const response = await fetch(
       `https://capstone-db.onrender.com/signup/1`,
       {
@@ -132,8 +132,8 @@ export default function GetWorkouts() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          "calories": userInfo.calories,
-          "total_workout_time": userInfo.total_workout_time,
+          "calories": calories,
+          "total_workout_time": time,
         }),
       }
     );
@@ -144,7 +144,6 @@ export default function GetWorkouts() {
     } else {
       console.error("Failed to update profile:", response.statusText);
     }
-    setUpdatePage((updatePage += 1));
   };
 
   // controls toggling open the box
@@ -187,10 +186,7 @@ export default function GetWorkouts() {
 
   return (
     <>
-    {/* <button onClick={() => {console.log(`calories: ${userInfo.calories}`)}}>test</button> */}
-    {/* <div>
-    {userInfo}
-    </div> */}
+    {/* <button onClick={() => {console.log(`calories: ${calories}\ntime: ${time}`)}}>test</button> */}
       {/* controls the workout sub menu on the bottom of the page */}
       <Dropdown onOpenChange={toggleNewWorkoutBox}>
         {/* if the box is considered as open, switch the text of the dropdown and display all the workouts OR
@@ -251,7 +247,7 @@ export default function GetWorkouts() {
 
                               {completeMenuOpen ? (
                                 <>
-                                  {/* <Form>
+                                  <Form>
                                     How many Calories Burned?{"\t"}
                                     <Form.Control
                                       type="text"
@@ -280,20 +276,34 @@ export default function GetWorkouts() {
                                     <BootstrapButton
                                       variant="contained"
                                       disableRipple
+                                      onClick={() => {
+                                        setTime((+time) + (+userInfo.total_workout_time));
+                                        setCalories((+calories) + (+userInfo.calories));
+                                        handleUpdate();
+                                        handleCloseModal();
+                                        setCompleteMenuOpen(false);
+                                        console.log(`time: ${time}\ncalories: ${calories}`);
+                                      }
+                                    }
                                     >
                                       Confirm
                                     </BootstrapButton>
                                     <BootstrapButton
                                       variant="contained"
                                       disableRipple
+                                      onClick={() =>{
+                                          handleCloseModal(),
+                                          setCompleteMenuOpen(false)
+                                        }
+                                      }
                                     >
                                       Cancel
                                     </BootstrapButton>
-                                  </div> */}
+                                  </div>
                                 </>
                               ) : (
                                 <>
-                                  {/* Are you sure you want to delete workout{" "}
+                                  Are you sure you want to delete workout{" "}
                                   {workoutId}?
                                   <div
                                     style={{
@@ -322,7 +332,7 @@ export default function GetWorkouts() {
                                     >
                                       Cancel
                                     </BootstrapButton>
-                                  </div> */}
+                                  </div>
                                 </>
                               )}
                             </div>
