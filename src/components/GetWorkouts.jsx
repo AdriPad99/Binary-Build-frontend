@@ -24,7 +24,7 @@ import { Form } from "react-bootstrap";
 
 export default function GetWorkouts() {
   // grabs token from context
-  const { counter, refresh } = useContext(AuthContext);
+  const { counter } = useContext(AuthContext);
 
   // set state for whether or not the box is open
   const [isOpen, setIsOpen] = useState(false);
@@ -43,6 +43,14 @@ export default function GetWorkouts() {
   // state for the calories and time prompted from the user
   const [calories, setCalories] = useState();
   const [time, setTime] = useState();
+
+  // state for the calories and time pulled from the db
+  const [userCalories, setUserCalories] = useState();
+  const [userTime, setUserTime] = useState();
+
+  // calories and time sent when updated
+  let updateCalories = 0;
+  let updateTime = 0;
 
   // state for the user data that will be altered
   const [userInfo, setUserInfo] = useState({})
@@ -79,8 +87,8 @@ export default function GetWorkouts() {
           // console.log(data.total_workout_time);
           // sets the current calories and total workout time of the current user
           // to the ones in the response
-          setCalories(+data.calories);
-          setTime(+data.total_workout_time);
+          setUserCalories(+data.calories);
+          setUserTime(+data.total_workout_time);
           setUserInfo({
             calories: data.calories,
             total_workout_time: data.total_workout_time
@@ -124,6 +132,10 @@ export default function GetWorkouts() {
 
   // Handle form submission for updating a workout
   const handleUpdate = async () => {
+    // sets the total calories and time on call
+    updateCalories = +calories + (+userCalories);
+    updateTime = +time + (+userTime);
+    // console.log(`update calories: ${typeof(updateCalories)}\nupdate time: ${typeof(updateTime)}`)
     const response = await fetch(
       `https://capstone-db.onrender.com/signup/1`,
       {
@@ -132,8 +144,8 @@ export default function GetWorkouts() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          "calories": calories,
-          "total_workout_time": time,
+          "calories": updateCalories,
+          "total_workout_time": updateTime,
         }),
       }
     );
@@ -186,7 +198,9 @@ export default function GetWorkouts() {
 
   return (
     <>
-    {/* <button onClick={() => {console.log(`calories: ${calories}\ntime: ${time}`)}}>test</button> */}
+    {/* <button onClick={() => {console.log(`user calories: ${userCalories}\nuser time: ${userTime}\n\n
+      user input calories: ${calories}\nuser input time: ${time}\n\nupdate time: ${updateTime}\n
+      update calories: ${updateCalories}`)}}>test</button> */}
       {/* controls the workout sub menu on the bottom of the page */}
       <Dropdown onOpenChange={toggleNewWorkoutBox}>
         {/* if the box is considered as open, switch the text of the dropdown and display all the workouts OR
