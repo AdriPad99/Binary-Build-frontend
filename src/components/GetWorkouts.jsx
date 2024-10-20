@@ -201,6 +201,7 @@ export default function GetWorkouts() {
     {/* <button onClick={() => {console.log(`user calories: ${userCalories}\nuser time: ${userTime}\n\n
       user input calories: ${calories}\nuser input time: ${time}\n\nupdate time: ${updateTime}\n
       update calories: ${updateCalories}`)}}>test</button> */}
+      {/* wip */}
       {/* controls the workout sub menu on the bottom of the page */}
       <Dropdown onOpenChange={toggleNewWorkoutBox}>
         {/* if the box is considered as open, switch the text of the dropdown and display all the workouts OR
