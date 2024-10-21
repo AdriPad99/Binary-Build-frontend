@@ -21,10 +21,14 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 
 import { Form } from "react-bootstrap";
+import { setRef } from "@mui/material";
 
 export default function GetWorkouts() {
-  // grabs token from context
+  // grabs counter from context
   const { counter } = useContext(AuthContext);
+
+  // controls state for refreshing user info (test)
+  let [refresh, setRefresh] = useState(0);
 
   // set state for whether or not the box is open
   const [isOpen, setIsOpen] = useState(false);
@@ -44,11 +48,12 @@ export default function GetWorkouts() {
   const [calories, setCalories] = useState();
   const [time, setTime] = useState();
 
-  // state for the calories and time pulled from the db
+  // state for the calories, total workouts, and time pulled from the db
   const [userCalories, setUserCalories] = useState();
   const [userTime, setUserTime] = useState();
+  const [userTotWorkouts, setUserTotWorkouts] = useState();
 
-  // calories and time sent when updated
+  // calories, workouts,  and time sent when updated
   let updateCalories = 0;
   let updateTime = 0;
 
@@ -87,11 +92,13 @@ export default function GetWorkouts() {
           // console.log(data.total_workout_time);
           // sets the current calories and total workout time of the current user
           // to the ones in the response
+          // console.log(data)
           setUserCalories(+data.calories);
           setUserTime(+data.total_workout_time);
           setUserInfo({
             calories: data.calories,
             total_workout_time: data.total_workout_time
+
           });
         } else {
           console.error("Failed to fetch user data:", response.statusText);
@@ -103,7 +110,7 @@ export default function GetWorkouts() {
     };
 
     getUserData();
-  }, [counter]); // Assuming token is correctly triggering useEffect when it changes
+  }, [refresh]); // Assuming token is correctly triggering useEffect when it changes
 
   // Handle form submission for deleting a workout
   const handleDelete = async (id) => {
@@ -198,10 +205,8 @@ export default function GetWorkouts() {
 
   return (
     <>
-    {/* <button onClick={() => {console.log(`user calories: ${userCalories}\nuser time: ${userTime}\n\n
-      user input calories: ${calories}\nuser input time: ${time}\n\nupdate time: ${updateTime}\n
+    {/* <button onClick={() => {console.log(`user calories: ${userCalories}\nuser time: ${userTime}\n\nuser input calories: ${calories}\nuser input time: ${time}\n\nupdate time: ${updateTime}\n
       update calories: ${updateCalories}`)}}>test</button> */}
-      {/* wip */}
       {/* controls the workout sub menu on the bottom of the page */}
       <Dropdown onOpenChange={toggleNewWorkoutBox}>
         {/* if the box is considered as open, switch the text of the dropdown and display all the workouts OR
@@ -297,7 +302,6 @@ export default function GetWorkouts() {
                                         handleUpdate();
                                         handleCloseModal();
                                         setCompleteMenuOpen(false);
-                                        console.log(`time: ${time}\ncalories: ${calories}`);
                                       }
                                     }
                                     >
