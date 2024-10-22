@@ -21,14 +21,10 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 
 import { Form } from "react-bootstrap";
-import { setRef } from "@mui/material";
 
 export default function GetWorkouts() {
   // grabs counter from context
   const { counter } = useContext(AuthContext);
-
-  // controls state for refreshing user info (test)
-  let [refresh, setRefresh] = useState(0);
 
   // set state for whether or not the box is open
   const [isOpen, setIsOpen] = useState(false);
@@ -56,6 +52,7 @@ export default function GetWorkouts() {
   // calories, workouts,  and time sent when updated
   let updateCalories = 0;
   let updateTime = 0;
+  let updateAmntWO = 0;
 
   // state for the user data that will be altered
   const [userInfo, setUserInfo] = useState({})
@@ -64,16 +61,20 @@ export default function GetWorkouts() {
   useEffect(() => {
     // fetches the workout endpoint to grab all the workouts
     const getDBData = async () => {
-      // fetches the server api that has all the workouts
-      const res = await fetch("https://capstone-db.onrender.com/workouts");
-      if (res.ok) {
-        const data = await res.json();
-        setUserData(data);
-      }
-      // if not error out
-      else {
-        console.error("Couldn't get the workouts :(");
-        console.log(user);
+      try{
+        // fetches the server api that has all the workouts
+        const res = await fetch("https://capstone-db.onrender.com/workouts");
+        if (res.ok) {
+          const data = await res.json();
+          setUserData(data);
+        }
+        // if not error out
+        else {
+          console.error("Couldn't get the workouts :(");
+          console.log(user);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
     };
 
@@ -89,16 +90,16 @@ export default function GetWorkouts() {
         );
         if (response.ok) {
           const data = await response.json();
-          // console.log(data.total_workout_time);
-          // sets the current calories and total workout time of the current user
+          // sets the current calories, workout amnt,  and total workout time of the current user
           // to the ones in the response
-          // console.log(data)
           setUserCalories(+data.calories);
           setUserTime(+data.total_workout_time);
+          setUserTotWorkouts(+data.amnt_workouts_completed);
+          // sets user info based on the response
           setUserInfo({
             calories: data.calories,
-            total_workout_time: data.total_workout_time
-
+            total_workout_time: data.total_workout_time,
+            amnt_workouts_completed: data.amnt_workouts_completed
           });
         } else {
           console.error("Failed to fetch user data:", response.statusText);
@@ -110,7 +111,7 @@ export default function GetWorkouts() {
     };
 
     getUserData();
-  }, [refresh]); // Assuming token is correctly triggering useEffect when it changes
+  }, []);
 
   // Handle form submission for deleting a workout
   const handleDelete = async (id) => {
@@ -139,30 +140,36 @@ export default function GetWorkouts() {
 
   // Handle form submission for updating a workout
   const handleUpdate = async () => {
-    // sets the total calories and time on call
+    // sets the total calories, workout amnt,  and time on call
     updateCalories = +calories + (+userCalories);
     updateTime = +time + (+userTime);
-    // console.log(`update calories: ${typeof(updateCalories)}\nupdate time: ${typeof(updateTime)}`)
-    const response = await fetch(
-      `https://capstone-db.onrender.com/signup/1`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          "calories": updateCalories,
-          "total_workout_time": updateTime,
-        }),
+    updateAmntWO = 1 + (+userTotWorkouts);
+    // try catch request
+    try{
+      const response = await fetch(
+        `https://capstone-db.onrender.com/signup/1`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            "calories": updateCalories,
+            "total_workout_time": updateTime,
+            "amnt_workouts_completed" : updateAmntWO,
+          }),
+        }
+      );
+      if (response.ok) {
+        console.log(`Successfully updated profile!`);
+        setCalories('');
+        setTime('');
+      } else {
+        console.error("Failed to update profile:", response.statusText);
       }
-    );
-    if (response.ok) {
-      console.log(`Successfully updated profile!`);
-      setCalories('');
-      setTime('');
-    } else {
-      console.error("Failed to update profile:", response.statusText);
-    }
+    } catch (error) {
+        console.error("Error fetching data:", error);
+      }
   };
 
   // controls toggling open the box
@@ -205,8 +212,6 @@ export default function GetWorkouts() {
 
   return (
     <>
-    {/* <button onClick={() => {console.log(`user calories: ${userCalories}\nuser time: ${userTime}\n\nuser input calories: ${calories}\nuser input time: ${time}\n\nupdate time: ${updateTime}\n
-      update calories: ${updateCalories}`)}}>test</button> */}
       {/* controls the workout sub menu on the bottom of the page */}
       <Dropdown onOpenChange={toggleNewWorkoutBox}>
         {/* if the box is considered as open, switch the text of the dropdown and display all the workouts OR
@@ -229,7 +234,7 @@ export default function GetWorkouts() {
                         color="neutral"
                       >
                         {/* delete workout button */}
-                        {/* <div className="deleteBtn">
+                        <div className="deleteBtn">
                           <button
                             className="deleteBtn"
                             onClick={() => {
@@ -238,7 +243,7 @@ export default function GetWorkouts() {
                           >
                             Delete workout
                           </button>
-                        </div> */}
+                        </div>
                         {/* Contents of the Modal */}
                         <Modal
                           open={openModal}
@@ -369,7 +374,7 @@ export default function GetWorkouts() {
                         Workout variation: {user.workout_variation}
                         <br />
                         {/* button to confirm workout */}
-                        {/* <BootstrapButton
+                        <BootstrapButton
                           onClick={() => {
                             handleOpenModal(), toggleCompleteMenu();
                           }}
@@ -377,9 +382,9 @@ export default function GetWorkouts() {
                           disableRipple
                         >
                           Complete Workout
-                        </BootstrapButton> */}
-                        {/* button for deleting a workout */}
-                        <BootstrapButton
+                        </BootstrapButton>
+                        {/* BOOTSTRAP button for deleting a workout */}
+                        {/* <BootstrapButton
                           onClick={() => {
                             setWorkoutId(user.workout_id),
                               setOpen(true),
@@ -389,7 +394,7 @@ export default function GetWorkouts() {
                           disableRipple
                         >
                           Delete Workout
-                        </BootstrapButton>
+                        </BootstrapButton> */}
                         {/* snackbar notification*/}
                         <Snackbar
                           open={open}
