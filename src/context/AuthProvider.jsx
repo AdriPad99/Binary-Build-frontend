@@ -10,11 +10,19 @@ export const AuthProvider = ({ children }) => {
 
     const [confirmDelete, setConfirmDelete] = useState(() => () => localStorage.getItem('deleteWO'))
 
+    const [userId, setUserId] = useState(() => localStorage.getItem('userID'));
+
     // logs the user in by setting a token with login
     const login = (userData) => {
         setToken(userData); //sets the access token to userdata
         localStorage.setItem('token', userData); // save token to localStorage
     };
+
+    // sets the users ID from the DB
+    const assignUserId = (dbID) => {
+        setUserId(dbID); // sets the userID to the argument
+        localStorage.setItem('userID', dbID);   // saves the userID to localstorage
+    }
 
     // logs the user out by setting the token to null
     const logout = () => {
