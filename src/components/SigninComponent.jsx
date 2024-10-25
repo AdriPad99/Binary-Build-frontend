@@ -22,6 +22,9 @@ export default function TestLogin() {
 
     const navigate = useNavigate();
 
+    // grabs token from context
+    const { assignUserId, userId } = useContext(AuthContext)
+
     // grabs login function and user token from context
     const { login } = useContext(AuthContext)
 
