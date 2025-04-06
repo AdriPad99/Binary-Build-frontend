@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import AuthContext from './AuthContext';
 
 // auth provider holds shared state and state methods
-export const AuthProvider = ({ children }) => { // userID wip94
+export const AuthProvider = ({ children }) => { // userID wip95
     const [token, setToken] = useState(() => localStorage.getItem('token'));
 
     const [counter, setCounter] = useState(() => parseInt(localStorage.getItem('counter'), 10) || 0)
