@@ -38,6 +38,7 @@ export const AuthProvider = ({ children }) => { // userID wip101
         });
     }
 
+    // deletes a workout
     const deleteWO = (decision) => {
         setConfirmDelete(decision); // sets the decision of wether or not the user want to delete
         localStorage.setItem('deleteWO', decision); // save user decision to localStorage
