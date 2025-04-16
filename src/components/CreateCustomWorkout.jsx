@@ -215,7 +215,7 @@ export default function CreateCustomWorkout() {
 
     // add the notifications here for the user to recieve
     
-  }
+  } // test
 
   return (
     <>
